@@ -1,7 +1,93 @@
 """Servicios de dominio de la app registros.
 
-Aquí vivirán la creación de avistamientos, la compresión de fotografías
-(RF-02) y las transiciones de estado del Registro
-(BORRADOR → PENDIENTE → APROBADO/DEVUELTO → PENDIENTE), ver
-docs/modelo-datos.md. Ninguna vista asigna `estado` directamente.
+Creación de avistamientos, compresión de fotografías (RF-02, RNF-04) y
+las transiciones de estado del Registro que le corresponden a esta app:
+BORRADOR → PENDIENTE (envío) y DEVUELTO → PENDIENTE (corrección tras
+RF-08). Las transiciones PENDIENTE → APROBADO/DEVUELTO viven en
+apps.curaduria.services, junto con la Revision. Ninguna vista asigna
+`estado` directamente (RN-01, RN-03).
 """
+import io
+
+from django.core.files.base import ContentFile
+from django.db import transaction
+from PIL import Image
+
+from .models import Fotografia, Registro
+
+TAMANO_MAXIMO_PX = 1600
+CALIDAD_JPEG = 80
+
+
+class TransicionInvalida(Exception):
+    pass
+
+
+def comprimir_imagen(archivo):
+    """Redimensiona y recomprime una imagen subida a JPEG liviano (RNF-04)."""
+    imagen = Image.open(archivo)
+    imagen = imagen.convert('RGB')
+    imagen.thumbnail((TAMANO_MAXIMO_PX, TAMANO_MAXIMO_PX))
+    buffer = io.BytesIO()
+    imagen.save(buffer, format='JPEG', quality=CALIDAD_JPEG, optimize=True)
+    nombre_base = archivo.name.rsplit('.', 1)[0]
+    return ContentFile(buffer.getvalue(), name=f'{nombre_base}.jpg')
+
+
+def agregar_fotografia(registro, archivo):
+    return Fotografia.objects.create(registro=registro, archivo=comprimir_imagen(archivo))
+
+
+def enviar_registro(registro):
+    """BORRADOR → PENDIENTE (RF-01, RN-01)."""
+    if registro.estado != Registro.Estado.BORRADOR:
+        raise TransicionInvalida('Solo un registro en BORRADOR puede enviarse.')
+    registro.estado = Registro.Estado.PENDIENTE
+    registro.save(update_fields=['estado'])
+
+
+@transaction.atomic
+def crear_registro(*, usuario, especie, lugar, fecha_avistamiento, latitud=None, longitud=None,
+                    comportamiento='', sustrato='', info_adicional='', sin_identificar=False, fotos=()):
+    """Crea un avistamiento y lo envía a revisión de inmediato (RF-01, RF-11)."""
+    registro = Registro(
+        usuario=usuario,
+        especie=especie,
+        lugar=lugar,
+        fecha_avistamiento=fecha_avistamiento,
+        latitud=latitud,
+        longitud=longitud,
+        comportamiento=comportamiento,
+        sustrato=sustrato,
+        info_adicional=info_adicional,
+        sin_identificar=sin_identificar,
+    )
+    registro.full_clean()
+    registro.save()
+    for archivo in fotos:
+        agregar_fotografia(registro, archivo)
+    enviar_registro(registro)
+    return registro
+
+
+@transaction.atomic
+def corregir_registro(registro, *, especie, lugar, fecha_avistamiento, latitud=None, longitud=None,
+                       comportamiento='', sustrato='', info_adicional='', sin_identificar=False, fotos=()):
+    """DEVUELTO → PENDIENTE tras la corrección de su autor (RF-08)."""
+    if registro.estado != Registro.Estado.DEVUELTO:
+        raise TransicionInvalida('Solo se puede corregir un registro DEVUELTO.')
+    registro.especie = especie
+    registro.lugar = lugar
+    registro.fecha_avistamiento = fecha_avistamiento
+    registro.latitud = latitud
+    registro.longitud = longitud
+    registro.comportamiento = comportamiento
+    registro.sustrato = sustrato
+    registro.info_adicional = info_adicional
+    registro.sin_identificar = sin_identificar
+    registro.full_clean()
+    registro.estado = Registro.Estado.PENDIENTE
+    registro.save()
+    for archivo in fotos:
+        agregar_fotografia(registro, archivo)
+    return registro

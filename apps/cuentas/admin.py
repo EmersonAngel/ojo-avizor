@@ -3,6 +3,10 @@ from django.contrib.auth.admin import UserAdmin
 
 from .models import Usuario
 
+admin.site.site_header = 'Ojo Avizor — Administración'
+admin.site.site_title = 'Ojo Avizor'
+admin.site.index_title = 'Panel de gestión'
+
 
 @admin.register(Usuario)
 class UsuarioAdmin(UserAdmin):
