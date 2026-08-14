@@ -9,8 +9,13 @@ from pathlib import Path
 
 from django.conf import settings
 from django.http import HttpResponse
+from django.shortcuts import render
 
 
 def service_worker(request):
     ruta = Path(settings.BASE_DIR) / 'static' / 'sw.js'
     return HttpResponse(ruta.read_text(encoding='utf-8'), content_type='application/javascript')
+
+
+def condiciones_uso(request):
+    return render(request, 'condiciones_uso.html')

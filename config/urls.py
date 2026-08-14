@@ -18,6 +18,7 @@ urlpatterns = [
 
 urlpatterns += i18n_patterns(
     path('', RedirectView.as_view(pattern_name='catalogo:publico_listado'), name='inicio'),
+    path('condiciones-de-uso/', views.condiciones_uso, name='condiciones_uso'),
     path('cuentas/', include('apps.cuentas.urls')),
     path('catalogo/', include('apps.catalogo.urls')),
     path('registros/', include('apps.registros.urls')),

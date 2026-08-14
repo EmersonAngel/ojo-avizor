@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block titulo %}{% translate "Condiciones de uso" %} — Ojo Avizor{% endblock %}
+
+{% block contenido %}
+<div class="page">
+    <h1 class="titulo-pagina mb-1">{% translate "Condiciones de uso" %}</h1>
+    <p class="text-sm text-stone-500 dark:text-stone-400 mb-8">
+        {% translate "En palabras simples: qué pasa con lo que aportas a Ojo Avizor." %}
+    </p>
+
+    <div class="space-y-6">
+        <div class="card p-5">
+            <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400 mb-2">
+                {% translate "1. Lo que aportas sigue siendo tuyo" %}
+            </h2>
+            <p class="text-stone-700 dark:text-stone-300">
+                {% translate "Cada avistamiento, fotografía y nombre común que registras es un aporte tuyo y de la comunidad de observadores de Pijao. La autoría de ese contenido es permanente: nunca se transfiere, se reasigna ni se anonimiza." %}
+            </p>
+        </div>
+
+        <div class="card p-5">
+            <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400 mb-2">
+                {% translate "2. Quién puede usar esos datos, y para qué" %}
+            </h2>
+            <p class="text-stone-700 dark:text-stone-300">
+                {% translate "La Fundación Smurfit Westrock Colombia, la universidad y quien desarrolla esta plataforma pueden usar la información del inventario para los fines del proyecto: construir el catálogo, elaborar la documentación académica y, en el futuro, fines educativos relacionados." %}
+            </p>
+            <p class="text-stone-700 dark:text-stone-300 mt-2 font-medium">
+                {% translate "Usar no es lo mismo que ser dueño: en ningún caso esas organizaciones adquieren la autoría de tu aporte." %}
+            </p>
+        </div>
+
+        <div class="card p-5">
+            <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400 mb-2">
+                {% translate "3. Tu identidad" %}
+            </h2>
+            <p class="text-stone-700 dark:text-stone-300">
+                {% translate "En público, tus aportes se muestran con tu seudónimo. Tu nombre real y tu correo nunca se publican; solo los puede ver un Revisor o un Administrador, y únicamente para gestionar la plataforma." %}
+            </p>
+        </div>
+
+        <div class="card p-5">
+            <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400 mb-2">
+                {% translate "4. La ubicación exacta no se publica" %}
+            </h2>
+            <p class="text-stone-700 dark:text-stone-300">
+                {% translate "Si registras coordenadas, se guardan completas pero nunca se muestran en público — solo el lugar en texto. Es una medida para no facilitar la localización de especies vulnerables." %}
+            </p>
+        </div>
+
+        <div class="card p-5">
+            <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400 mb-2">
+                {% translate "5. Solo fotos propias o con autorización" %}
+            </h2>
+            <p class="text-stone-700 dark:text-stone-300">
+                {% translate "Las fotografías que subas deben ser tuyas o contar con autorización de quien las tomó. No se publica material tomado de internet." %}
+            </p>
+        </div>
+
+        <div class="card p-5">
+            <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400 mb-2">
+                {% translate "6. Todo pasa por revisión" %}
+            </h2>
+            <p class="text-stone-700 dark:text-stone-300">
+                {% translate "Ningún aporte se publica sin que un Revisor lo apruebe. Si te devuelven un registro, siempre viene con un motivo explicado — se conserva, no se elimina — y puedes corregirlo y reenviarlo." %}
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

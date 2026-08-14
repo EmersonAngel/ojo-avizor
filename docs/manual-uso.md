@@ -8,10 +8,14 @@
 
 En la página principal (`/`) puedes:
 
-- **Ver el catálogo** de especies de aves registradas en Pijao.
-- **Buscar** una especie escribiendo su nombre científico o cualquiera de sus nombres comunes (por ejemplo, "toche" o "mirla") en el cuadro de búsqueda.
+- **Ver el catálogo** de especies de aves registradas en Pijao, con la cantidad total de especies, avistamientos y observadores participantes.
+- **Buscar** una especie escribiendo su nombre científico o cualquiera de sus nombres comunes (por ejemplo, "toche" o "mirla"), o su familia/orden, en el cuadro de búsqueda. Los resultados se filtran mientras escribes, sin recargar la página.
+- **Filtrar por familia** tocando una de las etiquetas (por ejemplo "Trochilidae") debajo del buscador.
+- **Ver "Actividad reciente"** al final de la página: los últimos avistamientos aprobados, con enlace directo a la ficha de cada especie.
 - **Abrir la ficha** de una especie para ver su descripción, tamaño, historia natural, un dato curioso y los avistamientos aprobados en el municipio (lugar y fecha, sin coordenadas exactas ni datos personales de quien lo aportó — solo su seudónimo).
 - **Ver el inventario consolidado** (enlace "Ver inventario consolidado") con el total de especies, avistamientos y observadores participantes.
+- **Cambiar entre modo claro y oscuro** con el botón en la parte superior; la plataforma recuerda tu elección la próxima vez que entres.
+- **Leer las condiciones de uso** (enlace en el pie de página): qué pasa con lo que aportas y quién puede usarlo.
 
 No necesitas iniciar sesión para nada de esto.
 
@@ -23,7 +27,8 @@ Para aportar avistamientos necesitas una cuenta:
 
 1. Toca **"Crear cuenta"** en la parte superior.
 2. Completa usuario, correo, tu nombre real, un **seudónimo** (así te van a ver los demás, tu nombre real nunca se muestra en público) y una contraseña.
-3. Al registrarte quedas automáticamente con sesión iniciada y con rol **Observador**.
+3. Al registrarte aceptas las **condiciones de uso** (enlazadas en el propio formulario): lo que aportas sigue siendo tuyo y de la comunidad; la Fundación, la universidad y quien desarrolla la plataforma solo pueden usarlo para los fines del proyecto.
+4. Al registrarte quedas automáticamente con sesión iniciada y con rol **Observador**.
 
 Los roles Revisor y Administrador no se auto-asignan: los otorga un Administrador desde el panel de gestión.
 
@@ -48,6 +53,8 @@ En **"Mis avistamientos"** ves todos los que has aportado y su estado:
 - **Aprobado**: ya es público y aparece en la ficha de la especie.
 - **Devuelto**: el revisor pidió más información o una corrección. Toca **"Corregir"** para ver el motivo, ajustar tu registro y reenviarlo — vuelve a quedar en Pendiente.
 
+Si tienes muchos avistamientos, la lista se divide en páginas (enlaces "Anterior"/"Siguiente" al final).
+
 ---
 
 ## Como Revisor
@@ -67,6 +74,8 @@ En **"Bandeja de revisión"** aparecen todos los registros pendientes, con las c
 
 - **"Aprobar"** publica el avistamiento de inmediato en la ficha de la especie.
 - **"Devolver"** exige escribir un motivo — no se puede devolver sin explicar por qué. El autor verá ese motivo y podrá corregir y reenviar. El revisor **no modifica** el contenido del registro ajeno: solo aprueba o devuelve con explicación.
+
+Si hay muchos registros pendientes, la bandeja se divide en páginas.
 
 ---
 
@@ -89,3 +98,6 @@ No. En todo el sitio público solo se muestra tu seudónimo. Tu nombre real y tu
 
 **¿Se publica la ubicación exacta de un avistamiento?**
 No. Públicamente solo se muestra el lugar en texto (por ejemplo, "Vereda La Playa"); las coordenadas se guardan pero nunca se publican, para no facilitar la localización de especies vulnerables.
+
+**¿La Fundación o la universidad son dueñas de lo que registro?**
+No. La autoría de cada aporte es tuya y de la comunidad; esas organizaciones solo pueden usar los datos para los fines del proyecto. Ver las condiciones de uso (enlace en el pie de página de la plataforma) para el detalle completo.

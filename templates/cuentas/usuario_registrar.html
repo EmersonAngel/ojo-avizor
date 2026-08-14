@@ -25,6 +25,10 @@
                 {% endfor %}
             </div>
             {% endfor %}
+            {% url 'condiciones_uso' as url_condiciones %}
+            <p class="text-xs text-stone-500 dark:text-stone-400">
+                {% blocktranslate %}Al registrarte, aceptas las <a href="{{ url_condiciones }}" class="underline hover:text-stone-700 dark:hover:text-stone-300" target="_blank">condiciones de uso</a>: lo que aportas sigue siendo tuyo.{% endblocktranslate %}
+            </p>
             <button type="submit" class="btn-primary w-full">{% translate "Registrarme" %}</button>
         </form>
     </div>
