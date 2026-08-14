@@ -1,6 +1,6 @@
 # Arquitectura y decisiones técnicas
 
-> **Paquete de contexto v1.0** · 9 de agosto de 2026
+> **Paquete de contexto v1.1** · 9 de agosto de 2026
 
 ---
 
@@ -123,6 +123,6 @@ No hace falta cobertura completa, pero estas no son negociables:
 
 - Transiciones de estado válidas e inválidas del Registro.
 - Que un registro no aprobado **nunca** aparezca en el catálogo público.
-- Que una vista pública no exponga nombre real ni correo.
+- Que una vista pública no exponga nombre real, correo ni coordenadas.
 - Que devolver sin motivo falle.
 - Que la búsqueda encuentre especies por nombre común además de por nombre científico.

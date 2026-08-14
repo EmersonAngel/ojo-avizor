@@ -1,6 +1,6 @@
 # Requisitos del producto mínimo viable
 
-> **Paquete de contexto v1.0** · 9 de agosto de 2026
+> **Paquete de contexto v1.1** · 9 de agosto de 2026
 > 20 requisitos funcionales. Si algo no está aquí, no se construye en esta entrega.
 
 ---
@@ -89,6 +89,7 @@ Sin necesidad de cuenta.
 ### RF-04 · Ver la ficha detallada de una especie
 Con toda su información y sus avistamientos aprobados.
 **Aceptación:** al seleccionar una especie se muestra la ficha completa.
+**Atención:** los avistamientos muestran `lugar` en texto, nunca coordenadas (RN-06).
 
 ### RF-05 · Buscar especies por nombre
 Por nombre científico **y por nombres comunes**.

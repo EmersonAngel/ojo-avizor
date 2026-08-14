@@ -1,6 +1,6 @@
 # Reglas de negocio
 
-> **Paquete de contexto v1.0** · 9 de agosto de 2026
+> **Paquete de contexto v1.1** · 9 de agosto de 2026
 
 Estas ocho reglas son políticas del proyecto, no detalles de implementación. **Ninguna se puede omitir ni relajar por conveniencia técnica.** Si una decisión de código las contradice, la decisión está mal.
 
@@ -52,13 +52,17 @@ La consulta del inventario no requiere identificación. Aportar contenido exige 
 
 ---
 
-## RN-06 · La ubicación de especies sensibles no se publica con precisión exacta
+## RN-06 · La ubicación exacta es información reservada
 
-Cuando la ubicación pueda facilitar la localización de especies vulnerables, se publica con precisión reducida.
+Las coordenadas de un avistamiento son **información sensible**. Se almacenan completas, pero solo son visibles para los roles Revisor y Administrador. En el catálogo público se muestra únicamente el campo `lugar` en texto.
 
-**En el código:** el modelo distingue entre la ubicación almacenada y la mostrada. **Pendiente de definir** qué especies se consideran sensibles y con cuánta reducción. Por ahora: almacena las coordenadas completas y **no las muestres en el catálogo público**; solo el campo `lugar` en texto.
+**En el código:**
+- `latitud` y `longitud` se guardan siempre con precisión completa.
+- **Ninguna plantilla pública puede acceder a `registro.latitud` ni a `registro.longitud`.**
+- Las vistas y serializaciones destinadas al público exponen solo `lugar`.
+- Si en el futuro se muestra un mapa público, se hará con precisión reducida, nunca con la coordenada exacta.
 
-**Por qué:** la propia comunidad identificó la caza ilegal de fauna silvestre como causa del problema ambiental del municipio. Sería contradictorio que la plataforma la facilitara.
+**Por qué:** la propia comunidad identificó la caza ilegal de fauna silvestre como una de las causas del problema ambiental del municipio. Publicar coordenadas exactas facilitaría la localización de especies vulnerables, lo que contradiría el propósito de la plataforma. Decisión confirmada por el equipo del proyecto.
 
 ---
 
@@ -89,3 +93,4 @@ Antes de dar por terminada una funcionalidad, comprueba:
 - [ ] ¿Alguna vista modifica el estado sin pasar por un servicio? (RN-03)
 - [ ] ¿Se puede devolver un registro sin motivo? (RN-08)
 - [ ] ¿Alguna vista pública exige autenticación sin necesidad? (RN-05)
+- [ ] ¿Alguna vista pública expone latitud o longitud? (RN-06)

@@ -1,6 +1,6 @@
-# Avisté — Plataforma de inventario de avifauna de Pijao
+# Ojo Avizor — Plataforma de inventario de avifauna de Pijao
 
-> **Paquete de contexto v1.0** · 9 de agosto de 2026
+> **Paquete de contexto v1.2** · 14 de agosto de 2026
 > Si modificas este archivo, sube la versión y anótalo en el registro del final.
 
 Lee también, en `docs/`: `arquitectura.md`, `modelo-datos.md`, `requisitos-mvp.md` y `reglas-negocio.md`.
@@ -62,7 +62,7 @@ La Capa 2 alimenta a la Capa 1: las fotografías aportadas se acumulan por espec
 ## 5. Estructura del proyecto
 
 ```
-avisté/
+ojo_avizor/
 ├── config/              # settings, urls raíz, wsgi
 ├── apps/
 │   ├── cuentas/         # Usuario, roles, autenticación
@@ -86,6 +86,7 @@ Cada app contiene: `models.py`, `services.py`, `repositories.py`, `forms.py`, `v
 - **No implementes lo que está fuera del MVP** (lista al final de `requisitos-mvp.md`), aunque parezca fácil.
 - **No pongas lógica de negocio en las vistas.**
 - **No publiques datos personales de menores.** Ver `reglas-negocio.md`, regla RN-02. En el catálogo público solo aparece el seudónimo.
+- **No expongas coordenadas en vistas públicas.** La latitud y la longitud son información reservada a Revisor y Administrador (RN-06). En público, solo el campo `lugar`.
 - **No uses fotografías tomadas de internet** para datos de prueba. Usa imágenes de marcador de posición genéricas.
 - **No cambies el modelo de dos capas** sin avisar: rompe todo el diseño.
 - **No añadas dependencias pesadas** sin justificarlo. Los costos de operación deben ser sostenibles después de la práctica.
@@ -118,3 +119,5 @@ El grupo piloto son 8 estudiantes del Instituto Pijao. La plataforma se dimensio
 | Versión | Fecha | Cambios |
 | --- | --- | --- |
 | 1.0 | 09/08/2026 | Versión inicial del paquete de contexto. |
+| 1.1 | 09/08/2026 | **RN-06 confirmada.** Las coordenadas de un avistamiento pasan a ser información reservada: se almacenan completas, pero solo son visibles para Revisor y Administrador. En el catálogo público se muestra únicamente `lugar`. Afecta a `reglas-negocio.md`, `modelo-datos.md`, `requisitos-mvp.md` y `arquitectura.md`. |
+| **1.2** | **14/08/2026** | **Cambio de nombre.** El proyecto pasa a llamarse **Ojo Avizor** (antes «Avisté»). Cambia la marca en toda la interfaz, el nombre de la base de datos (`ojo_avizor`), la documentación y los identificadores internos del código. No afecta el modelo de datos ni ninguna regla de negocio. |

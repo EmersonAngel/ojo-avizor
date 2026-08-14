@@ -1,6 +1,6 @@
 # Modelo de datos
 
-> **Paquete de contexto v1.0** · 9 de agosto de 2026
+> **Paquete de contexto v1.1** · 9 de agosto de 2026
 
 Seis entidades. Las dos primeras forman la **Capa 1** (curada); Registro y Fotografia forman la **Capa 2** (comunitaria).
 
@@ -74,8 +74,8 @@ Un avistamiento. Es la entidad central del sistema.
 | `especie` | FK → Especie, **null=True** | Nulo cuando se envía sin identificar |
 | `usuario` | FK → Usuario | Autor del registro |
 | `lugar` | varchar(200) | **Obligatorio** |
-| `latitud` | numeric(9,6) | Opcional |
-| `longitud` | numeric(9,6) | Opcional |
+| `latitud` | numeric(9,6) | Opcional. **Reservada: solo Revisor y Administrador** (RN-06) |
+| `longitud` | numeric(9,6) | Opcional. **Reservada: solo Revisor y Administrador** (RN-06) |
 | `fecha_avistamiento` | date | **Obligatorio.** No puede ser futura. |
 | `fecha_envio` | datetime | Automático |
 | `estado` | varchar(20) | `BORRADOR`, `PENDIENTE`, `APROBADO`, `DEVUELTO` |
