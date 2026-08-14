@@ -1,4 +1,4 @@
-"""Configuración WSGI del proyecto Avisté."""
+"""Configuración WSGI del proyecto Ojo Avizor."""
 import os
 
 from django.core.wsgi import get_wsgi_application

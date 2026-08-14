@@ -1,4 +1,4 @@
-"""Configuración ASGI del proyecto Avisté."""
+"""Configuración ASGI del proyecto Ojo Avizor."""
 import os
 
 from django.core.asgi import get_asgi_application

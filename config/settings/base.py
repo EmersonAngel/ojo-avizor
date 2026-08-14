@@ -67,6 +67,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.i18n',
             ],
         },
     },
@@ -78,8 +79,8 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env('DB_NAME', 'aviste'),
-        'USER': env('DB_USER', 'aviste'),
+        'NAME': env('DB_NAME', 'ojo_avizor'),
+        'USER': env('DB_USER', 'ojo_avizor'),
         'PASSWORD': env('DB_PASSWORD', ''),
         'HOST': env('DB_HOST', 'localhost'),
         'PORT': env('DB_PORT', '5432'),
