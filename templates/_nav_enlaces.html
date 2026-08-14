@@ -1,0 +1,30 @@
+{% load i18n iconos %}
+<a class="nav-link" href="{% url 'catalogo:publico_listado' %}">
+    {% icono "libro" clase="w-4 h-4" %} {% translate "Catálogo" %}
+</a>
+{% if user.is_authenticated %}
+<a class="nav-link" href="{% url 'registros:mis_registros' %}">
+    {% icono "busqueda" clase="w-4 h-4" %} {% translate "Mis avistamientos" %}
+</a>
+{% if user.rol == 'REVISOR' or user.rol == 'ADMINISTRADOR' %}
+<a class="nav-link" href="{% url 'catalogo:especie_listar' %}">
+    {% icono "carpeta" clase="w-4 h-4" %} {% translate "Fichas de especie" %}
+</a>
+<a class="nav-link" href="{% url 'curaduria:bandeja' %}">
+    {% icono "check-circulo" clase="w-4 h-4" %} {% translate "Bandeja de revisión" %}
+</a>
+{% endif %}
+<span data-cola-registros class="hidden badge-devuelto my-1 sm:my-0"></span>
+<div class="w-full sm:w-auto flex items-center justify-between sm:justify-start gap-2 mt-2 sm:mt-0 sm:ml-1 sm:pl-3 sm:border-l border-stone-200 dark:border-stone-800 pt-2 sm:pt-0 border-t sm:border-t-0">
+    <span class="text-sm text-stone-500 dark:text-stone-400 inline-flex items-center gap-1.5">{% icono "usuario" clase="w-4 h-4" %} {{ user.seudonimo }}</span>
+    <form method="post" action="{% url 'cuentas:cerrar_sesion' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn-ghost !px-2.5 !py-1 text-xs">{% translate "Salir" %}</button>
+    </form>
+</div>
+{% else %}
+<a class="nav-link" href="{% url 'cuentas:iniciar_sesion' %}">{% translate "Iniciar sesión" %}</a>
+<a class="btn-primary !px-3 !py-1.5 text-sm w-full sm:w-auto mt-1 sm:mt-0" href="{% url 'cuentas:registrar' %}">
+    {% translate "Crear cuenta" %}
+</a>
+{% endif %}

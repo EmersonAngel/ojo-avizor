@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load i18n iconos %}
+
+{% block titulo %}{% translate "Inventario consolidado" %} — Ojo Avizor{% endblock %}
+
+{% block contenido %}
+<div class="hero">
+    <div class="hero-blobs">
+        <div class="absolute -top-20 left-1/4 w-64 h-64 bg-accent-400/20 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-24 right-1/4 w-72 h-72 bg-primary-300/20 rounded-full blur-3xl"></div>
+    </div>
+    <div class="page text-center relative !py-12">
+        <a class="inline-flex items-center gap-1 text-sm text-primary-100 hover:text-white" href="{% url 'catalogo:publico_listado' %}">{% icono "flecha-izquierda" clase="w-4 h-4" %} {% translate "Volver al catálogo" %}</a>
+        <h1 class="font-display text-3xl sm:text-4xl font-bold mt-3 bg-gradient-to-r from-white to-primary-200 bg-clip-text text-transparent">
+            {% translate "Inventario de avifauna de Pijao" %}
+        </h1>
+        <p class="text-primary-100 mt-2">{% translate "Construido por la comunidad, avistamiento a avistamiento." %}</p>
+    </div>
+</div>
+
+<div class="page">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 -mt-10 relative">
+        <div class="card p-6 text-center animate-fade-up" style="animation-delay:0ms">
+            <span class="inline-flex text-primary-600 dark:text-primary-400">{% icono "ave" clase="w-8 h-8" %}</span>
+            <p class="font-display text-4xl font-bold text-primary-800 dark:text-primary-400 mt-2" data-contador="{{ total_especies }}">0</p>
+            <p class="text-sm text-stone-500 dark:text-stone-400 mt-1">{% translate "especies" %}</p>
+        </div>
+        <div class="card p-6 text-center animate-fade-up" style="animation-delay:80ms">
+            <span class="inline-flex text-primary-600 dark:text-primary-400">{% icono "ubicacion" clase="w-8 h-8" %}</span>
+            <p class="font-display text-4xl font-bold text-primary-800 dark:text-primary-400 mt-2" data-contador="{{ total_avistamientos }}">0</p>
+            <p class="text-sm text-stone-500 dark:text-stone-400 mt-1">{% translate "avistamientos" %}</p>
+        </div>
+        <div class="card p-6 text-center animate-fade-up" style="animation-delay:160ms">
+            <span class="inline-flex text-primary-600 dark:text-primary-400">{% icono "usuarios" clase="w-8 h-8" %}</span>
+            <p class="font-display text-4xl font-bold text-primary-800 dark:text-primary-400 mt-2" data-contador="{{ total_observadores }}">0</p>
+            <p class="text-sm text-stone-500 dark:text-stone-400 mt-1">{% translate "observadores" %}</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Cuenta hacia arriba desde 0 hasta el valor real: un detalle celebratorio
+    // sin dependencias, apto para celulares de gama baja (RNF-01).
+    document.querySelectorAll('[data-contador]').forEach((elemento) => {
+        const destino = parseInt(elemento.dataset.contador, 10) || 0;
+        const duracionMs = 900;
+        const inicio = performance.now();
+        function paso(ahora) {
+            const avance = Math.min((ahora - inicio) / duracionMs, 1);
+            const facilitado = 1 - Math.pow(1 - avance, 3);
+            elemento.textContent = Math.round(destino * facilitado);
+            if (avance < 1) requestAnimationFrame(paso);
+        }
+        requestAnimationFrame(paso);
+    });
+</script>
+{% endblock %}

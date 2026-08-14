@@ -1,23 +1,209 @@
-{% load i18n static %}<!DOCTYPE html>
+{% load i18n static iconos %}<!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block titulo %}Avisté{% endblock %}</title>
+    <title>{% block titulo %}Ojo Avizor{% endblock %}</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2315803d'%3E%3Cellipse cx='11' cy='13' rx='5.5' ry='4.3'/%3E%3Ccircle cx='15.8' cy='7.2' r='2.6'/%3E%3Cpath d='M18.1 6.3L20.6 7.2L18.1 8.4z'/%3E%3Cpath d='M5.5 15.5L1 12l1.5 6.2z'/%3E%3Cpath d='M9 17.2v3.3M13 17.4v3.3' stroke='%2315803d' stroke-width='1.4' stroke-linecap='round'/%3E%3C/svg%3E">
+
+    <script>
+        // Se decide el tema ANTES de que cargue cualquier CSS, para evitar el
+        // parpadeo de claro→oscuro al entrar con el tema oscuro guardado.
+        (function () {
+            const guardado = localStorage.getItem('ojo_avizor_tema');
+            const prefiereOscuro = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (guardado === 'oscuro' || (!guardado && prefiereOscuro)) {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/htmx.org@2.0.4" defer></script>
     <script src="https://unpkg.com/alpinejs@3.x.x" defer></script>
+    <script>
+        // Sistema de diseño de Ojo Avizor: dos colores de marca (verde bosque para
+        // acciones principales, terracota cálida para acentos y avisos) más una
+        // fuente de titulares. Todo lo demás usa la paleta neutra "stone" de
+        // Tailwind, con su variante oscura. Cambiar el look del sitio entero
+        // empieza y termina aquí.
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0fdf4', 100: '#dcfce7', 200: '#bbf7d0', 300: '#86efac',
+                            400: '#4ade80', 500: '#22c55e', 600: '#16a34a', 700: '#15803d',
+                            800: '#166534', 900: '#14532d', 950: '#052e16',
+                        },
+                        accent: {
+                            50: '#fffbeb', 100: '#fef3c7', 200: '#fde68a', 300: '#fcd34d',
+                            400: '#fbbf24', 500: '#f59e0b', 600: '#d97706', 700: '#b45309',
+                            800: '#92400e', 900: '#78350f', 950: '#451a03',
+                        },
+                    },
+                    fontFamily: {
+                        display: ['"Fraunces"', 'ui-serif', 'Georgia', 'serif'],
+                    },
+                },
+            },
+        };
+    </script>
+
+    <style type="text/tailwindcss">
+        @layer base {
+            input[type="text"], input[type="email"], input[type="password"],
+            input[type="number"], input[type="date"], input[type="search"],
+            select, textarea {
+                @apply w-full rounded-lg border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-900 px-3 py-2 text-[0.95rem] text-stone-900 dark:text-stone-100 placeholder:text-stone-400 dark:placeholder:text-stone-500 transition-colors;
+            }
+            input[type="file"] {
+                @apply w-full rounded-lg border border-dashed border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-900 px-3 py-2.5 text-sm text-stone-600 dark:text-stone-400;
+            }
+            input[type="checkbox"] {
+                @apply h-[1.1rem] w-[1.1rem] rounded border-stone-300 dark:border-stone-600 text-primary-700 align-middle;
+            }
+            input:focus, select:focus, textarea:focus {
+                @apply outline-none ring-2 ring-primary-600 ring-offset-1 dark:ring-offset-stone-950 border-primary-600;
+            }
+        }
+        @layer components {
+            .btn {
+                @apply inline-flex items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950 disabled:opacity-50 active:scale-[0.97];
+            }
+            .btn-primary { @apply btn bg-primary-700 text-white shadow-sm shadow-primary-900/20 hover:bg-primary-800 hover:shadow-md hover:shadow-primary-900/30 focus-visible:ring-primary-600; }
+            .btn-secondary { @apply btn bg-white dark:bg-stone-900 text-primary-800 dark:text-primary-300 border border-primary-200 dark:border-primary-800 hover:bg-primary-50 dark:hover:bg-primary-950 focus-visible:ring-primary-600; }
+            .btn-danger { @apply btn bg-red-600 text-white shadow-sm shadow-red-900/20 hover:bg-red-700 hover:shadow-md focus-visible:ring-red-500; }
+            .btn-ghost { @apply btn bg-transparent text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 focus-visible:ring-stone-400; }
+            .btn-link { @apply inline-flex items-center gap-1 text-sm font-medium text-primary-800 dark:text-primary-400 underline decoration-primary-300 dark:decoration-primary-700 underline-offset-2 hover:decoration-primary-600 dark:hover:decoration-primary-400; }
+
+            .nav-link { @apply flex items-center gap-2 rounded-lg px-3 py-2 sm:py-1.5 text-sm font-medium text-stone-700 dark:text-stone-300 hover:bg-primary-50 dark:hover:bg-primary-950 hover:text-primary-800 dark:hover:text-primary-300 w-full sm:w-auto transition-colors; }
+
+            .card { @apply bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-sm transition-colors; }
+            .card-interactive { @apply card hover:-translate-y-0.5 hover:shadow-lg hover:shadow-stone-900/5 dark:hover:shadow-black/20 hover:border-primary-200 dark:hover:border-primary-800 transition-all duration-200; }
+
+            .badge { @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold; }
+            .badge-pendiente { @apply badge bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300; }
+            .badge-aprobado { @apply badge bg-primary-100 dark:bg-primary-900/50 text-primary-800 dark:text-primary-300; }
+            .badge-devuelto { @apply badge bg-accent-100 dark:bg-accent-900/50 text-accent-800 dark:text-accent-300; }
+
+            .field-label { @apply block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1; }
+            .field-error { @apply text-sm text-red-600 dark:text-red-400 mt-1; }
+            .field-hint { @apply text-xs text-stone-500 dark:text-stone-400 mt-1; }
+
+            .page { @apply max-w-3xl mx-auto px-4 py-8; }
+            .page-narrow { @apply max-w-md mx-auto px-4 py-10; }
+            .page-wide { @apply max-w-5xl mx-auto px-4 py-8; }
+
+            h1.titulo-pagina { @apply font-display text-2xl sm:text-3xl font-bold text-stone-900 dark:text-stone-50; }
+
+            .hero { @apply relative overflow-hidden bg-gradient-to-br from-primary-700 via-primary-800 to-primary-950 dark:from-stone-900 dark:via-primary-950 dark:to-stone-950 text-white; }
+            .hero-blobs { @apply absolute inset-0 pointer-events-none; }
+        }
+        @layer utilities {
+            @keyframes fade-in-up {
+                from { opacity: 0; transform: translateY(10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            .animate-fade-up { animation: fade-in-up 0.5s ease-out both; }
+        }
+        [x-cloak] { display: none !important; }
+    </style>
     {% block extra_head %}{% endblock %}
 </head>
-<body class="min-h-screen bg-white text-gray-900">
-    <header>
-        {% block cabecera %}{% endblock %}
+<body class="min-h-screen bg-stone-50 dark:bg-stone-950 text-stone-900 dark:text-stone-100 flex flex-col antialiased transition-colors duration-200"
+      x-data="{ menuAbierto: false, oscuro: document.documentElement.classList.contains('dark') }">
+
+    <header class="border-b border-stone-200 dark:border-stone-800 bg-white/90 dark:bg-stone-950/90 backdrop-blur sticky top-0 z-20 transition-colors">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="/" class="flex items-center gap-2 font-display text-xl font-bold text-primary-800 dark:text-primary-400">
+                {% icono "ave" clase="w-6 h-6" %} Ojo Avizor
+            </a>
+            <div class="flex items-center gap-1 sm:hidden">
+                <button type="button" class="w-9 h-9 flex items-center justify-center rounded-lg text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800"
+                        @click="oscuro = !oscuro; document.documentElement.classList.toggle('dark', oscuro); localStorage.setItem('ojo_avizor_tema', oscuro ? 'oscuro' : 'claro')"
+                        aria-label="{% translate 'Cambiar tema' %}">
+                    <span x-show="!oscuro" x-cloak>{% icono "luna" clase="w-5 h-5" %}</span>
+                    <span x-show="oscuro" x-cloak>{% icono "sol" clase="w-5 h-5" %}</span>
+                </button>
+                <button type="button"
+                        class="w-9 h-9 flex items-center justify-center rounded-lg text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800"
+                        @click="menuAbierto = !menuAbierto"
+                        :aria-expanded="menuAbierto.toString()"
+                        aria-label="{% translate 'Abrir menú' %}">
+                    <span x-show="!menuAbierto">{% icono "menu" clase="w-5 h-5" %}</span>
+                    <span x-show="menuAbierto" x-cloak>{% icono "cerrar" clase="w-5 h-5" %}</span>
+                </button>
+            </div>
+            <nav class="hidden sm:flex text-sm items-center gap-1">
+                {% include "_nav_enlaces.html" %}
+                <button type="button" class="w-9 h-9 flex items-center justify-center rounded-lg text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 ml-1"
+                        @click="oscuro = !oscuro; document.documentElement.classList.toggle('dark', oscuro); localStorage.setItem('ojo_avizor_tema', oscuro ? 'oscuro' : 'claro')"
+                        aria-label="{% translate 'Cambiar tema' %}">
+                    <span x-show="!oscuro" x-cloak>{% icono "luna" clase="w-5 h-5" %}</span>
+                    <span x-show="oscuro" x-cloak>{% icono "sol" clase="w-5 h-5" %}</span>
+                </button>
+            </nav>
+        </div>
+        <nav class="sm:hidden border-t border-stone-200 dark:border-stone-800 px-4 py-3 flex flex-col items-start gap-1 text-sm bg-white dark:bg-stone-950"
+             x-show="menuAbierto" x-cloak @click="menuAbierto = false">
+            {% include "_nav_enlaces.html" %}
+        </nav>
     </header>
-    <main>
+
+    {% if messages %}
+    <div x-data="{
+            mensajes: [
+                {% for message in messages %}
+                { id: {{ forloop.counter }}, texto: '{{ message|escapejs }}', tipo: '{{ message.tags|default:"success" }}' }{% if not forloop.last %},{% endif %}
+                {% endfor %}
+            ]
+         }"
+         class="fixed top-4 inset-x-4 sm:inset-x-auto sm:right-4 z-50 sm:w-full sm:max-w-sm space-y-2">
+        <template x-for="mensaje in mensajes" :key="mensaje.id">
+            <div x-show="true"
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0 -translate-y-2"
+                 x-transition:enter-end="opacity-100 translate-y-0"
+                 x-transition:leave="transition ease-in duration-200"
+                 x-transition:leave-start="opacity-100"
+                 x-transition:leave-end="opacity-0"
+                 x-init="setTimeout(() => { mensajes = mensajes.filter(m => m.id !== mensaje.id) }, 5000)"
+                 class="rounded-xl p-3 shadow-lg border text-sm flex items-start justify-between gap-3"
+                 :class="mensaje.tipo === 'error' ? 'bg-red-50 dark:bg-red-950 text-red-800 dark:text-red-200 border-red-200 dark:border-red-900' : 'bg-primary-50 dark:bg-primary-950 text-primary-800 dark:text-primary-200 border-primary-200 dark:border-primary-900'">
+                <span x-text="mensaje.texto"></span>
+                <button type="button" @click="mensajes = mensajes.filter(m => m.id !== mensaje.id)" class="opacity-60 hover:opacity-100 flex-shrink-0" aria-label="{% translate 'Cerrar' %}">{% icono "cerrar" clase="w-4 h-4" %}</button>
+            </div>
+        </template>
+    </div>
+    {% endif %}
+
+    <main class="flex-1 w-full">
         {% block contenido %}{% endblock %}
     </main>
-    <footer>
-        {% block pie %}{% endblock %}
+
+    <footer class="border-t border-stone-200 dark:border-stone-800 mt-10 py-6 text-center text-xs text-stone-500 dark:text-stone-500 transition-colors">
+        {% block pie %}
+        <p class="inline-flex items-center gap-1.5 justify-center">{% icono "ave" clase="w-4 h-4" %} Ojo Avizor — {% translate "inventario de avifauna de Pijao, Quindío" %}</p>
+        <p class="mt-1">{% translate "Un proyecto de la comunidad, para la comunidad." %}</p>
+        {% endblock %}
     </footer>
+
+    {% if user.is_authenticated %}
+    <script>
+        window.OJO_AVIZOR_URL_REGISTRO_CREAR = "{% url 'registros:crear' %}";
+    </script>
+    <script src="{% static 'js/registro-offline.js' %}" defer></script>
+    {% endif %}
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js'));
+        }
+    </script>
 </body>
 </html>

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load i18n iconos %}
+
+{% block titulo %}{% translate "Devolver registro" %} — Ojo Avizor{% endblock %}
+
+{% block contenido %}
+<div class="page-narrow">
+    <a class="btn-link" href="{% url 'curaduria:bandeja' %}">{% icono "flecha-izquierda" clase="w-4 h-4" %} {% translate "Bandeja de revisión" %}</a>
+
+    <div class="card p-6 sm:p-8 mt-4">
+        <h1 class="titulo-pagina !text-xl mb-1 inline-flex items-center gap-2">{% icono "deshacer" clase="w-5 h-5" %} {% translate "Devolver registro" %}</h1>
+        <p class="text-sm text-stone-500 dark:text-stone-400 mb-6">
+            <span class="font-display italic">{{ registro.especie.nombre_cientifico|default:"Sin identificar" }}</span>
+            — {{ registro.lugar }} ({{ registro.fecha_avistamiento }})
+        </p>
+
+        <p class="text-xs text-stone-500 dark:text-stone-400 bg-stone-50 dark:bg-stone-800/60 border border-stone-200 dark:border-stone-700 rounded-lg p-3 mb-4">
+            {% translate "El motivo es obligatorio y el autor lo verá para poder corregir su registro (RN-03, RN-08): no se modifica el contenido, solo se explica por qué se devuelve." %}
+        </p>
+
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+            {% include "_campo.html" with field=form.motivo %}
+            <div class="flex items-center gap-3">
+                <button type="submit" class="btn-danger">{% translate "Devolver con este motivo" %}</button>
+                <a class="btn-ghost" href="{% url 'curaduria:bandeja' %}">{% translate "Cancelar" %}</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

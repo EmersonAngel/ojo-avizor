@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load i18n iconos %}
+
+{% block titulo %}{{ especie.nombre_cientifico }} — Ojo Avizor{% endblock %}
+
+{% block contenido %}
+<div class="page">
+    <a class="btn-link" href="{% url 'catalogo:publico_listado' %}">{% icono "flecha-izquierda" clase="w-4 h-4" %} {% translate "Volver al catálogo" %}</a>
+
+    <div class="card p-5 sm:p-6 mt-4 flex flex-col sm:flex-row gap-5 animate-fade-up">
+        {% if especie.foto_referencia %}
+        <img src="{{ especie.foto_referencia.url }}" alt="{{ especie.nombre_cientifico }}"
+             class="w-full sm:w-40 h-40 object-cover rounded-xl flex-shrink-0">
+        {% else %}
+        <div class="w-full sm:w-40 h-40 rounded-xl flex-shrink-0 bg-gradient-to-br from-primary-50 to-primary-100 dark:from-primary-950 dark:to-stone-900 flex items-center justify-center text-primary-400 dark:text-primary-500">{% icono "ave" clase="w-12 h-12" %}</div>
+        {% endif %}
+        <div class="min-w-0">
+            <h1 class="font-display italic text-2xl sm:text-3xl font-bold text-stone-900 dark:text-stone-50">{{ especie.nombre_cientifico }}</h1>
+            <p class="text-stone-600 dark:text-stone-400 mt-1">
+                {% for nombre in especie.nombres_comunes.all %}{{ nombre.nombre }}{% if nombre.region %} <span class="text-stone-400 dark:text-stone-500">({{ nombre.region }})</span>{% endif %}{% if not forloop.last %}, {% endif %}{% empty %}{% translate "Sin nombre común registrado" %}{% endfor %}
+            </p>
+            {% if especie.familia or especie.orden or especie.tamano_cm %}
+            <div class="flex flex-wrap gap-2 mt-3">
+                {% if especie.familia %}<span class="badge bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300">{{ especie.familia }}</span>{% endif %}
+                {% if especie.orden %}<span class="badge bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300">{{ especie.orden }}</span>{% endif %}
+                {% if especie.tamano_cm %}<span class="badge bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300">{% icono "regla" clase="w-3.5 h-3.5" %} {{ especie.tamano_cm }} cm</span>{% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="mt-6 space-y-4">
+        {% if especie.distribucion %}
+        <div class="card p-5 animate-fade-up" style="animation-delay:60ms">
+            <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400">{% translate "Distribución" %}</h2>
+            <p class="text-stone-700 dark:text-stone-300 mt-1">{{ especie.distribucion }}</p>
+        </div>
+        {% endif %}
+        {% if especie.historia_natural %}
+        <div class="card p-5 animate-fade-up" style="animation-delay:120ms">
+            <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400">{% translate "Historia natural" %}</h2>
+            <p class="text-stone-700 dark:text-stone-300 mt-1">{{ especie.historia_natural }}</p>
+        </div>
+        {% endif %}
+        {% if especie.dato_curioso %}
+        <div class="card p-5 bg-accent-50 dark:bg-accent-950 border-accent-200 dark:border-accent-900 animate-fade-up" style="animation-delay:180ms">
+            <h2 class="text-sm font-semibold uppercase tracking-wide text-accent-700 dark:text-accent-400 inline-flex items-center gap-1.5">{% icono "destello" clase="w-4 h-4" %} {% translate "¿Sabías que…?" %}</h2>
+            <p class="text-accent-900 dark:text-accent-200 mt-1">{{ especie.dato_curioso }}</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <h2 class="titulo-pagina !text-xl mt-8 mb-3">{% translate "Avistamientos registrados en Pijao" %}</h2>
+    {% if avistamientos %}
+    <ul class="card divide-y divide-stone-100 dark:divide-stone-800">
+        {% for avistamiento in avistamientos %}
+        <li class="p-4 flex items-start gap-3">
+            <span class="text-stone-400 dark:text-stone-500 mt-0.5">{% icono "ubicacion" clase="w-4 h-4" %}</span>
+            <div class="text-sm">
+                <p class="font-medium text-stone-900 dark:text-stone-100">{{ avistamiento.lugar }}</p>
+                <p class="text-stone-500 dark:text-stone-400">{{ avistamiento.fecha_avistamiento }} · {% translate "aportado por" %} {{ avistamiento.usuario.seudonimo }}</p>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <div class="card p-6 text-center text-sm text-stone-500 dark:text-stone-400">
+        {% translate "Todavía no hay avistamientos aprobados de esta especie en Pijao." %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

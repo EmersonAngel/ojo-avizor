@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load i18n iconos %}
+
+{% block titulo %}{{ accion }} — Ojo Avizor{% endblock %}
+
+{% block contenido %}
+<div class="page">
+    <a class="btn-link" href="{% url 'catalogo:especie_listar' %}">{% icono "flecha-izquierda" clase="w-4 h-4" %} {% translate "Fichas de especie" %}</a>
+    <h1 class="titulo-pagina mt-3 mb-6">{{ accion }}</h1>
+
+    <form method="post" enctype="multipart/form-data" class="space-y-6">
+        {% csrf_token %}
+
+        <div class="card p-5 sm:p-6 space-y-4">
+            <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400">{% translate "Datos de la especie" %}</h2>
+            {% for field in form %}
+            <div>
+                <label class="field-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% for error in field.errors %}
+                <p class="field-error">{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="card p-5 sm:p-6">
+            <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400 mb-1">{% translate "Nombres comunes" %}</h2>
+            <p class="field-hint mb-4">{% translate "Incluye las denominaciones propias del municipio, si las hay." %}</p>
+            {{ formset.management_form }}
+            <div class="space-y-4">
+                {% for nombre_form in formset %}
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 items-end pb-4 {% if not forloop.last %}border-b border-stone-100 dark:border-stone-800{% endif %}">
+                    {% for field in nombre_form.visible_fields %}
+                    <div>
+                        <label class="field-hint !mt-0 !text-stone-500 dark:!text-stone-400">{{ field.label }}</label>
+                        {{ field }}
+                    </div>
+                    {% endfor %}
+                    {% for hidden in nombre_form.hidden_fields %}{{ hidden }}{% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <button type="submit" class="btn-primary">{% translate "Guardar" %}</button>
+            <a class="btn-ghost" href="{% url 'catalogo:especie_listar' %}">{% translate "Cancelar" %}</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

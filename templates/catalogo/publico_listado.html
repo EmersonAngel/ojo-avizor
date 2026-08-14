@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% load i18n iconos %}
+
+{% block titulo %}Ojo Avizor — {% translate "Catálogo de aves de Pijao" %}{% endblock %}
+
+{% block contenido %}
+<div class="hero">
+    <div class="hero-blobs">
+        <div class="absolute -top-24 -right-16 w-72 h-72 bg-accent-400/20 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-32 -left-16 w-72 h-72 bg-primary-300/20 rounded-full blur-3xl"></div>
+    </div>
+    <div class="page-wide relative !pt-12 sm:!pt-16 !pb-20 text-center">
+        <h1 class="font-display text-4xl sm:text-5xl font-bold bg-gradient-to-r from-white to-primary-200 bg-clip-text text-transparent">
+            {% translate "Aves de Pijao" %}
+        </h1>
+        <p class="text-primary-100 mt-3 max-w-lg mx-auto">
+            {% translate "Un inventario construido por la comunidad, avistamiento a avistamiento." %}
+        </p>
+
+        <div class="mt-7 max-w-lg mx-auto relative">
+            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400">{% icono "busqueda" clase="w-5 h-5" %}</span>
+            <input type="search" name="q" value="{{ query }}"
+                   placeholder="{% translate 'Buscar por nombre científico, común, familia u orden…' %}"
+                   class="!pl-10 !py-3 !rounded-xl shadow-lg border-0 focus:!ring-2 focus:!ring-white/50"
+                   hx-get="{% url 'catalogo:publico_listado' %}"
+                   hx-trigger="input changed delay:350ms, search"
+                   hx-target="#resultados-especies"
+                   hx-swap="innerHTML"
+                   hx-push-url="true"
+                   hx-indicator="#buscando">
+            <span id="buscando" class="htmx-indicator absolute right-3.5 top-1/2 -translate-y-1/2 text-stone-400 animate-spin">{% icono "brujula" clase="w-4 h-4" %}</span>
+        </div>
+
+        {% if familias %}
+        <div class="flex flex-wrap justify-center gap-2 mt-5 max-w-xl mx-auto">
+            {% for familia in familias %}
+            <a href="?q={{ familia }}"
+               class="text-xs font-medium px-3 py-1.5 rounded-full bg-white/10 text-primary-50 hover:bg-white/20 transition-colors">
+                {{ familia }}
+            </a>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="page-wide -mt-12 relative">
+    <div class="grid grid-cols-3 gap-3 sm:gap-4 mb-8">
+        <a href="{% url 'catalogo:inventario' %}" class="card-interactive p-4 sm:p-5 text-center">
+            <p class="font-display text-2xl sm:text-3xl font-bold text-primary-800 dark:text-primary-400">{{ total_especies }}</p>
+            <p class="text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-0.5">{% translate "especies" %}</p>
+        </a>
+        <a href="{% url 'catalogo:inventario' %}" class="card-interactive p-4 sm:p-5 text-center">
+            <p class="font-display text-2xl sm:text-3xl font-bold text-primary-800 dark:text-primary-400">{{ total_avistamientos }}</p>
+            <p class="text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-0.5">{% translate "avistamientos" %}</p>
+        </a>
+        <a href="{% url 'catalogo:inventario' %}" class="card-interactive p-4 sm:p-5 text-center">
+            <p class="font-display text-2xl sm:text-3xl font-bold text-primary-800 dark:text-primary-400">{{ total_observadores }}</p>
+            <p class="text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-0.5">{% translate "observadores" %}</p>
+        </a>
+    </div>
+
+    <div id="resultados-especies">
+        {% include "catalogo/_resultados_especies.html" %}
+    </div>
+    {% include "_paginacion.html" %}
+
+    {% if ultimos_avistamientos %}
+    <div class="mt-10">
+        <h2 class="titulo-pagina !text-xl mb-3">{% translate "Actividad reciente" %}</h2>
+        <ul class="card divide-y divide-stone-100 dark:divide-stone-800">
+            {% for avistamiento in ultimos_avistamientos %}
+            <li class="p-4 flex items-start gap-3">
+                <span class="text-stone-400 dark:text-stone-500 mt-0.5">{% icono "ubicacion" clase="w-4 h-4" %}</span>
+                <div class="text-sm min-w-0">
+                    <p class="text-stone-700 dark:text-stone-300">
+                        <span class="font-medium text-stone-900 dark:text-stone-100">{{ avistamiento.usuario.seudonimo }}</span>
+                        {% translate "avistó" %}
+                        {% if avistamiento.especie %}
+                        <a href="{% url 'catalogo:especie_detalle' avistamiento.especie.pk %}" class="font-display italic text-primary-800 dark:text-primary-400 hover:underline">{{ avistamiento.especie.nombre_cientifico }}</a>
+                        {% else %}
+                        <span class="italic">{% translate "un ave sin identificar" %}</span>
+                        {% endif %}
+                        {% translate "en" %} {{ avistamiento.lugar }}
+                    </p>
+                    <p class="text-stone-400 dark:text-stone-500 text-xs mt-0.5">{{ avistamiento.fecha_avistamiento }}</p>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .htmx-indicator { opacity: 0; transition: opacity 150ms ease; }
+    .htmx-request .htmx-indicator, .htmx-request.htmx-indicator { opacity: 1; }
+</style>
+{% endblock %}

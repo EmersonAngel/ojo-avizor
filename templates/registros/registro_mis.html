@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load i18n iconos %}
+
+{% block titulo %}{% translate "Mis avistamientos" %} — Ojo Avizor{% endblock %}
+
+{% block contenido %}
+<div class="page-wide">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="titulo-pagina inline-flex items-center gap-2">{% icono "busqueda" clase="w-6 h-6" %} {% translate "Mis avistamientos" %}</h1>
+        <a class="btn-primary" href="{% url 'registros:crear' %}">
+            {% icono "mas" clase="w-4 h-4" %} {% translate "Registrar" %}
+        </a>
+    </div>
+
+    {% if registros %}
+    <div class="hidden sm:block card overflow-hidden">
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="text-left bg-stone-50 dark:bg-stone-800/60 text-stone-500 dark:text-stone-400 text-xs uppercase tracking-wide">
+                    <th class="py-3 px-4 font-semibold">{% translate "Especie" %}</th>
+                    <th class="py-3 px-4 font-semibold">{% translate "Lugar" %}</th>
+                    <th class="py-3 px-4 font-semibold">{% translate "Fecha" %}</th>
+                    <th class="py-3 px-4 font-semibold">{% translate "Estado" %}</th>
+                    <th class="py-3 px-4"></th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-stone-100 dark:divide-stone-800">
+                {% for registro in registros %}
+                <tr class="hover:bg-stone-50 dark:hover:bg-stone-800/40 transition-colors">
+                    <td class="py-3 px-4 font-display italic text-stone-900 dark:text-stone-100">{{ registro.especie.nombre_cientifico|default:"Sin identificar" }}</td>
+                    <td class="py-3 px-4 text-stone-600 dark:text-stone-400">{{ registro.lugar }}</td>
+                    <td class="py-3 px-4 text-stone-600 dark:text-stone-400">{{ registro.fecha_avistamiento }}</td>
+                    <td class="py-3 px-4">
+                        <span class="badge-{{ registro.estado|lower }}">{{ registro.get_estado_display }}</span>
+                    </td>
+                    <td class="py-3 px-4 text-right">
+                        {% if registro.estado == 'DEVUELTO' %}
+                        <a class="btn-link" href="{% url 'registros:corregir' registro.pk %}">{% translate "Corregir" %}</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="sm:hidden space-y-3">
+        {% for registro in registros %}
+        <div class="card p-4">
+            <div class="flex justify-between items-start gap-2">
+                <div>
+                    <p class="font-display italic font-medium text-stone-900 dark:text-stone-100">{{ registro.especie.nombre_cientifico|default:"Sin identificar" }}</p>
+                    <p class="text-sm text-stone-500 dark:text-stone-400">{{ registro.lugar }} · {{ registro.fecha_avistamiento }}</p>
+                </div>
+                <span class="badge-{{ registro.estado|lower }} flex-shrink-0">{{ registro.get_estado_display }}</span>
+            </div>
+            {% if registro.estado == 'DEVUELTO' %}
+            <a class="btn-link mt-3 inline-block" href="{% url 'registros:corregir' registro.pk %}">{% translate "Corregir" %}</a>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% include "_paginacion.html" %}
+    {% else %}
+    <div class="card p-10 text-center">
+        <span class="inline-flex text-stone-400 dark:text-stone-600">{% icono "ave" clase="w-10 h-10" %}</span>
+        <p class="text-stone-600 dark:text-stone-400 mt-3">{% translate "Todavía no has registrado ningún avistamiento." %}</p>
+        <a class="btn-primary mt-4" href="{% url 'registros:crear' %}">{% translate "Registrar mi primer avistamiento" %}</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

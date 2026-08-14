@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load i18n iconos %}
+
+{% block titulo %}{% translate "Crear cuenta" %} — Ojo Avizor{% endblock %}
+
+{% block contenido %}
+<div class="page-narrow">
+    <div class="card p-6 sm:p-8">
+        <div class="text-center mb-6">
+            <span class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary-50 dark:bg-primary-950 text-primary-700 dark:text-primary-400">{% icono "ave" clase="w-6 h-6" %}</span>
+            <h1 class="titulo-pagina mt-3">{% translate "Crear cuenta" %}</h1>
+            <p class="text-sm text-stone-500 dark:text-stone-400 mt-1">
+                {% translate "Tu nombre real nunca se muestra en público — solo tu seudónimo." %}
+            </p>
+        </div>
+
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+            {% for field in form %}
+            <div>
+                <label class="field-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% for error in field.errors %}
+                <p class="field-error">{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn-primary w-full">{% translate "Registrarme" %}</button>
+        </form>
+    </div>
+    <p class="text-sm text-center mt-4 text-stone-600 dark:text-stone-400">
+        {% translate "¿Ya tienes cuenta?" %}
+        <a class="btn-link" href="{% url 'cuentas:iniciar_sesion' %}">{% translate "Inicia sesión" %}</a>
+    </p>
+</div>
+{% endblock %}

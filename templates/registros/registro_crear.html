@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load i18n iconos %}
+
+{% block titulo %}{% if corrigiendo %}{% translate "Corregir avistamiento" %}{% else %}{% translate "Registrar avistamiento" %}{% endif %} — Ojo Avizor{% endblock %}
+
+{% block contenido %}
+<div class="page">
+    <h1 class="titulo-pagina mb-6 inline-flex items-center gap-2">
+        {% if corrigiendo %}{% icono "lapiz" clase="w-6 h-6" %} {% translate "Corregir avistamiento" %}{% else %}{% icono "documento" clase="w-6 h-6" %} {% translate "Registrar avistamiento" %}{% endif %}
+    </h1>
+
+    {% if ultima_revision %}
+    <div class="card p-4 bg-accent-50 dark:bg-accent-950 border-accent-200 dark:border-accent-900 mb-6">
+        <p class="text-sm font-semibold text-accent-800 dark:text-accent-300">{% translate "Motivo de la devolución:" %}</p>
+        <p class="text-sm text-accent-900 dark:text-accent-200 mt-1">{{ ultima_revision.motivo }}</p>
+    </div>
+    {% endif %}
+
+    {% if not corrigiendo %}
+    <div id="mensaje-offline" class="hidden card p-4 bg-accent-50 dark:bg-accent-950 border-accent-200 dark:border-accent-900 mb-6 text-sm text-accent-900 dark:text-accent-200 flex items-start gap-2">
+        <span class="inline-flex mt-0.5">{% icono "wifi-off" clase="w-4 h-4" %}</span>
+        <span>{% translate "Sin conexión: el registro quedó guardado en este dispositivo y se enviará solo cuando vuelva la señal." %}</span>
+    </div>
+    {% endif %}
+
+    <form id="form-registro" method="post" enctype="multipart/form-data" class="space-y-6">
+        {% csrf_token %}
+
+        <div class="card p-5 sm:p-6 space-y-4">
+            <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400">{% translate "¿Qué viste?" %}</h2>
+            {% include "_campo.html" with field=form.especie %}
+            <label class="flex items-center gap-2 text-sm text-stone-700 dark:text-stone-300">
+                {{ form.sin_identificar }} {{ form.sin_identificar.label }}
+            </label>
+        </div>
+
+        <div class="card p-5 sm:p-6 space-y-4">
+            <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400">{% translate "¿Dónde y cuándo?" %}</h2>
+            {% include "_campo.html" with field=form.lugar %}
+            {% include "_campo.html" with field=form.fecha_avistamiento %}
+            <div class="grid grid-cols-2 gap-4">
+                {% include "_campo.html" with field=form.latitud %}
+                {% include "_campo.html" with field=form.longitud %}
+            </div>
+        </div>
+
+        <div class="card p-5 sm:p-6 space-y-4">
+            <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400">{% translate "Detalles (opcional)" %}</h2>
+            {% include "_campo.html" with field=form.comportamiento %}
+            {% include "_campo.html" with field=form.sustrato %}
+            {% include "_campo.html" with field=form.info_adicional %}
+            <div>
+                <label class="field-label" for="fotos">{% translate "Fotografías" %}</label>
+                <input type="file" id="fotos" name="fotos" accept="image/*" multiple>
+                {% if not corrigiendo %}
+                <p class="field-hint">{% translate "Sin conexión no se pueden adjuntar fotos; se pueden agregar más tarde desde la bandeja de revisión." %}</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <button type="submit" class="btn-primary">
+                {% if corrigiendo %}{% translate "Reenviar a revisión" %}{% else %}{% translate "Enviar" %}{% endif %}
+            </button>
+            <a class="btn-ghost" href="{% url 'registros:mis_registros' %}">{% translate "Cancelar" %}</a>
+        </div>
+    </form>
+</div>
+
+{% if not corrigiendo %}
+<script>
+    document.getElementById('form-registro').addEventListener('submit', function (evento) {
+        if (navigator.onLine) return; // hay conexión: envío normal al servidor
+
+        const fotos = document.getElementById('fotos');
+        if (fotos && fotos.files.length > 0) {
+            evento.preventDefault();
+            window.alert(
+                '{% translate "Sin conexión no se pueden enviar fotografías. Quítalas del formulario o espera a recuperar la señal." %}'
+            );
+            return;
+        }
+
+        evento.preventDefault();
+        const datos = {};
+        new FormData(this).forEach((valor, clave) => {
+            if (clave !== 'csrfmiddlewaretoken' && clave !== 'fotos') datos[clave] = valor;
+        });
+        window.OjoAvizorOffline.encolar(datos);
+        this.reset();
+        document.getElementById('mensaje-offline').classList.remove('hidden');
+    });
+</script>
+{% endif %}
+{% endblock %}

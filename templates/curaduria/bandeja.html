@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% load i18n iconos %}
+
+{% block titulo %}{% translate "Bandeja de revisión" %} — Ojo Avizor{% endblock %}
+
+{% block contenido %}
+<div class="page-wide">
+    <h1 class="titulo-pagina mb-1 inline-flex items-center gap-2">{% icono "check-circulo" clase="w-6 h-6" %} {% translate "Bandeja de revisión" %}</h1>
+    <p class="text-sm text-stone-500 dark:text-stone-400 mb-6">
+        {% translate "Las coordenadas solo son visibles aquí; nunca se publican (RN-06)." %}
+    </p>
+
+    {% if registros %}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {% for registro in registros %}
+        <div class="card p-5 animate-fade-up" style="animation-delay: {% widthratio forloop.counter0 1 40 %}ms">
+            <div class="flex justify-between items-start gap-3">
+                <div class="min-w-0">
+                    <p class="font-display italic font-semibold text-stone-900 dark:text-stone-100 truncate">
+                        {{ registro.especie.nombre_cientifico|default:"Sin identificar" }}
+                    </p>
+                    {% if registro.sin_identificar %}
+                    <span class="badge bg-accent-100 dark:bg-accent-900/50 text-accent-800 dark:text-accent-300 mt-1">{% icono "ayuda" clase="w-3.5 h-3.5" %} {% translate "Pide ayuda para identificarla" %}</span>
+                    {% endif %}
+                </div>
+                <span class="text-xs text-stone-400 dark:text-stone-500 flex-shrink-0 whitespace-nowrap">{{ registro.fecha_avistamiento }}</span>
+            </div>
+
+            <dl class="mt-3 space-y-1.5 text-sm">
+                <div class="flex items-start gap-2">
+                    <dt class="text-stone-400 dark:text-stone-500 mt-0.5">{% icono "ubicacion" clase="w-4 h-4" %}</dt>
+                    <dd class="text-stone-700 dark:text-stone-300">{{ registro.lugar }}</dd>
+                </div>
+                <div class="flex items-start gap-2">
+                    <dt class="text-stone-400 dark:text-stone-500 mt-0.5">{% icono "brujula" clase="w-4 h-4" %}</dt>
+                    <dd class="text-stone-500 dark:text-stone-400 text-xs">
+                        {% if registro.latitud and registro.longitud %}{{ registro.latitud }}, {{ registro.longitud }}{% else %}{% translate "sin coordenadas" %}{% endif %}
+                    </dd>
+                </div>
+                <div class="flex items-start gap-2">
+                    <dt class="text-stone-400 dark:text-stone-500 mt-0.5">{% icono "usuario" clase="w-4 h-4" %}</dt>
+                    <dd class="text-stone-700 dark:text-stone-300">{{ registro.usuario.seudonimo }}</dd>
+                </div>
+                {% if registro.comportamiento %}
+                <div class="flex items-start gap-2">
+                    <dt class="text-stone-400 dark:text-stone-500 mt-0.5">{% icono "ojo" clase="w-4 h-4" %}</dt>
+                    <dd class="text-stone-600 dark:text-stone-400 italic">{{ registro.comportamiento }}</dd>
+                </div>
+                {% endif %}
+            </dl>
+
+            <div class="flex gap-2 mt-4 pt-4 border-t border-stone-100 dark:border-stone-800">
+                <form method="post" action="{% url 'curaduria:aprobar' registro.pk %}" class="flex-1">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-primary w-full">{% icono "check" clase="w-4 h-4" %} {% translate "Aprobar" %}</button>
+                </form>
+                <a class="btn-secondary flex-1" href="{% url 'curaduria:devolver' registro.pk %}">{% icono "deshacer" clase="w-4 h-4" %} {% translate "Devolver" %}</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% include "_paginacion.html" %}
+    {% else %}
+    <div class="card p-10 text-center">
+        <span class="inline-flex text-stone-400 dark:text-stone-600">{% icono "check-circulo" clase="w-10 h-10" %}</span>
+        <p class="text-stone-600 dark:text-stone-400 mt-3">{% translate "No hay registros pendientes de revisión." %}</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load i18n iconos %}
+
+{% block titulo %}{% translate "Fichas de especie" %} — Ojo Avizor{% endblock %}
+
+{% block contenido %}
+<div class="page-wide">
+    <div class="flex justify-between items-center mb-6">
+        <div>
+            <h1 class="titulo-pagina inline-flex items-center gap-2">{% icono "carpeta" clase="w-6 h-6" %} {% translate "Fichas de especie" %}</h1>
+            <p class="text-sm text-stone-500 dark:text-stone-400 mt-1">{% translate "Capa 1 del catálogo: la información curada de cada especie." %}</p>
+        </div>
+        <a class="btn-primary" href="{% url 'catalogo:especie_crear' %}">
+            {% icono "mas" clase="w-4 h-4" %} {% translate "Nueva ficha" %}
+        </a>
+    </div>
+
+    {% if especies %}
+    <div class="hidden sm:block card overflow-hidden">
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="text-left bg-stone-50 dark:bg-stone-800/60 text-stone-500 dark:text-stone-400 text-xs uppercase tracking-wide">
+                    <th class="py-3 px-4 font-semibold">{% translate "Nombre científico" %}</th>
+                    <th class="py-3 px-4 font-semibold">{% translate "Familia" %}</th>
+                    <th class="py-3 px-4 font-semibold">{% translate "Nombres comunes" %}</th>
+                    <th class="py-3 px-4"></th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-stone-100 dark:divide-stone-800">
+                {% for especie in especies %}
+                <tr class="hover:bg-stone-50 dark:hover:bg-stone-800/40 transition-colors">
+                    <td class="py-3 px-4 font-display italic font-medium text-stone-900 dark:text-stone-100">{{ especie.nombre_cientifico }}</td>
+                    <td class="py-3 px-4 text-stone-600 dark:text-stone-400">{{ especie.familia|default:"—" }}</td>
+                    <td class="py-3 px-4 text-stone-600 dark:text-stone-400">
+                        {% for nombre in especie.nombres_comunes.all %}{{ nombre.nombre }}{% if not forloop.last %}, {% endif %}{% empty %}—{% endfor %}
+                    </td>
+                    <td class="py-3 px-4 text-right space-x-3 whitespace-nowrap">
+                        <a class="btn-link" href="{% url 'catalogo:especie_editar' especie.pk %}">{% translate "Editar" %}</a>
+                        {% if user.rol == 'ADMINISTRADOR' %}
+                        <form method="post" action="{% url 'catalogo:especie_retirar' especie.pk %}" class="inline"
+                              onsubmit="return confirm('{% translate "¿Retirar esta ficha del catálogo?" %}');">
+                            {% csrf_token %}
+                            <button type="submit" class="text-sm font-medium text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300">{% translate "Retirar" %}</button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="sm:hidden space-y-3">
+        {% for especie in especies %}
+        <div class="card p-4">
+            <p class="font-display italic font-semibold text-stone-900 dark:text-stone-100">{{ especie.nombre_cientifico }}</p>
+            <p class="text-sm text-stone-500 dark:text-stone-400 mt-0.5">
+                {% for nombre in especie.nombres_comunes.all %}{{ nombre.nombre }}{% if not forloop.last %}, {% endif %}{% empty %}—{% endfor %}
+            </p>
+            <div class="flex gap-4 mt-3 pt-3 border-t border-stone-100 dark:border-stone-800">
+                <a class="btn-link" href="{% url 'catalogo:especie_editar' especie.pk %}">{% translate "Editar" %}</a>
+                {% if user.rol == 'ADMINISTRADOR' %}
+                <form method="post" action="{% url 'catalogo:especie_retirar' especie.pk %}"
+                      onsubmit="return confirm('{% translate "¿Retirar esta ficha del catálogo?" %}');">
+                    {% csrf_token %}
+                    <button type="submit" class="text-sm font-medium text-red-600 dark:text-red-400">{% translate "Retirar" %}</button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% include "_paginacion.html" %}
+    {% else %}
+    <div class="card p-10 text-center">
+        <span class="inline-flex text-stone-400 dark:text-stone-600">{% icono "carpeta" clase="w-10 h-10" %}</span>
+        <p class="text-stone-600 dark:text-stone-400 mt-3">{% translate "Todavía no hay fichas de especie." %}</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
