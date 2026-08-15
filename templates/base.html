@@ -257,8 +257,12 @@
     <header class="sticky top-0 z-20 barra-superior">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 h-20 sm:h-28 flex justify-between items-center">
             <a href="/" class="flex items-center shrink-0" aria-label="Ojo Avizor">
-                <img src="{% static 'marca/logo-horizontal-fondo-oscuro.png' %}" alt="Ojo Avizor" class="logo-claro w-[170px] sm:w-[280px] h-auto">
-                <img src="{% static 'marca/logo-horizontal-modo-oscuro.png' %}" alt="Ojo Avizor" class="logo-oscuro w-[170px] sm:w-[280px] h-auto">
+                {% comment %}
+                El logo apilado normal es azul profundo: se perdería contra el fondo
+                de la barra, que es oscuro en los dos temas. Se usa siempre la
+                variante de modo oscuro (blanca) aquí, sin intercambio por tema.
+                {% endcomment %}
+                <img src="{% static 'marca/logo-apilado-modo-oscuro.png' %}" alt="Ojo Avizor" class="h-14 sm:h-20 w-auto">
             </a>
 
             <div class="flex items-center gap-1 sm:hidden">
