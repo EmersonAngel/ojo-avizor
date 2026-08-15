@@ -1,6 +1,6 @@
 # Identidad visual de Ojo Avizor
 
-> **Paquete de contexto v1.3** · Complementa `CLAUDE.md` y `docs/arquitectura.md`.
+> **Paquete de contexto v1.4** · Complementa `CLAUDE.md` y `docs/arquitectura.md`.
 > Los archivos de marca están en `static/marca/`.
 
 ---
@@ -197,21 +197,17 @@ Sombras muy sutiles. Este es un producto de consulta, no una tienda.
 
 ## 6. Archivos de marca y dónde va cada uno
 
-**El símbolo.** Un ojo cuya pupila es un ave en vuelo: la observación atenta y aquello que
-se observa, en una sola forma. Los dos arcos que trazan el ojo evocan a su vez unas alas
-abiertas. Ver también `docs/identidad-visual-hoja.png` (hoja de referencia; no es un archivo
-de interfaz, no va en `static/marca/`).
-
 Guárdalos en `static/marca/`.
 
 | Archivo | Dónde se usa |
 | --- | --- |
 | `logo-horizontal-fondo-oscuro.png` | **Barra superior** de la aplicación. Es la versión correcta: el resto de variantes son azules y desaparecerían sobre el fondo `--azul-profundo`. Muéstralo a 150 px de ancho. |
 | `logo-horizontal.png` | Documentos, correos y cualquier fondo claro. |
-| `logo-apilado.png` | Pantalla de inicio de sesión y de registro de cuenta, centrado sobre el formulario. |
+| `logo-apilado.png` | Pantalla de inicio de sesión y de registro de cuenta con el tema claro, centrado sobre el formulario. |
 | `isotipo.png` | Cabecera en pantallas estrechas cuando el logo completo no cabe, y como imagen para compartir en redes. |
 | `logo-horizontal-modo-oscuro.png` | **Barra superior con el tema oscuro activo.** Trazo claro y cian luminoso. |
 | `isotipo-modo-oscuro.png` | Isotipo para pantallas estrechas con el tema oscuro activo. |
+| `logo-apilado-modo-oscuro.png` | Inicio de sesión y registro de cuenta con el tema oscuro activo. |
 | `favicon.ico` | `<link rel="icon">` |
 | `icono-192.png`, `icono-512.png` | Manifiesto de la aplicación web (necesarios para instalarla y para el funcionamiento sin conexión). |
 | `apple-touch-icon.png` | `<link rel="apple-touch-icon">` |
