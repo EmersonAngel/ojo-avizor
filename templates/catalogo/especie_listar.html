@@ -72,10 +72,10 @@
     </div>
     {% include "_paginacion.html" %}
     {% else %}
-    <div class="card p-10 text-center">
-        <span class="inline-flex text-stone-400 dark:text-stone-600">{% icono "carpeta" clase="w-10 h-10" %}</span>
-        <p class="text-stone-600 dark:text-stone-400 mt-3">{% translate "Todavía no hay fichas de especie." %}</p>
-    </div>
+    {% translate "Todavía no hay fichas de especie — la primera abre el catálogo." as mensaje %}
+    {% translate "Crear la primera ficha" as cta %}
+    {% url 'catalogo:especie_crear' as url_crear %}
+    {% include "_estado_vacio.html" with icono="carpeta" mensaje=mensaje cta_texto=cta cta_url=url_crear %}
     {% endif %}
 </div>
 {% endblock %}

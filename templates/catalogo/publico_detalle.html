@@ -64,9 +64,10 @@
         {% endfor %}
     </ul>
     {% else %}
-    <div class="card p-6 text-center text-sm text-stone-500 dark:text-stone-400">
-        {% translate "Todavía no hay avistamientos aprobados de esta especie en Pijao." %}
-    </div>
+    {% translate "Todavía no hay avistamientos aprobados de esta especie — podrías reportar el primero." as mensaje %}
+    {% translate "Registrar un avistamiento" as cta %}
+    {% url 'registros:crear' as url_crear %}
+    {% include "_estado_vacio.html" with icono="ubicacion" mensaje=mensaje cta_texto=cta cta_url=url_crear %}
     {% endif %}
 </div>
 {% endblock %}

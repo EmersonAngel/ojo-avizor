@@ -61,10 +61,8 @@
     </div>
     {% include "_paginacion.html" %}
     {% else %}
-    <div class="card p-10 text-center">
-        <span class="inline-flex text-stone-400 dark:text-stone-600">{% icono "check-circulo" clase="w-10 h-10" %}</span>
-        <p class="text-stone-600 dark:text-stone-400 mt-3">{% translate "No hay registros pendientes de revisión." %}</p>
-    </div>
+    {% translate "Estás al día: no hay registros pendientes de revisión." as mensaje %}
+    {% include "_estado_vacio.html" with icono="check-circulo" mensaje=mensaje %}
     {% endif %}
 </div>
 {% endblock %}

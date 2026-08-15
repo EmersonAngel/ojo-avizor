@@ -27,10 +27,12 @@
     {% endfor %}
 </div>
 {% else %}
-<div class="card p-10 text-center mt-2 animate-fade-up">
-    <span class="inline-flex text-stone-400 dark:text-stone-600">{% icono "busqueda" clase="w-10 h-10" %}</span>
-    <p class="text-stone-600 dark:text-stone-400 mt-3">
-        {% if query %}{% translate "No se encontraron especies con ese nombre." %}{% else %}{% translate "Todavía no hay especies publicadas." %}{% endif %}
-    </p>
+<div class="mt-2">
+    {% if query %}
+        {% blocktranslate with termino=query asvar mensaje %}No encontramos "{{ termino }}" — prueba con el nombre científico o un nombre común de tu región.{% endblocktranslate %}
+    {% else %}
+        {% translate "Todavía no hay especies publicadas — pronto llegarán las primeras fichas." as mensaje %}
+    {% endif %}
+    {% include "_estado_vacio.html" with icono="busqueda" mensaje=mensaje %}
 </div>
 {% endif %}

@@ -62,11 +62,10 @@
     </div>
     {% include "_paginacion.html" %}
     {% else %}
-    <div class="card p-10 text-center">
-        <span class="inline-flex text-stone-400 dark:text-stone-600">{% icono "ave" clase="w-10 h-10" %}</span>
-        <p class="text-stone-600 dark:text-stone-400 mt-3">{% translate "Todavía no has registrado ningún avistamiento." %}</p>
-        <a class="btn-primary mt-4" href="{% url 'registros:crear' %}">{% translate "Registrar mi primer avistamiento" %}</a>
-    </div>
+    {% translate "Todavía no has registrado ningún avistamiento — cuando veas un ave, este es su lugar." as mensaje %}
+    {% translate "Registrar mi primer avistamiento" as cta %}
+    {% url 'registros:crear' as url_crear %}
+    {% include "_estado_vacio.html" with icono="ave" mensaje=mensaje cta_texto=cta cta_url=url_crear %}
     {% endif %}
 </div>
 {% endblock %}

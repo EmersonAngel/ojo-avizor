@@ -1,0 +1,10 @@
+{% load iconos %}
+<div class="card p-10 text-center animate-fade-up">
+    <span class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[var(--superficie-alt)] text-[var(--azul-medio)] mb-1">
+        {% icono icono clase="w-8 h-8" %}
+    </span>
+    <p class="text-stone-600 dark:text-stone-400 mt-3">{{ mensaje }}</p>
+    {% if cta_texto and cta_url %}
+    <a class="btn-primary mt-4" href="{{ cta_url }}">{{ cta_texto }}</a>
+    {% endif %}
+</div>
