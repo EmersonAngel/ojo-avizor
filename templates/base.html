@@ -1,36 +1,37 @@
 {% load i18n static iconos %}<!DOCTYPE html>
-<html lang="{{ LANGUAGE_CODE }}">
+<html lang="{{ LANGUAGE_CODE }}" data-tema="claro">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#1B2D55">
     <title>{% block titulo %}Ojo Avizor{% endblock %}</title>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2315803d'%3E%3Cellipse cx='11' cy='13' rx='5.5' ry='4.3'/%3E%3Ccircle cx='15.8' cy='7.2' r='2.6'/%3E%3Cpath d='M18.1 6.3L20.6 7.2L18.1 8.4z'/%3E%3Cpath d='M5.5 15.5L1 12l1.5 6.2z'/%3E%3Cpath d='M9 17.2v3.3M13 17.4v3.3' stroke='%2315803d' stroke-width='1.4' stroke-linecap='round'/%3E%3C/svg%3E">
+
+    <link rel="icon" href="{% static 'marca/favicon.ico' %}">
+    <link rel="apple-touch-icon" href="{% static 'marca/apple-touch-icon.png' %}">
+    <link rel="manifest" href="{% static 'manifest.json' %}">
 
     <script>
-        // Se decide el tema ANTES de que cargue cualquier CSS, para evitar el
-        // parpadeo de claro→oscuro al entrar con el tema oscuro guardado.
+        // Aplica el tema ANTES de pintar, para evitar el destello claro→oscuro
+        // al entrar con el tema oscuro guardado (docs/identidad-visual.md, apartado 9).
+        // También sincroniza la clase "dark" de Tailwind, que siguen usando las
+        // plantillas y componentes aún no migrados a las variables de la guía.
         (function () {
-            const guardado = localStorage.getItem('ojo_avizor_tema');
-            const prefiereOscuro = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            if (guardado === 'oscuro' || (!guardado && prefiereOscuro)) {
-                document.documentElement.classList.add('dark');
+            var t = localStorage.getItem('tema');
+            if (!t) {
+                t = matchMedia('(prefers-color-scheme: dark)').matches ? 'oscuro' : 'claro';
             }
+            document.documentElement.setAttribute('data-tema', t);
+            document.documentElement.classList.toggle('dark', t === 'oscuro');
         })();
     </script>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/htmx.org@2.0.4" defer></script>
     <script src="https://unpkg.com/alpinejs@3.x.x" defer></script>
     <script>
-        // Sistema de diseño de Ojo Avizor: dos colores de marca (verde bosque para
-        // acciones principales, terracota cálida para acentos y avisos) más una
-        // fuente de titulares. Todo lo demás usa la paleta neutra "stone" de
-        // Tailwind, con su variante oscura. Cambiar el look del sitio entero
-        // empieza y termina aquí.
+        // Puente temporal mientras se migran las plantillas a las variables de
+        // docs/identidad-visual.md: los componentes que aún no se han migrado
+        // siguen apoyándose en esta paleta y en la clase "dark".
         tailwind.config = {
             darkMode: 'class',
             theme: {
@@ -55,6 +56,104 @@
         };
     </script>
 
+    <style>
+        /* === Identidad visual (docs/identidad-visual.md) === */
+        :root {
+            --fuente: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+            /* Marca */
+            --azul-profundo:  #1B2D55;
+            --azul-medio:     #0173BC;
+            --cian:           #00ACE8;
+
+            /* Superficies */
+            --blanco:         #FFFFFF;
+            --superficie:     #F7FAFC;
+            --superficie-alt: #EEF3F8;
+            --borde:          #C9D6E2;
+
+            /* Texto */
+            --texto:          #2E3A45;
+            --texto-suave:    #6B7A88;
+            --texto-inverso:  #FFFFFF;
+
+            /* Estados */
+            --exito:          #0F7B5A;
+            --alerta:         #A66A00;
+            --error:          #BE1A21;
+            --exito-fondo:    #EFF8F4;
+            --alerta-fondo:   #FFF6E8;
+            --error-fondo:    #FDF0F0;
+
+            /* Sombras */
+            --sombra-tarjeta: 0 1px 3px rgba(27,45,85,.08);
+            --sombra-elevada: 0 4px 14px rgba(27,45,85,.12);
+
+            /* Bordes */
+            --radio-chico: 6px;
+            --radio:       10px;
+            --radio-pill:  999px;
+
+            /* La barra superior tiene fondo oscuro en los DOS temas (ver más abajo),
+               así que su texto no sigue --texto-inverso: ese var cambia de polaridad
+               con el tema (queda oscuro en modo oscuro, pensado para botones con
+               relleno claro) y dejaría el texto de la barra ilegible. */
+            --texto-en-barra: #FFFFFF;
+            --barra-hover:    rgba(255, 255, 255, .12);
+
+            /* En claro, la barra usa azul-profundo (coincide con el fondo del
+               logo horizontal de esa variante). En oscuro coincide con --superficie
+               en vez de con --azul-profundo: así queda del mismo color que el fondo
+               del logo horizontal de modo oscuro y que el fondo de la página, sin
+               una costura visible entre la barra y el resto. */
+            --fondo-barra: var(--azul-profundo);
+        }
+
+        [data-tema="oscuro"] {
+            /* Marca — aclarada para conservar legibilidad sobre fondo profundo */
+            --azul-profundo:  #16223A;
+            --azul-medio:     #5FB3E8;
+            --cian:           #4FC8F0;
+
+            /* Superficies */
+            --blanco:         #16223A;
+            --superficie:     #0E1626;
+            --superficie-alt: #1E2C48;
+            --borde:          #2C3E5E;
+
+            /* Texto */
+            --texto:          #E6ECF5;
+            --texto-suave:    #9DAEC4;
+            --texto-inverso:  #0E1626;
+
+            /* Estados */
+            --exito:          #3FBF92;
+            --alerta:         #E5A73C;
+            --error:          #F0787E;
+            --exito-fondo:    #16302A;
+            --alerta-fondo:   #33270F;
+            --error-fondo:    #33191C;
+
+            /* Sombras: en oscuro se perciben como profundidad, no como elevación */
+            --sombra-tarjeta: 0 1px 3px rgba(0,0,0,.40);
+            --sombra-elevada: 0 4px 14px rgba(0,0,0,.55);
+
+            --fondo-barra: var(--superficie);
+        }
+
+        body { font-family: var(--fuente); background-color: var(--superficie); color: var(--texto); }
+
+        /* Barra superior (apartado 5 de la guía): en claro usa azul-profundo; en
+           oscuro usa --fondo-barra (ver su declaración en :root) para que no se
+           note la costura contra la página ni contra el logo de modo oscuro. */
+        .barra-superior { background-color: var(--fondo-barra); box-shadow: var(--sombra-tarjeta); color: var(--texto-en-barra); }
+
+        /* Logotipo: se intercambia el archivo según el tema (apartado 6). */
+        .logo-oscuro { display: none; }
+        [data-tema="oscuro"] .logo-claro { display: none; }
+        [data-tema="oscuro"] .logo-oscuro { display: block; }
+    </style>
+
     <style type="text/tailwindcss">
         @layer base {
             input[type="text"], input[type="email"], input[type="password"],
@@ -74,15 +173,48 @@
         }
         @layer components {
             .btn {
-                @apply inline-flex items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950 disabled:opacity-50 active:scale-[0.97];
+                @apply inline-flex items-center justify-center gap-1.5 px-4 py-2 text-sm font-semibold transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950 disabled:opacity-50 active:scale-[0.97];
             }
-            .btn-primary { @apply btn bg-primary-700 text-white shadow-sm shadow-primary-900/20 hover:bg-primary-800 hover:shadow-md hover:shadow-primary-900/30 focus-visible:ring-primary-600; }
-            .btn-secondary { @apply btn bg-white dark:bg-stone-900 text-primary-800 dark:text-primary-300 border border-primary-200 dark:border-primary-800 hover:bg-primary-50 dark:hover:bg-primary-950 focus-visible:ring-primary-600; }
-            .btn-danger { @apply btn bg-red-600 text-white shadow-sm shadow-red-900/20 hover:bg-red-700 hover:shadow-md focus-visible:ring-red-500; }
-            .btn-ghost { @apply btn bg-transparent text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 focus-visible:ring-stone-400; }
-            .btn-link { @apply inline-flex items-center gap-1 text-sm font-medium text-primary-800 dark:text-primary-400 underline decoration-primary-300 dark:decoration-primary-700 underline-offset-2 hover:decoration-primary-600 dark:hover:decoration-primary-400; }
+            /* Botón principal y secundario: migrados a la guía de identidad visual
+               (apartado 5) porque aparecen dentro de la barra que se está montando
+               ahora mismo — el resto de componentes se migra en el siguiente paso. */
+            .btn-primary {
+                @apply btn text-white focus-visible:ring-[var(--azul-medio)];
+                background-color: var(--azul-medio);
+                border-radius: var(--radio-chico);
+                min-height: 44px;
+            }
+            .btn-primary:hover { filter: brightness(.92); }
+            .btn-secondary {
+                @apply btn focus-visible:ring-[var(--azul-medio)];
+                background-color: transparent;
+                color: var(--azul-profundo);
+                border: 1px solid var(--borde);
+                border-radius: var(--radio-chico);
+                min-height: 44px;
+            }
+            .btn-secondary:hover { background-color: var(--superficie-alt); }
+            .btn-danger { @apply btn rounded-lg bg-red-600 text-white shadow-sm shadow-red-900/20 hover:bg-red-700 hover:shadow-md focus-visible:ring-red-500; }
+            .btn-ghost { @apply btn rounded-lg bg-transparent text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 focus-visible:ring-stone-400; }
 
-            .nav-link { @apply flex items-center gap-2 rounded-lg px-3 py-2 sm:py-1.5 text-sm font-medium text-stone-700 dark:text-stone-300 hover:bg-primary-50 dark:hover:bg-primary-950 hover:text-primary-800 dark:hover:text-primary-300 w-full sm:w-auto transition-colors; }
+            .nav-link {
+                @apply flex items-center gap-2 rounded-lg px-3 py-2 sm:py-1.5 text-sm font-medium w-full sm:w-auto transition-colors;
+                color: var(--texto);
+            }
+            .nav-link:hover { background-color: var(--superficie-alt); color: var(--azul-profundo); }
+            /* Dentro de la barra superior el fondo es siempre oscuro: el enlace,
+               el nombre de usuario y "Salir" usan el texto claro de la barra en
+               vez del color por defecto (pensado para el menú desplegable, que
+               sí sigue el tema normal). */
+            .barra-superior-nav .nav-link { color: var(--texto-en-barra); }
+            .barra-superior-nav .nav-link:hover { background-color: var(--barra-hover); color: var(--texto-en-barra); }
+            .barra-superior-nav .btn-ghost { color: var(--texto-en-barra); }
+            .barra-superior-nav .btn-ghost:hover { background-color: var(--barra-hover); }
+            .barra-superior-nav .usuario-etiqueta { color: var(--texto-en-barra); opacity: .85; }
+            .barra-superior-nav .usuario-mini { border-color: var(--barra-hover); }
+
+            .usuario-mini { border-color: var(--borde); }
+            .usuario-etiqueta { color: var(--texto-suave); }
 
             .card { @apply bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-sm transition-colors; }
             .card-interactive { @apply card hover:-translate-y-0.5 hover:shadow-lg hover:shadow-stone-900/5 dark:hover:shadow-black/20 hover:border-primary-200 dark:hover:border-primary-800 transition-all duration-200; }
@@ -102,7 +234,10 @@
 
             h1.titulo-pagina { @apply font-display text-2xl sm:text-3xl font-bold text-stone-900 dark:text-stone-50; }
 
-            .hero { @apply relative overflow-hidden bg-gradient-to-br from-primary-700 via-primary-800 to-primary-950 dark:from-stone-900 dark:via-primary-950 dark:to-stone-950 text-white; }
+            .hero {
+                @apply relative overflow-hidden bg-gradient-to-br from-[var(--azul-medio)] to-[var(--azul-profundo)];
+                color: var(--texto-en-barra);
+            }
             .hero-blobs { @apply absolute inset-0 pointer-events-none; }
         }
         @layer utilities {
@@ -116,23 +251,24 @@
     </style>
     {% block extra_head %}{% endblock %}
 </head>
-<body class="min-h-screen bg-stone-50 dark:bg-stone-950 text-stone-900 dark:text-stone-100 flex flex-col antialiased transition-colors duration-200"
-      x-data="{ menuAbierto: false, oscuro: document.documentElement.classList.contains('dark') }">
+<body class="min-h-screen flex flex-col antialiased transition-colors duration-200"
+      x-data="{ menuAbierto: false, oscuro: document.documentElement.getAttribute('data-tema') === 'oscuro' }">
 
-    <header class="border-b border-stone-200 dark:border-stone-800 bg-white/90 dark:bg-stone-950/90 backdrop-blur sticky top-0 z-20 transition-colors">
-        <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
-            <a href="/" class="flex items-center gap-2 font-display text-xl font-bold text-primary-800 dark:text-primary-400">
-                {% icono "ave" clase="w-6 h-6" %} Ojo Avizor
+    <header class="sticky top-0 z-20 barra-superior">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex justify-between items-center">
+            <a href="/" class="flex items-center shrink-0" aria-label="Ojo Avizor">
+                <img src="{% static 'marca/logo-horizontal-fondo-oscuro.png' %}" alt="Ojo Avizor" class="logo-claro w-[150px] h-auto">
+                <img src="{% static 'marca/logo-horizontal-modo-oscuro.png' %}" alt="Ojo Avizor" class="logo-oscuro w-[150px] h-auto">
             </a>
+
             <div class="flex items-center gap-1 sm:hidden">
-                <button type="button" class="w-9 h-9 flex items-center justify-center rounded-lg text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800"
-                        @click="oscuro = !oscuro; document.documentElement.classList.toggle('dark', oscuro); localStorage.setItem('ojo_avizor_tema', oscuro ? 'oscuro' : 'claro')"
+                <button type="button" class="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-[var(--barra-hover)]"
+                        @click="oscuro = !oscuro; document.documentElement.setAttribute('data-tema', oscuro ? 'oscuro' : 'claro'); document.documentElement.classList.toggle('dark', oscuro); localStorage.setItem('tema', oscuro ? 'oscuro' : 'claro')"
                         aria-label="{% translate 'Cambiar tema' %}">
                     <span x-show="!oscuro" x-cloak>{% icono "luna" clase="w-5 h-5" %}</span>
                     <span x-show="oscuro" x-cloak>{% icono "sol" clase="w-5 h-5" %}</span>
                 </button>
-                <button type="button"
-                        class="w-9 h-9 flex items-center justify-center rounded-lg text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800"
+                <button type="button" class="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-[var(--barra-hover)]"
                         @click="menuAbierto = !menuAbierto"
                         :aria-expanded="menuAbierto.toString()"
                         aria-label="{% translate 'Abrir menú' %}">
@@ -140,17 +276,18 @@
                     <span x-show="menuAbierto" x-cloak>{% icono "cerrar" clase="w-5 h-5" %}</span>
                 </button>
             </div>
-            <nav class="hidden sm:flex text-sm items-center gap-1">
+
+            <nav class="hidden sm:flex text-sm items-center gap-1 barra-superior-nav">
                 {% include "_nav_enlaces.html" %}
-                <button type="button" class="w-9 h-9 flex items-center justify-center rounded-lg text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 ml-1"
-                        @click="oscuro = !oscuro; document.documentElement.classList.toggle('dark', oscuro); localStorage.setItem('ojo_avizor_tema', oscuro ? 'oscuro' : 'claro')"
+                <button type="button" class="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-[var(--barra-hover)] ml-1"
+                        @click="oscuro = !oscuro; document.documentElement.setAttribute('data-tema', oscuro ? 'oscuro' : 'claro'); document.documentElement.classList.toggle('dark', oscuro); localStorage.setItem('tema', oscuro ? 'oscuro' : 'claro')"
                         aria-label="{% translate 'Cambiar tema' %}">
                     <span x-show="!oscuro" x-cloak>{% icono "luna" clase="w-5 h-5" %}</span>
                     <span x-show="oscuro" x-cloak>{% icono "sol" clase="w-5 h-5" %}</span>
                 </button>
             </nav>
         </div>
-        <nav class="sm:hidden border-t border-stone-200 dark:border-stone-800 px-4 py-3 flex flex-col items-start gap-1 text-sm bg-white dark:bg-stone-950"
+        <nav class="sm:hidden border-t border-[var(--borde)] bg-[var(--blanco)] px-4 py-3 flex flex-col items-start gap-1 text-sm"
              x-show="menuAbierto" x-cloak @click="menuAbierto = false">
             {% include "_nav_enlaces.html" %}
         </nav>
@@ -187,12 +324,34 @@
         {% block contenido %}{% endblock %}
     </main>
 
-    <footer class="border-t border-stone-200 dark:border-stone-800 mt-10 py-6 text-center text-xs text-stone-500 dark:text-stone-500 transition-colors">
-        {% block pie %}
-        <p class="inline-flex items-center gap-1.5 justify-center">{% icono "ave" clase="w-4 h-4" %} Ojo Avizor — {% translate "inventario de avifauna de Pijao, Quindío" %}</p>
-        <p class="mt-1">{% translate "Un proyecto de la comunidad, para la comunidad." %}</p>
-        <p class="mt-1"><a href="{% url 'condiciones_uso' %}" class="underline hover:text-stone-700 dark:hover:text-stone-300">{% translate "Condiciones de uso" %}</a></p>
-        {% endblock %}
+    <footer class="mt-10 border-t border-[var(--borde)]">
+        <div class="max-w-5xl mx-auto px-4 py-8 text-center text-xs text-[var(--texto-suave)]">
+            {% block pie %}
+            <p class="inline-flex items-center gap-1.5 justify-center">
+                <img src="{% static 'marca/icono-512.png' %}" alt="" aria-hidden="true" class="logo-claro h-4 w-4">
+                <img src="{% static 'marca/isotipo-modo-oscuro.png' %}" alt="" aria-hidden="true" class="logo-oscuro h-4 w-4">
+                Ojo Avizor — {% translate "inventario participativo de avifauna" %}
+            </p>
+            <p class="mt-1">{% translate "Un proyecto de la comunidad, para la comunidad." %}</p>
+            <p class="mt-1">
+                <a href="{% url 'condiciones_uso' %}" class="underline hover:text-[var(--azul-medio)]">{% translate "Condiciones de uso" %}</a>
+            </p>
+
+            <div class="mt-6 pt-6 border-t border-[var(--borde)]">
+                <p class="mb-2">{% translate "Un proyecto de la comunidad de Pijao, con el acompañamiento de:" %}</p>
+                {% comment %}
+                Pendiente: static/marca/ todavía no tiene los logos institucionales (Universidad
+                Alexander von Humboldt y Fundación Smurfit Westrock Colombia — apartado 7 de la
+                guía). Mientras no existan esos archivos, se muestra el nombre en texto.
+                {% endcomment %}
+                <p class="font-medium text-[var(--texto)]">
+                    Corporación Universitaria Empresarial Alexander von Humboldt
+                    <span aria-hidden="true"> · </span>
+                    Fundación Smurfit Westrock Colombia
+                </p>
+            </div>
+            {% endblock %}
+        </div>
     </footer>
 
     {% if user.is_authenticated %}

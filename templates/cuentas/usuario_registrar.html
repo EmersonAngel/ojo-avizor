@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n iconos %}
+{% load i18n static iconos %}
 
 {% block titulo %}{% translate "Crear cuenta" %} — Ojo Avizor{% endblock %}
 
@@ -7,7 +7,8 @@
 <div class="page-narrow">
     <div class="card p-6 sm:p-8">
         <div class="text-center mb-6">
-            <span class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary-50 dark:bg-primary-950 text-primary-700 dark:text-primary-400">{% icono "ave" clase="w-6 h-6" %}</span>
+            <img src="{% static 'marca/logo-apilado.png' %}" alt="Ojo Avizor" class="logo-claro h-16 w-auto mx-auto">
+            <img src="{% static 'marca/logo-apilado-modo-oscuro.png' %}" alt="Ojo Avizor" class="logo-oscuro h-16 w-auto mx-auto">
             <h1 class="titulo-pagina mt-3">{% translate "Crear cuenta" %}</h1>
             <p class="text-sm text-stone-500 dark:text-stone-400 mt-1">
                 {% translate "Tu nombre real nunca se muestra en público — solo tu seudónimo." %}

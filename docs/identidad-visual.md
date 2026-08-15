@@ -1,6 +1,6 @@
 # Identidad visual de Ojo Avizor
 
-> **Paquete de contexto v1.2** · Complementa `CLAUDE.md` y `docs/arquitectura.md`.
+> **Paquete de contexto v1.4** · Complementa `CLAUDE.md` y `docs/arquitectura.md`.
 > Los archivos de marca están en `static/marca/`.
 
 ---
@@ -15,7 +15,10 @@ La interfaz la usan niños de 10 a 15 años y observadores adultos, en celulares
 
 ## 2. Paleta
 
-Declara estas variables en `:root` y **no uses colores fuera de esta lista**.
+Declara estas variables y **no uses colores fuera de esta lista**. La aplicación tiene
+**dos temas obligatorios**: claro y oscuro. Todos los componentes deben funcionar en ambos.
+
+### Tema claro (por defecto)
 
 ```css
 :root {
@@ -42,8 +45,51 @@ Declara estas variables en `:root` y **no uses colores fuera de esta lista**.
   --exito-fondo:    #EFF8F4;
   --alerta-fondo:   #FFF6E8;
   --error-fondo:    #FDF0F0;
+
+  /* Sombras */
+  --sombra-tarjeta: 0 1px 3px rgba(27,45,85,.08);
+  --sombra-elevada: 0 4px 14px rgba(27,45,85,.12);
 }
 ```
+
+### Tema oscuro
+
+Se activa con el atributo `data-tema="oscuro"` en `<html>`.
+
+```css
+[data-tema="oscuro"] {
+  /* Marca — aclarada para conservar legibilidad sobre fondo profundo */
+  --azul-profundo:  #16223A;  /* barras y superficies elevadas */
+  --azul-medio:     #5FB3E8;  /* enlaces, botones, foco */
+  --cian:           #4FC8F0;  /* acentos, cifras grandes */
+
+  /* Superficies */
+  --blanco:         #16223A;  /* lo que en claro era blanco */
+  --superficie:     #0E1626;  /* fondo general de página */
+  --superficie-alt: #1E2C48;  /* tarjetas destacadas, bloques de datos */
+  --borde:          #2C3E5E;
+
+  /* Texto */
+  --texto:          #E6ECF5;
+  --texto-suave:    #9DAEC4;
+  --texto-inverso:  #0E1626;
+
+  /* Estados */
+  --exito:          #3FBF92;
+  --alerta:         #E5A73C;
+  --error:          #F0787E;
+  --exito-fondo:    #16302A;
+  --alerta-fondo:   #33270F;
+  --error-fondo:    #33191C;
+
+  /* Sombras: en oscuro se perciben como profundidad, no como elevación */
+  --sombra-tarjeta: 0 1px 3px rgba(0,0,0,.40);
+  --sombra-elevada: 0 4px 14px rgba(0,0,0,.55);
+}
+```
+
+**Escribe todos los componentes usando únicamente estas variables.** Si lo haces así, el
+modo oscuro no exige una sola regla adicional de estilo: basta con cambiar el atributo.
 
 ### Advertencia de accesibilidad — importante
 
@@ -64,6 +110,25 @@ Verifiqué el contraste de toda la paleta contra WCAG 2.1. Un resultado obliga a
 **Regla derivada:** el cian **nunca** se usa para texto pequeño ni como fondo de botón con texto encima. Su lugar son los acentos no informativos: subrayado de la pestaña activa, iconos decorativos, cifras muy grandes (36 px o más), separadores y el iris del isotipo.
 
 **Para botones y enlaces usa `--azul-medio`**, que sí cumple AA.
+
+### Contraste del tema oscuro
+
+Toda la paleta oscura fue verificada y supera el nivel AA; la mayoría alcanza AAA.
+
+| Combinación | Contraste | Veredicto |
+| --- | --- | --- |
+| `--texto` sobre `--superficie` | 15,2 : 1 | AAA |
+| `--texto` sobre `--blanco` (superficie elevada) | 13,4 : 1 | AAA |
+| `--texto-suave` sobre `--superficie` | 8,0 : 1 | AAA |
+| `--cian` sobre `--superficie` | 9,3 : 1 | AAA |
+| `--azul-medio` sobre `--superficie` | 7,8 : 1 | AAA |
+| `--exito` sobre `--superficie` | 7,8 : 1 | AAA |
+| `--alerta` sobre `--superficie` | 8,5 : 1 | AAA |
+| `--error` sobre `--superficie` | 6,6 : 1 | AA |
+
+**Diferencia importante respecto del tema claro:** en oscuro el cian **sí** cumple contraste,
+porque se aclaró a `#4FC8F0`. Puede usarse para texto y para fondo de botón con texto oscuro
+encima. La restricción del apartado anterior aplica únicamente al tema claro.
 
 ---
 
@@ -138,8 +203,11 @@ Guárdalos en `static/marca/`.
 | --- | --- |
 | `logo-horizontal-fondo-oscuro.png` | **Barra superior** de la aplicación. Es la versión correcta: el resto de variantes son azules y desaparecerían sobre el fondo `--azul-profundo`. Muéstralo a 150 px de ancho. |
 | `logo-horizontal.png` | Documentos, correos y cualquier fondo claro. |
-| `logo-apilado.png` | Pantalla de inicio de sesión y de registro de cuenta, centrado sobre el formulario. |
+| `logo-apilado.png` | Pantalla de inicio de sesión y de registro de cuenta con el tema claro, centrado sobre el formulario. |
 | `isotipo.png` | Cabecera en pantallas estrechas cuando el logo completo no cabe, y como imagen para compartir en redes. |
+| `logo-horizontal-modo-oscuro.png` | **Barra superior con el tema oscuro activo.** Trazo claro y cian luminoso. |
+| `isotipo-modo-oscuro.png` | Isotipo para pantallas estrechas con el tema oscuro activo. |
+| `logo-apilado-modo-oscuro.png` | Inicio de sesión y registro de cuenta con el tema oscuro activo. |
 | `favicon.ico` | `<link rel="icon">` |
 | `icono-192.png`, `icono-512.png` | Manifiesto de la aplicación web (necesarios para instalarla y para el funcionamiento sin conexión). |
 | `apple-touch-icon.png` | `<link rel="apple-touch-icon">` |
@@ -149,6 +217,8 @@ Guárdalos en `static/marca/`.
 - Conserva alrededor un margen libre igual a la mitad de la altura del símbolo.
 - **No lo recolorees, deformes, rotes ni le añadas sombras.**
 - Sobre fotografías, usa la versión de fondo oscuro sobre una capa semitransparente.
+- **Intercambia el archivo según el tema.** Resuélvelo con `<picture>` y una consulta de medios,
+  o alternando el atributo `src` desde el mismo script que aplica el tema.
 - Tamaño mínimo del logo horizontal: 120 px de ancho. Por debajo, usa el isotipo.
 - El símbolo lleva `alt="Ojo Avizor"`; si va junto al nombre escrito, `alt=""` y `aria-hidden="true"`.
 
@@ -169,10 +239,64 @@ En el **pie de página** van los logos de la Corporación Universitaria Empresar
 - Texto sobre imagen sin capa de contraste.
 - Cian como color de texto o de fondo de botón (ver la advertencia del apartado 2).
 - Emojis como iconos de interfaz.
+- Colores literales en el código: impiden que el modo oscuro funcione.
 - Tipografías descargadas de terceros: encarecen la carga y este proyecto opera con conectividad irregular.
 
 ---
 
 ## 9. Modo oscuro
 
-**No lo implementes en esta fase.** Duplica el trabajo de estilos y no está entre los requisitos. La paleta está preparada para añadirlo más adelante sin rehacer nada.
+Es **obligatorio** y debe funcionar en todas las pantallas.
+
+### Cómo se activa
+
+Tres estados, en este orden de precedencia:
+
+1. **Preferencia guardada** del usuario, en `localStorage` bajo la clave `tema`.
+2. **Preferencia del sistema**, mediante `prefers-color-scheme`, si no hay nada guardado.
+3. **Claro**, como valor por omisión.
+
+```html
+<html lang="es" data-tema="claro">
+```
+
+Aplica el tema **antes de pintar la página**, con un script mínimo en el `<head>`, para evitar
+el destello blanco que se produce si se aplica después:
+
+```html
+<script>
+  (function () {
+    var t = localStorage.getItem('tema');
+    if (!t) {
+      t = matchMedia('(prefers-color-scheme: dark)').matches ? 'oscuro' : 'claro';
+    }
+    document.documentElement.setAttribute('data-tema', t);
+  })();
+</script>
+```
+
+### El control
+
+Un botón en la barra superior, a la derecha, con icono de sol o luna según el estado actual.
+Debe llevar `aria-label` descriptivo («Cambiar a modo oscuro» / «Cambiar a modo claro») y
+guardar la elección en `localStorage`.
+
+Alpine.js es suficiente para manejarlo; no requiere nada más.
+
+### Reglas al construir componentes
+
+- **Nunca escribas un color literal** en una hoja de estilos ni en una plantilla. Solo variables.
+- **Nunca uses `#fff` como fondo de tarjeta**: usa `var(--blanco)`, que en oscuro vale `#16223A`.
+- En oscuro, la jerarquía se construye con **superficies más claras**, no con sombras: el fondo
+  general es el más oscuro y las tarjetas se elevan aclarándose.
+- Las **fotografías de aves** no se alteran. Si alguna resulta deslumbrante sobre fondo oscuro,
+  reduce su brillo un 8 % con un filtro, nunca más.
+- El **logotipo cambia de archivo** según el tema (ver la tabla del apartado 6).
+
+### Verificación antes de dar por terminada una pantalla
+
+- [ ] ¿Se ve correctamente en ambos temas?
+- [ ] ¿Algún color literal se coló en el CSS o en la plantilla?
+- [ ] ¿El logotipo corresponde al tema activo?
+- [ ] ¿Los estados de un registro se distinguen en oscuro?
+- [ ] ¿Hay destello blanco al cargar la página en modo oscuro?
