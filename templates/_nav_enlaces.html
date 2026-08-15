@@ -15,8 +15,8 @@
 </a>
 {% endif %}
 <span data-cola-registros class="hidden badge-devuelto my-1 sm:my-0"></span>
-<div class="w-full sm:w-auto flex items-center justify-between sm:justify-start gap-2 mt-2 sm:mt-0 sm:ml-1 sm:pl-3 sm:border-l border-stone-200 dark:border-stone-800 pt-2 sm:pt-0 border-t sm:border-t-0">
-    <span class="text-sm text-stone-500 dark:text-stone-400 inline-flex items-center gap-1.5">{% icono "usuario" clase="w-4 h-4" %} {{ user.seudonimo }}</span>
+<div class="usuario-mini w-full sm:w-auto flex items-center justify-between sm:justify-start gap-2 mt-2 sm:mt-0 sm:ml-1 sm:pl-3 sm:border-l pt-2 sm:pt-0 border-t sm:border-t-0">
+    <span class="usuario-etiqueta text-sm inline-flex items-center gap-1.5">{% icono "usuario" clase="w-4 h-4" %} {{ user.seudonimo }}</span>
     <form method="post" action="{% url 'cuentas:cerrar_sesion' %}">
         {% csrf_token %}
         <button type="submit" class="btn-ghost !px-2.5 !py-1 text-xs">{% translate "Salir" %}</button>
