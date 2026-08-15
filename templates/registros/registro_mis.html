@@ -12,6 +12,21 @@
         </a>
     </div>
 
+    <div class="flex flex-wrap gap-2 mb-6">
+        <a href="{% url 'registros:mis_registros' %}" class="badge bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 {% if not estado_actual %}ring-2 ring-[var(--azul-medio)]{% endif %}">
+            {% translate "Todos" %}
+        </a>
+        <a href="?estado=PENDIENTE" class="badge-pendiente {% if estado_actual == 'PENDIENTE' %}ring-2 ring-[var(--azul-medio)]{% endif %}">
+            {% translate "Pendiente" %}
+        </a>
+        <a href="?estado=APROBADO" class="badge-aprobado {% if estado_actual == 'APROBADO' %}ring-2 ring-[var(--azul-medio)]{% endif %}">
+            {% translate "Aprobado" %}
+        </a>
+        <a href="?estado=DEVUELTO" class="badge-devuelto {% if estado_actual == 'DEVUELTO' %}ring-2 ring-[var(--azul-medio)]{% endif %}">
+            {% translate "Devuelto" %}
+        </a>
+    </div>
+
     {% if registros %}
     <div class="hidden sm:block card overflow-hidden">
         <table class="w-full text-sm">
@@ -61,6 +76,9 @@
         {% endfor %}
     </div>
     {% include "_paginacion.html" %}
+    {% elif estado_actual %}
+    {% translate "No tienes avistamientos con este estado." as mensaje %}
+    {% include "_estado_vacio.html" with icono="ave" mensaje=mensaje %}
     {% else %}
     {% translate "Todavía no has registrado ningún avistamiento — cuando veas un ave, este es su lugar." as mensaje %}
     {% translate "Registrar mi primer avistamiento" as cta %}

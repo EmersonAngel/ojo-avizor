@@ -2,8 +2,11 @@
 from .models import Registro
 
 
-def listar_de_usuario(usuario):
-    return Registro.objects.filter(usuario=usuario).select_related('especie').order_by('-fecha_envio')
+def listar_de_usuario(usuario, estado=None):
+    registros = Registro.objects.filter(usuario=usuario).select_related('especie').order_by('-fecha_envio')
+    if estado:
+        registros = registros.filter(estado=estado)
+    return registros
 
 
 def obtener_de_usuario(pk, usuario):

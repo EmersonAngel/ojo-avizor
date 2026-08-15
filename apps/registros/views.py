@@ -37,9 +37,14 @@ def registro_enviado(request):
 
 @requiere_rol(*_ROLES_APORTAR)
 def registro_mis(request):
-    registros = repositories.listar_de_usuario(request.user)
+    estado = request.GET.get('estado')
+    if estado not in dict(Registro.Estado.choices):
+        estado = None
+    registros = repositories.listar_de_usuario(request.user, estado=estado)
     pagina = Paginator(registros, 20).get_page(request.GET.get('pagina'))
-    return render(request, 'registros/registro_mis.html', {'registros': pagina, 'pagina': pagina})
+    return render(request, 'registros/registro_mis.html', {
+        'registros': pagina, 'pagina': pagina, 'estado_actual': estado,
+    })
 
 
 @requiere_rol(*_ROLES_APORTAR)

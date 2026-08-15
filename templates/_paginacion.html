@@ -2,7 +2,7 @@
 {% if pagina.paginator.num_pages > 1 %}
 <nav class="flex items-center justify-between mt-6 text-sm" aria-label="{% translate 'Paginación' %}">
     {% if pagina.has_previous %}
-    <a href="?{% if query %}q={{ query }}&{% endif %}pagina={{ pagina.previous_page_number }}" class="btn-secondary !px-3 !py-1.5">
+    <a href="?{% if query %}q={{ query }}&{% endif %}{% if estado_actual %}estado={{ estado_actual }}&{% endif %}pagina={{ pagina.previous_page_number }}" class="btn-secondary !px-3 !py-1.5">
         {% icono "flecha-izquierda" clase="w-4 h-4" %} {% translate "Anterior" %}
     </a>
     {% else %}
@@ -12,7 +12,7 @@
         {% blocktranslate with actual=pagina.number total=pagina.paginator.num_pages %}Página {{ actual }} de {{ total }}{% endblocktranslate %}
     </span>
     {% if pagina.has_next %}
-    <a href="?{% if query %}q={{ query }}&{% endif %}pagina={{ pagina.next_page_number }}" class="btn-secondary !px-3 !py-1.5">
+    <a href="?{% if query %}q={{ query }}&{% endif %}{% if estado_actual %}estado={{ estado_actual }}&{% endif %}pagina={{ pagina.next_page_number }}" class="btn-secondary !px-3 !py-1.5">
         {% translate "Siguiente" %} <span class="inline-flex rotate-180">{% icono "flecha-izquierda" clase="w-4 h-4" %}</span>
     </a>
     {% else %}
