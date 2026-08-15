@@ -255,10 +255,10 @@
       x-data="{ menuAbierto: false, oscuro: document.documentElement.getAttribute('data-tema') === 'oscuro' }">
 
     <header class="sticky top-0 z-20 barra-superior">
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex justify-between items-center">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 h-[72px] flex justify-between items-center">
             <a href="/" class="flex items-center shrink-0" aria-label="Ojo Avizor">
-                <img src="{% static 'marca/logo-horizontal-fondo-oscuro.png' %}" alt="Ojo Avizor" class="logo-claro w-[150px] h-auto">
-                <img src="{% static 'marca/logo-horizontal-modo-oscuro.png' %}" alt="Ojo Avizor" class="logo-oscuro w-[150px] h-auto">
+                <img src="{% static 'marca/logo-horizontal-fondo-oscuro.png' %}" alt="Ojo Avizor" class="logo-claro w-[190px] h-auto">
+                <img src="{% static 'marca/logo-horizontal-modo-oscuro.png' %}" alt="Ojo Avizor" class="logo-oscuro w-[190px] h-auto">
             </a>
 
             <div class="flex items-center gap-1 sm:hidden">
@@ -327,9 +327,9 @@
     <footer class="mt-10 border-t border-[var(--borde)]">
         <div class="max-w-5xl mx-auto px-4 py-8 text-center text-xs text-[var(--texto-suave)]">
             {% block pie %}
-            <p class="inline-flex items-center gap-1.5 justify-center">
-                <img src="{% static 'marca/icono-512.png' %}" alt="" aria-hidden="true" class="logo-claro h-4 w-4">
-                <img src="{% static 'marca/isotipo-modo-oscuro.png' %}" alt="" aria-hidden="true" class="logo-oscuro h-4 w-4">
+            <p class="inline-flex items-center gap-2 justify-center">
+                <img src="{% static 'marca/icono-512.png' %}" alt="" aria-hidden="true" class="logo-claro h-7 w-7">
+                <img src="{% static 'marca/isotipo-modo-oscuro.png' %}" alt="" aria-hidden="true" class="logo-oscuro h-7 w-7">
                 Ojo Avizor — {% translate "inventario participativo de avifauna" %}
             </p>
             <p class="mt-1">{% translate "Un proyecto de la comunidad, para la comunidad." %}</p>
