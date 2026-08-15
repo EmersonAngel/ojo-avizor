@@ -1,7 +1,11 @@
 {% extends "base.html" %}
-{% load i18n iconos %}
+{% load i18n static iconos %}
 
 {% block titulo %}{{ especie.nombre_cientifico }} — Ojo Avizor{% endblock %}
+{% block meta_titulo %}{{ especie.nombre_cientifico }}{% if especie.nombres_comunes.first %} · {{ especie.nombres_comunes.first.nombre }}{% endif %}{% endblock %}
+{% block meta_descripcion %}{% blocktranslate with nombre=especie.nombre_cientifico %}Ficha de {{ nombre }} en el inventario de avifauna de Ojo Avizor.{% endblocktranslate %}{% endblock %}
+{% block meta_og_descripcion %}{{ especie.historia_natural|default:especie.distribucion|truncatewords:30 }}{% endblock %}
+{% block meta_imagen %}http{{ request.is_secure|yesno:'s,' }}://{{ request.get_host }}{% if especie.foto_referencia %}{{ especie.foto_referencia.url }}{% else %}{% static 'marca/icono-512.png' %}{% endif %}{% endblock %}
 
 {% block contenido %}
 <div class="page">

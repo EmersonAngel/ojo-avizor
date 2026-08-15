@@ -6,6 +6,18 @@
     <meta name="theme-color" content="#1B2D55">
     <title>{% block titulo %}Ojo Avizor{% endblock %}</title>
 
+    {% block meta_compartir %}
+    {% translate "Inventario participativo de avifauna, construido por la comunidad." as descripcion_defecto %}
+    <meta name="description" content="{% block meta_descripcion %}{{ descripcion_defecto }}{% endblock %}">
+    <meta property="og:site_name" content="Ojo Avizor">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:title" content="{% block meta_titulo %}Ojo Avizor{% endblock %}">
+    <meta property="og:description" content="{% block meta_og_descripcion %}{{ descripcion_defecto }}{% endblock %}">
+    <meta property="og:image" content="{% block meta_imagen %}http{{ request.is_secure|yesno:'s,' }}://{{ request.get_host }}{% static 'marca/icono-512.png' %}{% endblock %}">
+    <meta name="twitter:card" content="summary_large_image">
+    {% endblock %}
+
     <link rel="icon" href="{% static 'marca/favicon.ico' %}">
     <link rel="apple-touch-icon" href="{% static 'marca/apple-touch-icon.png' %}">
     <link rel="manifest" href="{% static 'manifest.json' %}">
