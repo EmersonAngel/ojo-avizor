@@ -174,7 +174,7 @@ Sombras muy sutiles. Este es un producto de consulta, no una tienda.
 
 ## 5. Componentes clave
 
-**Barra superior.** Fondo `--azul-profundo`, alto 72 px. Logo horizontal a la izquierda a 190 px de ancho, con 24 px de margen. Navegación centrada o a la derecha; la pestaña activa lleva subrayado de 3 px en `--cian`.
+**Barra superior.** Fondo `--azul-profundo`, alto 96 px. Logo horizontal a la izquierda a 240 px de ancho, con 24 px de margen. Navegación centrada o a la derecha; la pestaña activa lleva subrayado de 3 px en `--cian`.
 
 **Botón principal.** Fondo `--azul-medio`, texto blanco, radio 6 px, alto 44 px mínimo (objetivo táctil). Al pasar el cursor, oscurece un 8 %.
 
@@ -201,7 +201,7 @@ Guárdalos en `static/marca/`.
 
 | Archivo | Dónde se usa |
 | --- | --- |
-| `logo-horizontal-fondo-oscuro.png` | **Barra superior** de la aplicación. Es la versión correcta: el resto de variantes son azules y desaparecerían sobre el fondo `--azul-profundo`. Muéstralo a 190 px de ancho. |
+| `logo-horizontal-fondo-oscuro.png` | **Barra superior** de la aplicación. Es la versión correcta: el resto de variantes son azules y desaparecerían sobre el fondo `--azul-profundo`. Muéstralo a 240 px de ancho. |
 | `logo-horizontal.png` | Documentos, correos y cualquier fondo claro. |
 | `logo-apilado.png` | Pantalla de inicio de sesión y de registro de cuenta con el tema claro, centrado sobre el formulario. |
 | `isotipo.png` | Cabecera en pantallas estrechas cuando el logo completo no cabe, y como imagen para compartir en redes. |
