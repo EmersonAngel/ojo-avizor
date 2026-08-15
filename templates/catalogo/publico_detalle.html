@@ -43,9 +43,9 @@
         </div>
         {% endif %}
         {% if especie.dato_curioso %}
-        <div class="card p-5 bg-accent-50 dark:bg-accent-950 border-accent-200 dark:border-accent-900 animate-fade-up" style="animation-delay:180ms">
-            <h2 class="text-sm font-semibold uppercase tracking-wide text-accent-700 dark:text-accent-400 inline-flex items-center gap-1.5">{% icono "destello" clase="w-4 h-4" %} {% translate "¿Sabías que…?" %}</h2>
-            <p class="text-accent-900 dark:text-accent-200 mt-1">{{ especie.dato_curioso }}</p>
+        <div class="rounded-2xl p-5 bg-[var(--superficie-alt)] border-l-4 border-[var(--azul-medio)] animate-fade-up" style="animation-delay:180ms">
+            <h2 class="text-sm font-semibold uppercase tracking-wide text-[var(--azul-medio)] inline-flex items-center gap-1.5">{% icono "destello" clase="w-4 h-4" %} {% translate "¿Sabías que…?" %}</h2>
+            <p class="text-[var(--texto)] mt-1">{{ especie.dato_curioso }}</p>
         </div>
         {% endif %}
     </div>
