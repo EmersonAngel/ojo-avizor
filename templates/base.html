@@ -100,6 +100,13 @@
                relleno claro) y dejaría el texto de la barra ilegible. */
             --texto-en-barra: #FFFFFF;
             --barra-hover:    rgba(255, 255, 255, .12);
+
+            /* En claro, la barra usa azul-profundo (coincide con el fondo del
+               logo horizontal de esa variante). En oscuro coincide con --superficie
+               en vez de con --azul-profundo: así queda del mismo color que el fondo
+               del logo horizontal de modo oscuro y que el fondo de la página, sin
+               una costura visible entre la barra y el resto. */
+            --fondo-barra: var(--azul-profundo);
         }
 
         [data-tema="oscuro"] {
@@ -130,13 +137,16 @@
             /* Sombras: en oscuro se perciben como profundidad, no como elevación */
             --sombra-tarjeta: 0 1px 3px rgba(0,0,0,.40);
             --sombra-elevada: 0 4px 14px rgba(0,0,0,.55);
+
+            --fondo-barra: var(--superficie);
         }
 
         body { font-family: var(--fuente); background-color: var(--superficie); color: var(--texto); }
 
-        /* Barra superior (apartado 5 de la guía): fondo azul-profundo, texto
-           siempre claro porque ese fondo es oscuro en los dos temas. */
-        .barra-superior { background-color: var(--azul-profundo); box-shadow: var(--sombra-tarjeta); color: var(--texto-en-barra); }
+        /* Barra superior (apartado 5 de la guía): en claro usa azul-profundo; en
+           oscuro usa --fondo-barra (ver su declaración en :root) para que no se
+           note la costura contra la página ni contra el logo de modo oscuro. */
+        .barra-superior { background-color: var(--fondo-barra); box-shadow: var(--sombra-tarjeta); color: var(--texto-en-barra); }
 
         /* Logotipo: se intercambia el archivo según el tema (apartado 6). */
         .logo-oscuro { display: none; }
@@ -224,7 +234,10 @@
 
             h1.titulo-pagina { @apply font-display text-2xl sm:text-3xl font-bold text-stone-900 dark:text-stone-50; }
 
-            .hero { @apply relative overflow-hidden bg-gradient-to-br from-primary-700 via-primary-800 to-primary-950 dark:from-stone-900 dark:via-primary-950 dark:to-stone-950 text-white; }
+            .hero {
+                @apply relative overflow-hidden bg-gradient-to-br from-[var(--azul-medio)] to-[var(--azul-profundo)];
+                color: var(--texto-en-barra);
+            }
             .hero-blobs { @apply absolute inset-0 pointer-events-none; }
         }
         @layer utilities {

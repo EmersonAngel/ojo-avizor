@@ -6,14 +6,14 @@
 {% block contenido %}
 <div class="hero">
     <div class="hero-blobs">
-        <div class="absolute -top-24 -right-16 w-72 h-72 bg-accent-400/20 rounded-full blur-3xl"></div>
-        <div class="absolute -bottom-32 -left-16 w-72 h-72 bg-primary-300/20 rounded-full blur-3xl"></div>
+        <div class="absolute -top-24 -right-16 w-72 h-72 bg-[var(--cian)] opacity-20 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-32 -left-16 w-72 h-72 bg-[var(--azul-medio)] opacity-20 rounded-full blur-3xl"></div>
     </div>
     <div class="page-wide relative !pt-12 sm:!pt-16 !pb-20 text-center">
-        <h1 class="font-display text-4xl sm:text-5xl font-bold bg-gradient-to-r from-white to-primary-200 bg-clip-text text-transparent">
+        <h1 class="font-display text-4xl sm:text-5xl font-bold bg-gradient-to-r from-white to-[var(--cian)] bg-clip-text text-transparent">
             {% translate "Aves de Pijao" %}
         </h1>
-        <p class="text-primary-100 mt-3 max-w-lg mx-auto">
+        <p class="text-[var(--texto-en-barra)] opacity-90 mt-3 max-w-lg mx-auto">
             {% translate "Un inventario construido por la comunidad, avistamiento a avistamiento." %}
         </p>
 
@@ -35,7 +35,7 @@
         <div class="flex flex-wrap justify-center gap-2 mt-5 max-w-xl mx-auto">
             {% for familia in familias %}
             <a href="?q={{ familia }}"
-               class="text-xs font-medium px-3 py-1.5 rounded-full bg-white/10 text-primary-50 hover:bg-white/20 transition-colors">
+               class="text-xs font-medium px-3 py-1.5 rounded-full bg-white/10 text-[var(--texto-en-barra)] hover:bg-white/20 transition-colors">
                 {{ familia }}
             </a>
             {% endfor %}
@@ -47,15 +47,15 @@
 <div class="page-wide -mt-12 relative">
     <div class="grid grid-cols-3 gap-3 sm:gap-4 mb-8">
         <a href="{% url 'catalogo:inventario' %}" class="card-interactive p-4 sm:p-5 text-center">
-            <p class="font-display text-2xl sm:text-3xl font-bold text-primary-800 dark:text-primary-400">{{ total_especies }}</p>
+            <p class="font-display text-2xl sm:text-3xl font-bold text-[var(--cian)]">{{ total_especies }}</p>
             <p class="text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-0.5">{% translate "especies" %}</p>
         </a>
         <a href="{% url 'catalogo:inventario' %}" class="card-interactive p-4 sm:p-5 text-center">
-            <p class="font-display text-2xl sm:text-3xl font-bold text-primary-800 dark:text-primary-400">{{ total_avistamientos }}</p>
+            <p class="font-display text-2xl sm:text-3xl font-bold text-[var(--cian)]">{{ total_avistamientos }}</p>
             <p class="text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-0.5">{% translate "avistamientos" %}</p>
         </a>
         <a href="{% url 'catalogo:inventario' %}" class="card-interactive p-4 sm:p-5 text-center">
-            <p class="font-display text-2xl sm:text-3xl font-bold text-primary-800 dark:text-primary-400">{{ total_observadores }}</p>
+            <p class="font-display text-2xl sm:text-3xl font-bold text-[var(--cian)]">{{ total_observadores }}</p>
             <p class="text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-0.5">{% translate "observadores" %}</p>
         </a>
     </div>
