@@ -15,19 +15,16 @@ register = template.Library()
 # Cada entrada es el contenido interno de un <svg viewBox="0 0 24 24">,
 # en estilo trazo (hereda fill="none" stroke="currentColor" del contenedor).
 _ICONOS = {
-    # Silueta de ave posada, con relleno (excepción deliberada al estilo de
-    # trazo: como marca de la casa necesita leerse de un vistazo). La
-    # cabeza va levantada por encima del cuerpo (postura de ave, no de
-    # pez), con pico fino, cola de plumas angosta a un solo lado y patas
-    # visibles — ningún pez tiene patas, es la señal más clara.
+    # Versión en trazo del isotipo de la marca (ver static/marca/isotipo.png):
+    # un ojo cuya pupila es un ave en vuelo. Mismo estilo lineal que el resto
+    # del set — ya no hace falta la excepción de relleno que tenía la versión
+    # anterior, porque el contorno del ojo y el ave nunca comparten el mismo
+    # trazo (se distinguen por posición, no por color), así que se ve bien
+    # sobre cualquier fondo.
     'ave': (
-        '<g fill="currentColor">'
-        '<ellipse cx="11" cy="13" rx="5.5" ry="4.3"/>'
-        '<circle cx="15.8" cy="7.2" r="2.6"/>'
-        '<path d="M18.1 6.3L20.6 7.2L18.1 8.4z"/>'
-        '<path d="M5.5 15.5L1 12l1.5 6.2z"/>'
-        '<path d="M9 17.2v3.3M13 17.4v3.3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>'
-        '</g>'
+        '<path d="M1.5 12C5 6 9 4 12 4c3 0 7 2 10.5 8C19 18 15 20 12 20c-3 0-7-2-10.5-8z"/>'
+        '<path d="M8.8 12.6c1.1-1.6 2.1-1.6 3.2 0c1.1-1.6 2.1-1.6 3.2 0" stroke-width="1.5"/>'
+        '<circle cx="14.6" cy="9.3" r="0.9" fill="currentColor" stroke="none"/>'
     ),
     'menu': '<path d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5"/>',
     'cerrar': '<path d="M6 18L18 6M6 6l12 12"/>',

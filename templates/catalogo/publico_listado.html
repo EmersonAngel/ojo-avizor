@@ -77,7 +77,7 @@
                         <span class="font-medium text-stone-900 dark:text-stone-100">{{ avistamiento.usuario.seudonimo }}</span>
                         {% translate "avistó" %}
                         {% if avistamiento.especie %}
-                        <a href="{% url 'catalogo:especie_detalle' avistamiento.especie.pk %}" class="font-display italic text-primary-800 dark:text-primary-400 hover:underline">{{ avistamiento.especie.nombre_cientifico }}</a>
+                        <a href="{% url 'catalogo:especie_detalle' avistamiento.especie.pk %}" class="font-display italic text-[var(--azul-medio)] hover:underline">{{ avistamiento.especie.nombre_cientifico }}</a>
                         {% else %}
                         <span class="italic">{% translate "un ave sin identificar" %}</span>
                         {% endif %}
