@@ -3,13 +3,13 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-2">
     {% for especie in especies %}
     <a href="{% url 'catalogo:especie_detalle' especie.pk %}"
-       class="card-interactive p-4 flex gap-4 animate-fade-up"
+       class="group card-interactive p-4 flex gap-4 animate-fade-up"
        style="animation-delay: {% widthratio forloop.counter0 1 40 %}ms">
         {% if especie.foto_referencia %}
         <img src="{{ especie.foto_referencia.url }}" alt="{{ especie.nombre_cientifico }}"
              class="w-16 h-16 object-cover rounded-xl flex-shrink-0">
         {% else %}
-        <div class="w-16 h-16 rounded-xl flex-shrink-0 bg-primary-50 dark:bg-primary-950 flex items-center justify-center text-primary-400 dark:text-primary-500">{% icono "ave" clase="w-7 h-7" %}</div>
+        <div class="w-16 h-16 rounded-xl flex-shrink-0 flex items-center justify-center bg-[var(--superficie-alt)] text-[var(--azul-medio)] transition-colors group-hover:bg-[var(--azul-medio)] group-hover:text-white">{% icono "ave" clase="w-7 h-7" %}</div>
         {% endif %}
         <div class="min-w-0">
             <p class="font-display italic font-semibold text-stone-900 dark:text-stone-100 truncate">{{ especie.nombre_cientifico }}</p>
