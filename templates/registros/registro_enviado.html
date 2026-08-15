@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load i18n iconos %}
+
+{% block titulo %}{% translate "Registro enviado" %} — Ojo Avizor{% endblock %}
+
+{% block contenido %}
+<div class="page-narrow text-center">
+    <span class="inline-flex items-center justify-center w-20 h-20 rounded-full mb-4 animate-fade-up"
+          style="background:var(--exito-fondo); color:var(--exito)">
+        {% icono "check-circulo" clase="w-10 h-10" %}
+    </span>
+    <h1 class="titulo-pagina">{% translate "¡Gracias por tu aporte!" %}</h1>
+    <p class="text-sm text-stone-500 dark:text-stone-400 mt-2 mb-8">
+        {% translate "Tu avistamiento quedó pendiente de revisión. En cuanto un Revisor lo apruebe, aparecerá en el catálogo público con tu seudónimo." %}
+    </p>
+    <div class="flex flex-col sm:flex-row gap-3 justify-center">
+        <a href="{% url 'registros:mis_registros' %}" class="btn-secondary">
+            {% icono "busqueda" clase="w-4 h-4" %} {% translate "Ver mis avistamientos" %}
+        </a>
+        <a href="{% url 'registros:crear' %}" class="btn-primary">
+            {% icono "mas" clase="w-4 h-4" %} {% translate "Registrar otro avistamiento" %}
+        </a>
+    </div>
+</div>
+{% endblock %}

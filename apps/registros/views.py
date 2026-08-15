@@ -24,11 +24,15 @@ def registro_crear(request):
                 fotos=request.FILES.getlist('fotos'),
                 **form.cleaned_data,
             )
-            messages.success(request, 'Registro enviado. Quedará pendiente de revisión.')
-            return redirect('registros:mis_registros')
+            return redirect('registros:enviado')
     else:
         form = RegistroForm()
     return render(request, 'registros/registro_crear.html', {'form': form})
+
+
+@requiere_rol(*_ROLES_APORTAR)
+def registro_enviado(request):
+    return render(request, 'registros/registro_enviado.html')
 
 
 @requiere_rol(*_ROLES_APORTAR)
