@@ -197,6 +197,11 @@ Sombras muy sutiles. Este es un producto de consulta, no una tienda.
 
 ## 6. Archivos de marca y dónde va cada uno
 
+**El símbolo.** Un ojo cuya pupila es un ave en vuelo: la observación atenta y aquello que
+se observa, en una sola forma. Los dos arcos que trazan el ojo evocan a su vez unas alas
+abiertas. Ver también `docs/identidad-visual-hoja.png` (hoja de referencia; no es un archivo
+de interfaz, no va en `static/marca/`).
+
 Guárdalos en `static/marca/`.
 
 | Archivo | Dónde se usa |
