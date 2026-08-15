@@ -27,7 +27,7 @@
                    hx-target="#resultados-especies"
                    hx-swap="innerHTML"
                    hx-push-url="true"
-                   hx-indicator="#buscando">
+                   hx-indicator="#buscando, #buscando-skeleton">
             <span id="buscando" class="htmx-indicator absolute right-3.5 top-1/2 -translate-y-1/2 text-stone-400 animate-spin">{% icono "brujula" clase="w-4 h-4" %}</span>
         </div>
 
@@ -60,8 +60,22 @@
         </a>
     </div>
 
-    <div id="resultados-especies">
-        {% include "catalogo/_resultados_especies.html" %}
+    <div class="relative">
+        <div id="buscando-skeleton" class="htmx-indicator pointer-events-none absolute inset-0 z-10 bg-[var(--superficie)] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-2">
+            {% for _ in "xxxxxx" %}
+            <div class="card p-4 flex gap-4 animate-pulse">
+                <div class="w-16 h-16 rounded-xl flex-shrink-0 bg-[var(--superficie-alt)]"></div>
+                <div class="flex-1 min-w-0 space-y-2 py-1">
+                    <div class="h-4 rounded bg-[var(--superficie-alt)] w-3/4"></div>
+                    <div class="h-3 rounded bg-[var(--superficie-alt)] w-1/2"></div>
+                    <div class="h-3 rounded bg-[var(--superficie-alt)] w-1/4"></div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div id="resultados-especies">
+            {% include "catalogo/_resultados_especies.html" %}
+        </div>
     </div>
     {% include "_paginacion.html" %}
 
