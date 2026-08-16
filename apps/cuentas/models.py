@@ -30,6 +30,11 @@ class Usuario(AbstractUser):
     rol = models.CharField(max_length=20, choices=Rol.choices, default=Rol.OBSERVADOR)
     estado = models.CharField(max_length=20, choices=Estado.choices, default=Estado.ACTIVO)
     fecha_registro = models.DateTimeField(auto_now_add=True)
+    # Consentimiento explícito, sin marcar por defecto: se pregunta al crear
+    # la cuenta y se puede revocar después desde Mi cuenta. Sin esto no se
+    # manda ningún correo de notificación (aprobación de avistamientos,
+    # respuesta a la solicitud de revisor, etc.) — ver services.notificar_por_correo.
+    acepta_notificaciones_correo = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'correo'
     EMAIL_FIELD = 'correo'

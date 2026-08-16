@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Ojo Avizor\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-16 02:12-0500\n"
+"POT-Creation-Date: 2026-08-16 02:27-0500\n"
 "PO-Revision-Date: 2026-08-15 20:00-0500\n"
 "Last-Translator: Ojo Avizor\n"
 "Language: en\n"
@@ -260,19 +260,23 @@ msgstr "Password"
 msgid "Confirmar contraseña"
 msgstr "Confirm password"
 
-#: ./apps/cuentas/forms.py:20
+#: ./apps/cuentas/forms.py:18
+msgid "Quiero recibir correos con notificaciones de la plataforma (por ejemplo, cuando aprueben o devuelvan uno de mis avistamientos)."
+msgstr "I want to receive emails with platform notifications (for example, when one of my sightings is approved or returned)."
+
+#: ./apps/cuentas/forms.py:24
 msgid "Ya existe una cuenta con este nombre de usuario."
 msgstr "An account with this username already exists."
 
-#: ./apps/cuentas/forms.py:26
+#: ./apps/cuentas/forms.py:30
 msgid "Ya existe una cuenta con este correo."
 msgstr "An account with this email already exists."
 
-#: ./apps/cuentas/forms.py:32
+#: ./apps/cuentas/forms.py:36
 msgid "Ya existe una cuenta con este seudónimo."
 msgstr "An account with this nickname already exists."
 
-#: ./apps/cuentas/forms.py:39
+#: ./apps/cuentas/forms.py:43
 msgid "Las contraseñas no coinciden."
 msgstr "Passwords do not match."
 
@@ -298,50 +302,76 @@ msgstr "Active"
 msgid "Suspendido"
 msgstr "Suspended"
 
-#: ./apps/cuentas/models.py:51 ./apps/registros/models.py:31 ./templates/registros/registro_mis.html:20
+#: ./apps/cuentas/models.py:56 ./apps/registros/models.py:31 ./templates/registros/registro_mis.html:20
 msgid "Pendiente"
 msgstr "Pending"
 
 # | msgid "Aprobado"
-#: ./apps/cuentas/models.py:52
+#: ./apps/cuentas/models.py:57
 msgid "Aprobada"
 msgstr "Approved"
 
-#: ./apps/cuentas/models.py:53
+#: ./apps/cuentas/models.py:58
 msgid "Rechazada"
 msgstr "Rejected"
 
-#: ./apps/cuentas/services.py:38
+#: ./apps/cuentas/services.py:62
 #, python-format
 msgid "\"%(rol)s\" no es un rol válido."
 msgstr "\"%(rol)s\" is not a valid role."
 
-#: ./apps/cuentas/services.py:40
+#: ./apps/cuentas/services.py:64
 msgid "No puedes cambiar tu propio rol."
 msgstr "You can't change your own role."
 
-#: ./apps/cuentas/services.py:54
+#: ./apps/cuentas/services.py:78
 msgid "Solo un Observador puede solicitar ser revisor."
 msgstr "Only an Observer can apply to be a reviewer."
 
-#: ./apps/cuentas/services.py:56
+#: ./apps/cuentas/services.py:80
 msgid "Ya tienes una solicitud pendiente de respuesta."
 msgstr "You already have a request waiting for a response."
 
-#: ./apps/cuentas/services.py:70
+#: ./apps/cuentas/services.py:94
 msgid "Esta solicitud ya fue resuelta."
 msgstr "This request has already been resolved."
 
-#: ./apps/cuentas/views.py:57
+# | msgid "Solicitudes para ser revisor"
+#: ./apps/cuentas/services.py:106
+msgid "Tu solicitud para ser revisor fue aprobada"
+msgstr "Your reviewer request was approved"
+
+#: ./apps/cuentas/services.py:108
+msgid "Un administrador aprobó tu solicitud para ser revisor voluntario en Ojo Avizor. Ya puedes crear y editar fichas de especie, y aprobar o devolver avistamientos desde la bandeja de revisión."
+msgstr "An administrator approved your request to become a volunteer reviewer on Ojo Avizor. You can now create and edit species records, and approve or return sightings from the review queue."
+
+# | msgid "Solicitudes para ser revisor"
+#: ./apps/cuentas/services.py:115
+msgid "Tu solicitud para ser revisor fue rechazada"
+msgstr "Your reviewer request was rejected"
+
+#: ./apps/cuentas/services.py:117
+msgid "Un administrador revisó tu solicitud para ser revisor voluntario en Ojo Avizor y decidió no aprobarla por ahora."
+msgstr "An administrator reviewed your request to become a volunteer reviewer on Ojo Avizor and decided not to approve it for now."
+
+#: ./apps/cuentas/views.py:59
+msgid "Vas a recibir correos con notificaciones de la plataforma."
+msgstr "You'll now receive emails with platform notifications."
+
+#: ./apps/cuentas/views.py:61
+msgid "Ya no vas a recibir correos con notificaciones de la plataforma."
+msgstr "You'll no longer receive emails with platform notifications."
+
+#: ./apps/cuentas/views.py:70
 msgid "Solicitud enviada. Un administrador la va a revisar."
 msgstr "Request sent. An administrator will look it over."
 
-#: ./apps/cuentas/views.py:92
+#: ./apps/cuentas/views.py:105
 #, python-format
 msgid "%(seudonimo)s ahora es Revisor."
 msgstr "%(seudonimo)s is now a Reviewer."
 
-#: ./apps/cuentas/views.py:104
+#: ./apps/cuentas/views.py:117
 #, python-format
 msgid "Solicitud de %(seudonimo)s rechazada."
 msgstr "%(seudonimo)s's request was rejected."
@@ -357,6 +387,37 @@ msgstr "Returned"
 #: ./apps/curaduria/models.py:42
 msgid "El motivo es obligatorio cuando la decisión es DEVUELTO."
 msgstr "A reason is required when the decision is DEVUELTO."
+
+#: ./apps/curaduria/services.py:24
+msgid "Solo se puede aprobar un registro PENDIENTE."
+msgstr "Only a PENDIENTE record can be approved."
+
+#: ./apps/curaduria/services.py:30
+msgid "Tu avistamiento fue aprobado"
+msgstr "Your sighting was approved"
+
+#: ./apps/curaduria/services.py:32
+#, python-format
+msgid "Tu avistamiento en %(lugar)s (%(fecha)s) fue aprobado y ya aparece en el catálogo público de Ojo Avizor."
+msgstr "Your sighting in %(lugar)s (%(fecha)s) was approved and is now in the Ojo Avizor public catalog."
+
+#: ./apps/curaduria/services.py:41
+msgid "Solo se puede devolver un registro PENDIENTE."
+msgstr "Only a PENDIENTE record can be returned."
+
+# | msgid "El motivo es obligatorio cuando la decisión es DEVUELTO."
+#: ./apps/curaduria/services.py:43
+msgid "El motivo es obligatorio para devolver un registro."
+msgstr "A reason is required to return a record."
+
+#: ./apps/curaduria/services.py:51
+msgid "Tu avistamiento fue devuelto"
+msgstr "Your sighting was returned"
+
+#: ./apps/curaduria/services.py:53
+#, python-format
+msgid "Tu avistamiento en %(lugar)s (%(fecha)s) fue devuelto para que lo corrijas. Motivo: %(motivo)s"
+msgstr "Your sighting in %(lugar)s (%(fecha)s) was returned for correction. Reason: %(motivo)s"
 
 #: ./apps/registros/forms.py:26
 msgid "Especie (si la identificas)"
@@ -540,7 +601,7 @@ msgstr "Common names"
 msgid "Incluye las denominaciones propias del municipio, si las hay."
 msgstr "Include names specific to the municipality, if any."
 
-#: ./templates/catalogo/especie_formulario.html:89 ./templates/cuentas/panel_admin.html:108
+#: ./templates/catalogo/especie_formulario.html:89 ./templates/cuentas/mi_cuenta.html:50 ./templates/cuentas/panel_admin.html:108
 msgid "Guardar"
 msgstr "Save"
 
@@ -859,63 +920,75 @@ msgstr "Member since"
 msgid "Tu nombre real y tu correo nunca se muestran en público — solo tu seudónimo."
 msgstr "Your real name and email are never shown in public — only your nickname."
 
-#: ./templates/cuentas/mi_cuenta.html:38
+#: ./templates/cuentas/mi_cuenta.html:39
+msgid "Notificaciones por correo"
+msgstr "Email notifications"
+
+#: ./templates/cuentas/mi_cuenta.html:42
+msgid "Avisos como la aprobación o devolución de un avistamiento, o la respuesta a una solicitud para ser revisor."
+msgstr "Notices like a sighting being approved or returned, or a response to a reviewer request."
+
+#: ./templates/cuentas/mi_cuenta.html:48
+msgid "Quiero recibir estos correos"
+msgstr "I want to receive these emails"
+
+#: ./templates/cuentas/mi_cuenta.html:55
 msgid "Mis aportes"
 msgstr "My contributions"
 
-#: ./templates/cuentas/mi_cuenta.html:43
+#: ./templates/cuentas/mi_cuenta.html:60
 msgid "en total"
 msgstr "total"
 
-#: ./templates/cuentas/mi_cuenta.html:47 ./templates/cuentas/panel_admin.html:23
+#: ./templates/cuentas/mi_cuenta.html:64 ./templates/cuentas/panel_admin.html:23
 msgid "aprobados"
 msgstr "approved"
 
-#: ./templates/cuentas/mi_cuenta.html:51 ./templates/cuentas/panel_admin.html:19
+#: ./templates/cuentas/mi_cuenta.html:68 ./templates/cuentas/panel_admin.html:19
 msgid "pendientes"
 msgstr "pending"
 
-#: ./templates/cuentas/mi_cuenta.html:55
+#: ./templates/cuentas/mi_cuenta.html:72
 msgid "especies distintas"
 msgstr "distinct species"
 
-#: ./templates/cuentas/mi_cuenta.html:60
+#: ./templates/cuentas/mi_cuenta.html:77
 #, python-format
 msgid "Tienes %(contador)s registro devuelto esperando una corrección."
 msgid_plural "Tienes %(contador)s registros devueltos esperando corrección."
 msgstr[0] "You have %(contador)s returned record waiting for correction."
 msgstr[1] "You have %(contador)s returned records waiting for correction."
 
-#: ./templates/cuentas/mi_cuenta.html:66 ./templates/registros/registro_enviado.html:18
+#: ./templates/cuentas/mi_cuenta.html:83 ./templates/registros/registro_enviado.html:18
 msgid "Ver mis avistamientos"
 msgstr "View my sightings"
 
-#: ./templates/cuentas/mi_cuenta.html:69 ./templates/registros/registro_crear.html:4 ./templates/registros/registro_crear.html:18
+#: ./templates/cuentas/mi_cuenta.html:86 ./templates/registros/registro_crear.html:4 ./templates/registros/registro_crear.html:18
 msgid "Registrar avistamiento"
 msgstr "Report sighting"
 
-#: ./templates/cuentas/mi_cuenta.html:76
+#: ./templates/cuentas/mi_cuenta.html:93
 msgid "¿Quieres ser un revisor voluntario?"
 msgstr "Want to be a volunteer reviewer?"
 
-#: ./templates/cuentas/mi_cuenta.html:79
+#: ./templates/cuentas/mi_cuenta.html:96
 msgid "Un Revisor crea y edita fichas de especie, y aprueba o devuelve los avistamientos que llegan de la comunidad. Es un compromiso de confianza: revisas contenido antes de que se publique."
 msgstr "A Reviewer creates and edits species records, and approves or returns sightings submitted by the community. It's a role built on trust: you review content before it goes public."
 
-#: ./templates/cuentas/mi_cuenta.html:85
+#: ./templates/cuentas/mi_cuenta.html:102
 #, python-format
 msgid "Tu solicitud del %(fecha)s está esperando respuesta de un administrador."
 msgstr "Your request from %(fecha)s is waiting for a response from an administrator."
 
-#: ./templates/cuentas/mi_cuenta.html:90
+#: ./templates/cuentas/mi_cuenta.html:107
 msgid "Cuéntale al administrador por qué te gustaría ser revisor (opcional)"
 msgstr "Tell the administrator why you would like to be a reviewer (optional)"
 
-#: ./templates/cuentas/mi_cuenta.html:91
+#: ./templates/cuentas/mi_cuenta.html:108
 msgid "Por ejemplo: llevo dos años observando aves en la vereda…"
 msgstr "For example: I've been watching birds in the area for two years…"
 
-#: ./templates/cuentas/mi_cuenta.html:93
+#: ./templates/cuentas/mi_cuenta.html:110
 msgid "Enviar solicitud"
 msgstr "Send request"
 
@@ -987,7 +1060,7 @@ msgstr "Sign up"
 msgid "Tu nombre real nunca se muestra en público — solo tu seudónimo."
 msgstr "Your real name is never shown in public — only your nickname."
 
-#: ./templates/cuentas/usuario_registrar.html:31
+#: ./templates/cuentas/usuario_registrar.html:37
 #, python-format
 msgid ""
 "Al registrarte, aceptas las <a href=\"%(url_condiciones)s\" class=\"underline hover:text-stone-700 dark:hover:text-stone-300\" target=\"_blank\">condiciones de uso</a>: lo que aportas sigue siendo "
@@ -996,15 +1069,15 @@ msgstr ""
 "By signing up, you accept the <a href=\"%(url_condiciones)s\" class=\"underline hover:text-stone-700 dark:hover:text-stone-300\" target=\"_blank\">terms of use</a>: what you contribute is still "
 "yours."
 
-#: ./templates/cuentas/usuario_registrar.html:33
+#: ./templates/cuentas/usuario_registrar.html:39
 msgid "Registrarme"
 msgstr "Sign up"
 
-#: ./templates/cuentas/usuario_registrar.html:38
+#: ./templates/cuentas/usuario_registrar.html:44
 msgid "¿Ya tienes cuenta?"
 msgstr "Already have an account?"
 
-#: ./templates/cuentas/usuario_registrar.html:39
+#: ./templates/cuentas/usuario_registrar.html:45
 msgid "Inicia sesión"
 msgstr "Log in"
 

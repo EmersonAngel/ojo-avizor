@@ -1,8 +1,10 @@
 """Servicios de dominio de la app cuentas (RF-09, RF-10)."""
 from functools import wraps
 
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django.core.mail import send_mail
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
@@ -17,7 +19,7 @@ class SolicitudRevisorInvalida(Exception):
     pass
 
 
-def registrar_usuario(*, username, correo, nombre_real, seudonimo, password):
+def registrar_usuario(*, username, correo, nombre_real, seudonimo, password, acepta_notificaciones_correo=False):
     """Crea una cuenta nueva con rol Observador (RF-09, RF-27)."""
     usuario = Usuario(
         username=username,
@@ -25,11 +27,33 @@ def registrar_usuario(*, username, correo, nombre_real, seudonimo, password):
         nombre_real=nombre_real,
         seudonimo=seudonimo,
         rol=Usuario.Rol.OBSERVADOR,
+        acepta_notificaciones_correo=acepta_notificaciones_correo,
     )
     usuario.set_password(password)
     usuario.full_clean()
     usuario.save()
     return usuario
+
+
+def actualizar_preferencia_notificaciones(usuario, *, acepta):
+    """El consentimiento para recibir correos se puede revocar en cualquier momento, no solo darse una vez al registrarse."""
+    usuario.acepta_notificaciones_correo = acepta
+    usuario.save(update_fields=['acepta_notificaciones_correo'])
+    return usuario
+
+
+def notificar_por_correo(usuario, *, asunto, mensaje):
+    """Manda un correo de notificación, solo si el usuario dio su consentimiento explícito.
+
+    fail_silently=True a propósito: un SMTP mal configurado no debe romper
+    la acción real que dispara la notificación (aprobar un registro,
+    resolver una solicitud) — el correo es un efecto secundario, no la
+    operación crítica.
+    """
+    if not usuario.acepta_notificaciones_correo:
+        return False
+    send_mail(asunto, mensaje, settings.DEFAULT_FROM_EMAIL, [usuario.correo], fail_silently=True)
+    return True
 
 
 def cambiar_rol(usuario, nuevo_rol, *, quien_cambia):
@@ -75,6 +99,24 @@ def resolver_solicitud_revisor(solicitud, *, aprobar, quien_resuelve):
     solicitud.resuelto_por = quien_resuelve
     solicitud.full_clean()
     solicitud.save()
+
+    if aprobar:
+        notificar_por_correo(
+            solicitud.usuario,
+            asunto=_('Tu solicitud para ser revisor fue aprobada'),
+            mensaje=_(
+                'Un administrador aprobó tu solicitud para ser revisor voluntario en Ojo Avizor. '
+                'Ya puedes crear y editar fichas de especie, y aprobar o devolver avistamientos desde la bandeja de revisión.'
+            ),
+        )
+    else:
+        notificar_por_correo(
+            solicitud.usuario,
+            asunto=_('Tu solicitud para ser revisor fue rechazada'),
+            mensaje=_(
+                'Un administrador revisó tu solicitud para ser revisor voluntario en Ojo Avizor y decidió no aprobarla por ahora.'
+            ),
+        )
     return solicitud
 
 

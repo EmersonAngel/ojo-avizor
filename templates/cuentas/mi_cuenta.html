@@ -34,6 +34,23 @@
         </p>
     </div>
 
+    <div class="card p-5 sm:p-6 mb-6">
+        <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400 mb-1">
+            {% translate "Notificaciones por correo" %}
+        </h2>
+        <p class="field-hint !mt-0 mb-3">
+            {% translate "Avisos como la aprobación o devolución de un avistamiento, o la respuesta a una solicitud para ser revisor." %}
+        </p>
+        <form method="post" action="{% url 'cuentas:actualizar_notificaciones' %}" class="flex items-center gap-3">
+            {% csrf_token %}
+            <label class="flex items-center gap-2 text-sm text-stone-700 dark:text-stone-300">
+                <input type="checkbox" name="acepta_notificaciones_correo" {% if user.acepta_notificaciones_correo %}checked{% endif %}>
+                {% translate "Quiero recibir estos correos" %}
+            </label>
+            <button type="submit" class="btn-secondary !px-3 !py-1.5 text-xs">{% translate "Guardar" %}</button>
+        </form>
+    </div>
+
     <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400 mb-3">
         {% translate "Mis aportes" %}
     </h2>

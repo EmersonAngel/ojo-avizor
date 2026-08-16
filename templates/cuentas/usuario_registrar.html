@@ -18,6 +18,7 @@
         <form method="post" class="space-y-4">
             {% csrf_token %}
             {% for field in form %}
+            {% if field.name != 'acepta_notificaciones_correo' %}
             <div>
                 <label class="field-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
                 {{ field }}
@@ -25,7 +26,12 @@
                 <p class="field-error">{{ error }}</p>
                 {% endfor %}
             </div>
+            {% endif %}
             {% endfor %}
+            <label class="flex items-start gap-2 text-sm text-stone-700 dark:text-stone-300">
+                {{ form.acepta_notificaciones_correo }}
+                <span>{{ form.acepta_notificaciones_correo.label }}</span>
+            </label>
             {% url 'condiciones_uso' as url_condiciones %}
             <p class="text-xs text-stone-500 dark:text-stone-400">
                 {% blocktranslate %}Al registrarte, aceptas las <a href="{{ url_condiciones }}" class="underline hover:text-stone-700 dark:hover:text-stone-300" target="_blank">condiciones de uso</a>: lo que aportas sigue siendo tuyo.{% endblocktranslate %}

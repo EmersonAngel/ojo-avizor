@@ -13,6 +13,10 @@ class RegistroForm(forms.Form):
     seudonimo = forms.CharField(max_length=50, label=_('Seudónimo'))
     password1 = forms.CharField(widget=forms.PasswordInput, label=_('Contraseña'))
     password2 = forms.CharField(widget=forms.PasswordInput, label=_('Confirmar contraseña'))
+    acepta_notificaciones_correo = forms.BooleanField(
+        required=False,
+        label=_('Quiero recibir correos con notificaciones de la plataforma (por ejemplo, cuando aprueben o devuelvan uno de mis avistamientos).'),
+    )
 
     def clean_username(self):
         username = self.cleaned_data['username']

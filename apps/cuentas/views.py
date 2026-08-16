@@ -27,6 +27,7 @@ def registrar(request):
                 nombre_real=form.cleaned_data['nombre_real'],
                 seudonimo=form.cleaned_data['seudonimo'],
                 password=form.cleaned_data['password1'],
+                acepta_notificaciones_correo=form.cleaned_data['acepta_notificaciones_correo'],
             )
             login(request, usuario)
             return redirect('/')
@@ -47,6 +48,18 @@ def mi_cuenta(request):
         'especies_distintas': especies_distintas,
         'solicitud_revisor_pendiente': repositories.obtener_solicitud_revisor_pendiente(request.user),
     })
+
+
+@login_required
+def actualizar_notificaciones(request):
+    if request.method == 'POST':
+        acepta = bool(request.POST.get('acepta_notificaciones_correo'))
+        services.actualizar_preferencia_notificaciones(request.user, acepta=acepta)
+        if acepta:
+            messages.success(request, _('Vas a recibir correos con notificaciones de la plataforma.'))
+        else:
+            messages.success(request, _('Ya no vas a recibir correos con notificaciones de la plataforma.'))
+    return redirect('cuentas:mi_cuenta')
 
 
 @login_required
