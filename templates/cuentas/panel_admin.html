@@ -43,6 +43,35 @@
     </a>
     {% endif %}
 
+    {% if solicitudes_revisor %}
+    <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400 mb-3">
+        {% translate "Solicitudes para ser revisor" %} ({{ solicitudes_revisor|length }})
+    </h2>
+    <div class="space-y-3 mb-8">
+        {% for solicitud in solicitudes_revisor %}
+        <div class="card p-4 flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
+            <div class="min-w-0">
+                <p class="font-medium text-stone-900 dark:text-stone-100">{{ solicitud.usuario.seudonimo }}</p>
+                <p class="text-xs text-stone-500 dark:text-stone-400">{{ solicitud.usuario.correo }} · {{ solicitud.fecha_solicitud|date:"d/m/Y" }}</p>
+                {% if solicitud.mensaje %}
+                <p class="text-sm text-stone-700 dark:text-stone-300 mt-1.5">{{ solicitud.mensaje }}</p>
+                {% endif %}
+            </div>
+            <div class="flex items-center gap-2 flex-shrink-0">
+                <form method="post" action="{% url 'cuentas:solicitud_revisor_rechazar' solicitud.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-ghost !px-3 !py-1.5 text-xs">{% translate "Rechazar" %}</button>
+                </form>
+                <form method="post" action="{% url 'cuentas:solicitud_revisor_aprobar' solicitud.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-secondary !px-3 !py-1.5 text-xs">{% icono "check" clase="w-3.5 h-3.5" %} {% translate "Aprobar" %}</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
     <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400 mb-3">
         {% translate "Usuarios" %} ({{ usuarios.count }})
     </h2>

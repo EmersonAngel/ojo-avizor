@@ -2,14 +2,15 @@
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.translation import gettext as _
 
 from apps.catalogo import repositories as catalogo_repositories
 from apps.registros import repositories as registros_repositories
 
 from . import repositories, services
 from .forms import RegistroForm
-from .models import Usuario
+from .models import SolicitudRevisor, Usuario
 from .services import requiere_rol
 
 
@@ -44,7 +45,19 @@ def mi_cuenta(request):
         'conteos': conteos,
         'total_aportes': total,
         'especies_distintas': especies_distintas,
+        'solicitud_revisor_pendiente': repositories.obtener_solicitud_revisor_pendiente(request.user),
     })
+
+
+@login_required
+def solicitar_revisor(request):
+    if request.method == 'POST':
+        try:
+            services.solicitar_ser_revisor(request.user, mensaje=request.POST.get('mensaje', '').strip())
+            messages.success(request, _('Solicitud enviada. Un administrador la va a revisar.'))
+        except services.SolicitudRevisorInvalida as error:
+            messages.error(request, str(error))
+    return redirect('cuentas:mi_cuenta')
 
 
 @requiere_rol(Usuario.Rol.ADMINISTRADOR)
@@ -66,4 +79,29 @@ def panel_admin(request):
         'total_especies': catalogo_repositories.contar_especies(),
         'registros_por_estado': registros_repositories.contar_todos_por_estado(),
         'roles': Usuario.Rol.choices,
+        'solicitudes_revisor': repositories.listar_solicitudes_revisor_pendientes(),
     })
+
+
+@requiere_rol(Usuario.Rol.ADMINISTRADOR)
+def solicitud_revisor_aprobar(request, pk):
+    solicitud = get_object_or_404(SolicitudRevisor, pk=pk)
+    if request.method == 'POST':
+        try:
+            services.resolver_solicitud_revisor(solicitud, aprobar=True, quien_resuelve=request.user)
+            messages.success(request, _('%(seudonimo)s ahora es Revisor.') % {'seudonimo': solicitud.usuario.seudonimo})
+        except (services.SolicitudRevisorInvalida, services.CambioRolInvalido) as error:
+            messages.error(request, str(error))
+    return redirect('cuentas:panel_admin')
+
+
+@requiere_rol(Usuario.Rol.ADMINISTRADOR)
+def solicitud_revisor_rechazar(request, pk):
+    solicitud = get_object_or_404(SolicitudRevisor, pk=pk)
+    if request.method == 'POST':
+        try:
+            services.resolver_solicitud_revisor(solicitud, aprobar=False, quien_resuelve=request.user)
+            messages.success(request, _('Solicitud de %(seudonimo)s rechazada.') % {'seudonimo': solicitud.usuario.seudonimo})
+        except services.SolicitudRevisorInvalida as error:
+            messages.error(request, str(error))
+    return redirect('cuentas:panel_admin')

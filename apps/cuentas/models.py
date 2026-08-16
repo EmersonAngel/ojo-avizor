@@ -3,6 +3,7 @@
 Ver docs/modelo-datos.md. El rol Visitante no es un registro en base de
 datos: es el usuario no autenticado.
 """
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -35,3 +36,42 @@ class Usuario(AbstractUser):
 
     def __str__(self):
         return self.seudonimo
+
+
+class SolicitudRevisor(models.Model):
+    """Pedido de un Observador para convertirse en Revisor voluntario.
+
+    No cambia el rol por sí sola: un Administrador la resuelve desde el
+    panel (ver services.resolver_solicitud_revisor), que es quien de verdad
+    aplica el cambio de rol vía services.cambiar_rol.
+    """
+
+    class Estado(models.TextChoices):
+        PENDIENTE = 'PENDIENTE', _('Pendiente')
+        APROBADA = 'APROBADA', _('Aprobada')
+        RECHAZADA = 'RECHAZADA', _('Rechazada')
+
+    usuario = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='solicitudes_revisor',
+    )
+    mensaje = models.TextField(blank=True)
+    estado = models.CharField(max_length=20, choices=Estado.choices, default=Estado.PENDIENTE)
+    fecha_solicitud = models.DateTimeField(auto_now_add=True)
+    fecha_resolucion = models.DateTimeField(null=True, blank=True)
+    resuelto_por = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='solicitudes_revisor_resueltas',
+    )
+
+    class Meta:
+        verbose_name = 'solicitud de revisor'
+        verbose_name_plural = 'solicitudes de revisor'
+        ordering = ['-fecha_solicitud']
+
+    def __str__(self):
+        return f'Solicitud de {self.usuario.seudonimo} ({self.estado})'

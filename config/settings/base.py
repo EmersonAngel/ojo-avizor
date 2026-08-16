@@ -68,6 +68,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.i18n',
+                'apps.cuentas.context_processors.solicitudes_revisor_pendientes',
             ],
         },
     },

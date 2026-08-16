@@ -8,7 +8,10 @@ app_name = 'cuentas'
 urlpatterns = [
     path('registrar/', views.registrar, name='registrar'),
     path('mi-cuenta/', views.mi_cuenta, name='mi_cuenta'),
+    path('mi-cuenta/solicitar-revisor/', views.solicitar_revisor, name='solicitar_revisor'),
     path('panel/', views.panel_admin, name='panel_admin'),
+    path('panel/solicitudes/<int:pk>/aprobar/', views.solicitud_revisor_aprobar, name='solicitud_revisor_aprobar'),
+    path('panel/solicitudes/<int:pk>/rechazar/', views.solicitud_revisor_rechazar, name='solicitud_revisor_rechazar'),
     path(
         'entrar/',
         auth_views.LoginView.as_view(template_name='cuentas/sesion_iniciar.html'),

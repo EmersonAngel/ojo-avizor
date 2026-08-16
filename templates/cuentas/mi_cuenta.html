@@ -69,5 +69,32 @@
             {% icono "mas" clase="w-4 h-4" %} {% translate "Registrar avistamiento" %}
         </a>
     </div>
+
+    {% if user.rol == 'OBSERVADOR' %}
+    <div class="card p-5 sm:p-6 mt-6 border-l-4 border-[var(--azul-medio)]">
+        <h2 class="text-sm font-semibold uppercase tracking-wide text-[var(--azul-medio)] inline-flex items-center gap-1.5">
+            {% icono "check-circulo" clase="w-4 h-4" %} {% translate "¿Quieres ser un revisor voluntario?" %}
+        </h2>
+        <p class="text-stone-700 dark:text-stone-300 mt-2 text-sm">
+            {% translate "Un Revisor crea y edita fichas de especie, y aprueba o devuelve los avistamientos que llegan de la comunidad. Es un compromiso de confianza: revisas contenido antes de que se publique." %}
+        </p>
+
+        {% if solicitud_revisor_pendiente %}
+        <div class="mt-4 rounded-xl p-3 bg-[var(--alerta-fondo)] text-[var(--alerta)] text-sm flex items-start gap-2">
+            {% icono "ayuda" clase="w-4 h-4 flex-shrink-0 mt-0.5" %}
+            <span>{% blocktranslate with fecha=solicitud_revisor_pendiente.fecha_solicitud|date:"d \d\e F" %}Tu solicitud del {{ fecha }} está esperando respuesta de un administrador.{% endblocktranslate %}</span>
+        </div>
+        {% else %}
+        <form method="post" action="{% url 'cuentas:solicitar_revisor' %}" class="mt-4">
+            {% csrf_token %}
+            <label class="field-label" for="mensaje-solicitud">{% translate "Cuéntale al administrador por qué te gustaría ser revisor (opcional)" %}</label>
+            <textarea id="mensaje-solicitud" name="mensaje" rows="2" placeholder="{% translate 'Por ejemplo: llevo dos años observando aves en la vereda…' %}"></textarea>
+            <button type="submit" class="btn-secondary mt-3">
+                {% icono "check-circulo" clase="w-4 h-4" %} {% translate "Enviar solicitud" %}
+            </button>
+        </form>
+        {% endif %}
+    </div>
+    {% endif %}
 </div>
 {% endblock %}
