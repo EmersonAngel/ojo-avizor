@@ -8,6 +8,7 @@ app_name = 'cuentas'
 urlpatterns = [
     path('registrar/', views.registrar, name='registrar'),
     path('mi-cuenta/', views.mi_cuenta, name='mi_cuenta'),
+    path('panel/', views.panel_admin, name='panel_admin'),
     path(
         'entrar/',
         auth_views.LoginView.as_view(template_name='cuentas/sesion_iniciar.html'),

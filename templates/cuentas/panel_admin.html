@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load i18n iconos %}
+
+{% block titulo %}{% translate "Panel de administración" %} — Ojo Avizor{% endblock %}
+
+{% block contenido %}
+<div class="page-wide">
+    <h1 class="titulo-pagina mb-6 inline-flex items-center gap-2">
+        {% icono "carpeta" clase="w-6 h-6" %} {% translate "Panel de administración" %}
+    </h1>
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-8">
+        <div class="card p-4 text-center">
+            <p class="font-display text-2xl font-bold text-[var(--cian)]">{{ total_especies }}</p>
+            <p class="text-xs text-stone-500 dark:text-stone-400 mt-0.5">{% translate "especies" %}</p>
+        </div>
+        <div class="card p-4 text-center">
+            <p class="font-display text-2xl font-bold text-[var(--cian)]">{{ registros_por_estado.PENDIENTE }}</p>
+            <p class="text-xs text-stone-500 dark:text-stone-400 mt-0.5">{% translate "pendientes" %}</p>
+        </div>
+        <div class="card p-4 text-center">
+            <p class="font-display text-2xl font-bold text-[var(--cian)]">{{ registros_por_estado.APROBADO }}</p>
+            <p class="text-xs text-stone-500 dark:text-stone-400 mt-0.5">{% translate "aprobados" %}</p>
+        </div>
+        <div class="card p-4 text-center">
+            <p class="font-display text-2xl font-bold text-[var(--cian)]">{{ registros_por_estado.DEVUELTO }}</p>
+            <p class="text-xs text-stone-500 dark:text-stone-400 mt-0.5">{% translate "devueltos" %}</p>
+        </div>
+        <div class="card p-4 text-center">
+            <p class="font-display text-2xl font-bold text-[var(--cian)]">{{ usuarios_por_rol.OBSERVADOR }}</p>
+            <p class="text-xs text-stone-500 dark:text-stone-400 mt-0.5">{% translate "observadores" %}</p>
+        </div>
+        <div class="card p-4 text-center">
+            <p class="font-display text-2xl font-bold text-[var(--cian)]">{{ usuarios_por_rol.REVISOR }}</p>
+            <p class="text-xs text-stone-500 dark:text-stone-400 mt-0.5">{% translate "revisores" %}</p>
+        </div>
+    </div>
+
+    {% if registros_por_estado.PENDIENTE %}
+    <a href="{% url 'curaduria:bandeja' %}" class="card-interactive p-4 mb-8 flex items-center gap-3 text-sm">
+        {% icono "check-circulo" clase="w-5 h-5 text-[var(--azul-medio)]" %}
+        {% blocktranslate count contador=registros_por_estado.PENDIENTE %}Hay {{ contador }} avistamiento esperando revisión — ir a la bandeja.{% plural %}Hay {{ contador }} avistamientos esperando revisión — ir a la bandeja.{% endblocktranslate %}
+    </a>
+    {% endif %}
+
+    <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400 mb-3">
+        {% translate "Usuarios" %} ({{ usuarios.count }})
+    </h2>
+    <div class="card overflow-hidden overflow-x-auto">
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="text-left bg-stone-50 dark:bg-stone-800/60 text-stone-500 dark:text-stone-400 text-xs uppercase tracking-wide">
+                    <th class="py-3 px-4 font-semibold">{% translate "Seudónimo" %}</th>
+                    <th class="py-3 px-4 font-semibold">{% translate "Nombre real" %}</th>
+                    <th class="py-3 px-4 font-semibold">{% translate "Correo" %}</th>
+                    <th class="py-3 px-4 font-semibold">{% translate "Miembro desde" %}</th>
+                    <th class="py-3 px-4 font-semibold">{% translate "Rol" %}</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-stone-100 dark:divide-stone-800">
+                {% for usuario in usuarios %}
+                <tr class="hover:bg-stone-50 dark:hover:bg-stone-800/40 transition-colors">
+                    <td class="py-3 px-4 font-medium text-stone-900 dark:text-stone-100">{{ usuario.seudonimo }}</td>
+                    <td class="py-3 px-4 text-stone-600 dark:text-stone-400">{{ usuario.nombre_real }}</td>
+                    <td class="py-3 px-4 text-stone-600 dark:text-stone-400">{{ usuario.correo }}</td>
+                    <td class="py-3 px-4 text-stone-600 dark:text-stone-400">{{ usuario.fecha_registro|date:"d/m/Y" }}</td>
+                    <td class="py-3 px-4">
+                        {% if usuario.pk == request.user.pk %}
+                        <span class="badge bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300">{{ usuario.get_rol_display }} ({% translate "tú" %})</span>
+                        {% else %}
+                        <form method="post" class="flex items-center gap-2">
+                            {% csrf_token %}
+                            <input type="hidden" name="usuario_id" value="{{ usuario.pk }}">
+                            <select name="rol" class="!w-auto !py-1 !text-xs">
+                                {% for valor, etiqueta in roles %}
+                                <option value="{{ valor }}" {% if valor == usuario.rol %}selected{% endif %}>{{ etiqueta }}</option>
+                                {% endfor %}
+                            </select>
+                            <button type="submit" class="btn-secondary !px-2.5 !py-1 text-xs">{% translate "Guardar" %}</button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

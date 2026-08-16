@@ -31,6 +31,14 @@ def listar_ultimos_publicados(cantidad=6):
     )
 
 
+def contar_todos_por_estado():
+    """Cuántos registros hay en cada estado, para el panel de administrador."""
+    conteos = {estado: 0 for estado, _ in Registro.Estado.choices}
+    for fila in Registro.objects.values('estado').annotate(total=Count('id')):
+        conteos[fila['estado']] = fila['total']
+    return conteos
+
+
 def contar_por_estado_de_usuario(usuario):
     """Cuántos registros tiene un usuario en cada estado, para su página de cuenta."""
     conteos = {estado: 0 for estado, _ in Registro.Estado.choices}
