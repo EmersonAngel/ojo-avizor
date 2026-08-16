@@ -211,6 +211,16 @@
         .logo-oscuro { display: none; }
         [data-tema="oscuro"] .logo-claro { display: none; }
         [data-tema="oscuro"] .logo-oscuro { display: block; }
+
+        /* Mapa de distribución (templatetags/mapa.py): el archivo SVG trae sus
+           propios atributos width/height (2776.6 x 1163.1, su tamaño natural).
+           Sin esta regla, el navegador lo dibuja a ese tamaño real dentro de
+           un contenedor position:relative sin overflow propio, y termina
+           empujando la altura de la caja mucho más allá de lo que pide su
+           aspect-ratio (ver templates/catalogo/publico_detalle.html y
+           especie_formulario.html). Forzarlo a 100%/100% deja que el viewBox
+           siga controlando el encuadre interno, solo cambia el tamaño de la caja. */
+        svg[x-ref="svg"] { width: 100%; height: 100%; display: block; }
     </style>
 
     <style type="text/tailwindcss">
