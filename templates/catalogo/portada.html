@@ -28,7 +28,7 @@
         </form>
 
         <div class="flex flex-wrap items-center justify-center gap-3 mt-6">
-            <a href="{% url 'catalogo:publico_listado' %}" class="btn-secondary !bg-white !border-white">
+            <a href="{% url 'catalogo:publico_listado' %}" class="btn-secondary !bg-white !border-white !text-stone-900">
                 {% icono "libro" clase="w-4 h-4" %} {% translate "Explorar el catálogo" %}
             </a>
             <a href="{% if user.is_authenticated %}{% url 'registros:crear' %}{% else %}{% url 'cuentas:registrar' %}{% endif %}" class="btn-primary">
