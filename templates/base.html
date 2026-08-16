@@ -242,8 +242,10 @@
                 background-color: var(--azul-medio);
                 border-radius: var(--radio-chico);
                 min-height: 44px;
+                box-shadow: var(--sombra-tarjeta);
             }
-            .btn-primary:hover { filter: brightness(.92); }
+            .btn-primary:hover { filter: brightness(.94); box-shadow: var(--sombra-elevada); transform: translateY(-1px); }
+            .btn-primary:active { transform: translateY(0); }
             .btn-secondary {
                 @apply btn focus-visible:ring-[var(--azul-medio)];
                 background-color: transparent;
@@ -252,7 +254,25 @@
                 border-radius: var(--radio-chico);
                 min-height: 44px;
             }
-            .btn-secondary:hover { background-color: var(--superficie-alt); }
+            .btn-secondary:hover { background-color: var(--superficie-alt); border-color: var(--azul-medio); }
+            /* Botón de "Iniciar sesión": contorno, para emparejar visualmente
+               con el botón sólido de "Crear cuenta" en vez de quedar como
+               texto suelto. Se usa tanto en la barra (fondo oscuro en los
+               dos temas) como en el menú móvil (fondo claro/oscuro normal
+               del tema) — por defecto es como .btn-secondary, y solo dentro
+               de .barra-superior-nav cambia a contorno claro fijo, igual que
+               .nav-link unas líneas más abajo. */
+            .btn-outline-barra {
+                @apply btn;
+                background-color: transparent;
+                color: var(--azul-profundo);
+                border: 1px solid var(--borde);
+                border-radius: var(--radio-chico);
+                min-height: 44px;
+            }
+            .btn-outline-barra:hover { background-color: var(--superficie-alt); border-color: var(--azul-medio); }
+            .barra-superior-nav .btn-outline-barra { color: var(--texto-en-barra); border-color: var(--barra-hover); }
+            .barra-superior-nav .btn-outline-barra:hover { background-color: var(--barra-hover); border-color: rgba(255, 255, 255, .35); }
             .btn-danger { @apply btn rounded-lg bg-red-600 text-white shadow-sm shadow-red-900/20 hover:bg-red-700 hover:shadow-md focus-visible:ring-red-500; }
             .btn-ghost { @apply btn rounded-lg bg-transparent text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 focus-visible:ring-stone-400; }
 
@@ -350,7 +370,7 @@
 
             <nav class="hidden sm:flex text-sm items-center gap-4 barra-superior-nav">
                 <div class="flex items-center gap-1">
-                    {% include "_nav_enlaces.html" %}
+                    {% include "_nav_enlaces.html" with mostrar_invitado=False %}
                 </div>
 
                 <div class="flex items-center gap-1 pl-3 border-l border-[var(--barra-hover)]">
@@ -384,8 +404,8 @@
                         </div>
                     </div>
                     {% else %}
-                    <a class="nav-link" href="{% url 'cuentas:iniciar_sesion' %}">{% translate "Iniciar sesión" %}</a>
-                    <a class="btn-primary !px-3 !py-1.5 text-sm" href="{% url 'cuentas:registrar' %}">{% translate "Crear cuenta" %}</a>
+                    <a class="btn-outline-barra !px-3.5 !py-1.5 text-sm" href="{% url 'cuentas:iniciar_sesion' %}">{% translate "Iniciar sesión" %}</a>
+                    <a class="btn-primary !px-3.5 !py-1.5 text-sm" href="{% url 'cuentas:registrar' %}">{% translate "Crear cuenta" %}</a>
                     {% endif %}
                 </div>
             </nav>
