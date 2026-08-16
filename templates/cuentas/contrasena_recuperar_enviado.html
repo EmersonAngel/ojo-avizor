@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load i18n iconos %}
+
+{% block titulo %}{% translate "Revisa tu correo" %} — Ojo Avizor{% endblock %}
+
+{% block contenido %}
+<div class="page-narrow">
+    <div class="card p-6 sm:p-8 text-center">
+        <span class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[var(--superficie-alt)] text-[var(--azul-medio)] mx-auto mb-4">
+            {% icono "ayuda" clase="w-7 h-7" %}
+        </span>
+        <h1 class="titulo-pagina">{% translate "Revisa tu correo" %}</h1>
+        <p class="text-stone-600 dark:text-stone-400 mt-2">
+            {% translate "Si el correo que escribiste está registrado, te enviamos un enlace para elegir una contraseña nueva. Puede tardar unos minutos en llegar." %}
+        </p>
+    </div>
+    <p class="text-sm text-center mt-4 text-stone-600 dark:text-stone-400">
+        <a class="btn-link" href="{% url 'cuentas:iniciar_sesion' %}">{% translate "Volver a iniciar sesión" %}</a>
+    </p>
+</div>
+{% endblock %}

@@ -118,3 +118,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = 'cuentas:iniciar_sesion'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+
+# Recuperar contraseña: en desarrollo el correo se imprime en la consola
+# (ver EMAIL_BACKEND en desarrollo.py); en producción hace falta configurar
+# un proveedor SMTP real vía variables de entorno.
+DEFAULT_FROM_EMAIL = env('DJANGO_DEFAULT_FROM_EMAIL', 'Ojo Avizor <no-responder@ojoavizor.local>')

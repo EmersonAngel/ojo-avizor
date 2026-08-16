@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block titulo %}{% translate "Elegir contraseña nueva" %} — Ojo Avizor{% endblock %}
+
+{% block contenido %}
+<div class="page-narrow">
+    <div class="card p-6 sm:p-8">
+        <div class="text-center mb-6">
+            <img src="{% static 'marca/logo-apilado.png' %}" alt="Ojo Avizor" class="logo-claro h-16 w-auto mx-auto">
+            <img src="{% static 'marca/logo-apilado-modo-oscuro.png' %}" alt="Ojo Avizor" class="logo-oscuro h-16 w-auto mx-auto">
+            <h1 class="titulo-pagina mt-3">{% translate "Elegir contraseña nueva" %}</h1>
+        </div>
+
+        {% if validlink %}
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+            <div>
+                <label class="field-label" for="{{ form.new_password1.id_for_label }}">{% translate "Contraseña nueva" %}</label>
+                {{ form.new_password1 }}
+                {% for error in form.new_password1.errors %}
+                <p class="field-error">{{ error }}</p>
+                {% endfor %}
+            </div>
+            <div>
+                <label class="field-label" for="{{ form.new_password2.id_for_label }}">{% translate "Confirmar contraseña" %}</label>
+                {{ form.new_password2 }}
+                {% for error in form.new_password2.errors %}
+                <p class="field-error">{{ error }}</p>
+                {% endfor %}
+            </div>
+            <button type="submit" class="btn-primary w-full">{% translate "Guardar contraseña" %}</button>
+        </form>
+        {% else %}
+        <p class="text-sm text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-900 rounded-lg p-3">
+            {% translate "Este enlace para elegir una contraseña nueva ya no es válido — puede que ya lo hayas usado, o que haya caducado. Pide uno nuevo." %}
+        </p>
+        <a class="btn-secondary w-full mt-4 justify-center" href="{% url 'cuentas:password_reset' %}">{% translate "Pedir un enlace nuevo" %}</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

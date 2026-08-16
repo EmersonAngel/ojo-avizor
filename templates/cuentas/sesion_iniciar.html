@@ -29,6 +29,9 @@
             {% endfor %}
             <button type="submit" class="btn-primary w-full">{% translate "Entrar" %}</button>
         </form>
+        <p class="text-sm text-center mt-4">
+            <a class="btn-link" href="{% url 'cuentas:password_reset' %}">{% translate "¿Olvidaste tu contraseña?" %}</a>
+        </p>
     </div>
     <p class="text-sm text-center mt-4 text-stone-600 dark:text-stone-400">
         {% translate "¿No tienes cuenta?" %}

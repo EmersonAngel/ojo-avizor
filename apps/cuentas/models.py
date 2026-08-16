@@ -32,6 +32,7 @@ class Usuario(AbstractUser):
     fecha_registro = models.DateTimeField(auto_now_add=True)
 
     USERNAME_FIELD = 'correo'
+    EMAIL_FIELD = 'correo'
     REQUIRED_FIELDS = ['username', 'nombre_real', 'seudonimo']
 
     def __str__(self):

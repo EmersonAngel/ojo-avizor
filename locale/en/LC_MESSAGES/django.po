@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Ojo Avizor\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-16 00:51-0500\n"
+"POT-Creation-Date: 2026-08-16 01:39-0500\n"
 "PO-Revision-Date: 2026-08-15 20:00-0500\n"
 "Last-Translator: Ojo Avizor\n"
 "Language: en\n"
@@ -240,7 +240,7 @@ msgstr "Uruguay"
 msgid "Usuario"
 msgstr "Username"
 
-#: ./apps/cuentas/forms.py:11 ./templates/cuentas/mi_cuenta.html:24 ./templates/cuentas/panel_admin.html:84
+#: ./apps/cuentas/forms.py:11 ./templates/cuentas/contrasena_recuperar.html:21 ./templates/cuentas/mi_cuenta.html:24 ./templates/cuentas/panel_admin.html:84
 msgid "Correo"
 msgstr "Email"
 
@@ -256,7 +256,7 @@ msgstr "Nickname"
 msgid "Contraseña"
 msgstr "Password"
 
-#: ./apps/cuentas/forms.py:15
+#: ./apps/cuentas/forms.py:15 ./templates/cuentas/contrasena_confirmar.html:26
 msgid "Confirmar contraseña"
 msgstr "Confirm password"
 
@@ -298,16 +298,16 @@ msgstr "Active"
 msgid "Suspendido"
 msgstr "Suspended"
 
-#: ./apps/cuentas/models.py:50 ./apps/registros/models.py:31 ./templates/registros/registro_mis.html:20
+#: ./apps/cuentas/models.py:51 ./apps/registros/models.py:31 ./templates/registros/registro_mis.html:20
 msgid "Pendiente"
 msgstr "Pending"
 
 # | msgid "Aprobado"
-#: ./apps/cuentas/models.py:51
+#: ./apps/cuentas/models.py:52
 msgid "Aprobada"
 msgstr "Approved"
 
-#: ./apps/cuentas/models.py:52
+#: ./apps/cuentas/models.py:53
 msgid "Rechazada"
 msgstr "Rejected"
 
@@ -428,11 +428,11 @@ msgstr "Species records"
 msgid "Bandeja de revisión"
 msgstr "Review queue"
 
-#: ./templates/_nav_enlaces.html:20 ./templates/base.html:388 ./templates/cuentas/sesion_iniciar.html:4 ./templates/cuentas/sesion_iniciar.html:12
+#: ./templates/_nav_enlaces.html:20 ./templates/base.html:418 ./templates/cuentas/contrasena_completa.html:16 ./templates/cuentas/sesion_iniciar.html:4 ./templates/cuentas/sesion_iniciar.html:12
 msgid "Iniciar sesión"
 msgstr "Log in"
 
-#: ./templates/_nav_enlaces.html:22 ./templates/base.html:389 ./templates/cuentas/usuario_registrar.html:4 ./templates/cuentas/usuario_registrar.html:12
+#: ./templates/_nav_enlaces.html:22 ./templates/base.html:419 ./templates/cuentas/usuario_registrar.html:4 ./templates/cuentas/usuario_registrar.html:12
 msgid "Crear cuenta"
 msgstr "Create account"
 
@@ -465,40 +465,40 @@ msgstr "English"
 msgid "Inventario participativo de avifauna, construido por la comunidad."
 msgstr "A participatory bird inventory, built by the community."
 
-#: ./templates/base.html:339 ./templates/base.html:361
+#: ./templates/base.html:369 ./templates/base.html:391
 msgid "Cambiar tema"
 msgstr "Switch theme"
 
-#: ./templates/base.html:346
+#: ./templates/base.html:376
 msgid "Abrir menú"
 msgstr "Open menu"
 
 # | msgid "Crear cuenta"
-#: ./templates/base.html:370
+#: ./templates/base.html:400
 msgid "Menú de la cuenta"
 msgstr "Account menu"
 
-#: ./templates/base.html:425
+#: ./templates/base.html:455
 msgid "Cerrar"
 msgstr "Close"
 
-#: ./templates/base.html:441
+#: ./templates/base.html:471
 msgid "inventario participativo de avifauna"
 msgstr "participatory bird inventory"
 
-#: ./templates/base.html:443
+#: ./templates/base.html:473
 msgid "Un proyecto de la comunidad, para la comunidad."
 msgstr "A project by the community, for the community."
 
-#: ./templates/base.html:445 ./templates/condiciones_uso.html:4 ./templates/condiciones_uso.html:8
+#: ./templates/base.html:475 ./templates/condiciones_uso.html:4 ./templates/condiciones_uso.html:8
 msgid "Condiciones de uso"
 msgstr "Terms of use"
 
-#: ./templates/base.html:449
+#: ./templates/base.html:479
 msgid "Un proyecto de la comunidad de Pijao, con el acompañamiento de:"
 msgstr "A project by the Pijao community, supported by:"
 
-#: ./templates/base.html:478
+#: ./templates/base.html:508
 msgid "Volver arriba"
 msgstr "Back to top"
 
@@ -760,6 +760,88 @@ msgstr "6. Everything goes through review"
 msgid "Ningún aporte se publica sin que un Revisor lo apruebe. Si te devuelven un registro, siempre viene con un motivo explicado — se conserva, no se elimina — y puedes corregirlo y reenviarlo."
 msgstr "No contribution is published until a Reviewer approves it. If a record is returned to you, it always comes with an explained reason — it is kept, not deleted — and you can correct and resend it."
 
+# | msgid "Contraseña"
+#: ./templates/cuentas/contrasena_completa.html:4 ./templates/cuentas/contrasena_completa.html:12
+msgid "Contraseña actualizada"
+msgstr "Password updated"
+
+#: ./templates/cuentas/contrasena_completa.html:14
+msgid "Ya puedes iniciar sesión con tu contraseña nueva."
+msgstr "You can now log in with your new password."
+
+# | msgid "Confirmar contraseña"
+#: ./templates/cuentas/contrasena_confirmar.html:4 ./templates/cuentas/contrasena_confirmar.html:12
+msgid "Elegir contraseña nueva"
+msgstr "Choose a new password"
+
+# | msgid "Contraseña"
+#: ./templates/cuentas/contrasena_confirmar.html:19
+msgid "Contraseña nueva"
+msgstr "New password"
+
+# | msgid "Confirmar contraseña"
+#: ./templates/cuentas/contrasena_confirmar.html:32
+msgid "Guardar contraseña"
+msgstr "Save password"
+
+#: ./templates/cuentas/contrasena_confirmar.html:36
+msgid "Este enlace para elegir una contraseña nueva ya no es válido — puede que ya lo hayas usado, o que haya caducado. Pide uno nuevo."
+msgstr "This link to choose a new password is no longer valid — you may have already used it, or it may have expired. Request a new one."
+
+#: ./templates/cuentas/contrasena_confirmar.html:38
+msgid "Pedir un enlace nuevo"
+msgstr "Request a new link"
+
+# | msgid "Confirmar contraseña"
+#: ./templates/cuentas/contrasena_recuperar.html:4 ./templates/cuentas/contrasena_recuperar.html:12
+msgid "Recuperar contraseña"
+msgstr "Reset password"
+
+#: ./templates/cuentas/contrasena_recuperar.html:14
+msgid "Escribe el correo de tu cuenta y te enviamos un enlace para elegir una contraseña nueva."
+msgstr "Enter your account's email and we'll send you a link to choose a new password."
+
+# | msgid "Enviar"
+#: ./templates/cuentas/contrasena_recuperar.html:27
+msgid "Enviar enlace"
+msgstr "Send link"
+
+# | msgid "Iniciar sesión"
+#: ./templates/cuentas/contrasena_recuperar.html:31 ./templates/cuentas/contrasena_recuperar_enviado.html:18
+msgid "Volver a iniciar sesión"
+msgstr "Back to log in"
+
+# | msgid "revisores"
+# | msgid "Revisor"
+#: ./templates/cuentas/contrasena_recuperar_enviado.html:4 ./templates/cuentas/contrasena_recuperar_enviado.html:12
+msgid "Revisa tu correo"
+msgstr "Check your email"
+
+#: ./templates/cuentas/contrasena_recuperar_enviado.html:14
+msgid "Si el correo que escribiste está registrado, te enviamos un enlace para elegir una contraseña nueva. Puede tardar unos minutos en llegar."
+msgstr "If the email you entered is registered, we've sent a link to choose a new password. It may take a few minutes to arrive."
+
+#: ./templates/cuentas/correo_recuperar_contrasena.txt:2
+#, python-format
+msgid "Recibimos un pedido para cambiar la contraseña de tu cuenta en Ojo Avizor (%(user)s)."
+msgstr "We received a request to change the password for your Ojo Avizor account (%(user)s)."
+
+#: ./templates/cuentas/correo_recuperar_contrasena.txt:4
+msgid "Si fuiste tú, entra a este enlace para elegir una contraseña nueva:"
+msgstr "If this was you, follow this link to choose a new password:"
+
+#: ./templates/cuentas/correo_recuperar_contrasena.txt:7
+msgid "Si no lo pediste tú, ignora este correo: tu contraseña sigue siendo la misma."
+msgstr "If you didn't request this, ignore this email: your password stays the same."
+
+#: ./templates/cuentas/correo_recuperar_contrasena.txt:9
+msgid "El equipo de Ojo Avizor"
+msgstr "The Ojo Avizor team"
+
+#: ./templates/cuentas/correo_recuperar_contrasena_asunto.txt:1
+msgid "Recuperar tu contraseña en Ojo Avizor"
+msgstr "Reset your Ojo Avizor password"
+
 #: ./templates/cuentas/mi_cuenta.html:28 ./templates/cuentas/panel_admin.html:85
 msgid "Miembro desde"
 msgstr "Member since"
@@ -880,11 +962,15 @@ msgstr "Incorrect email or password."
 msgid "Entrar"
 msgstr "Log in"
 
-#: ./templates/cuentas/sesion_iniciar.html:34
+#: ./templates/cuentas/sesion_iniciar.html:33
+msgid "¿Olvidaste tu contraseña?"
+msgstr "Forgot your password?"
+
+#: ./templates/cuentas/sesion_iniciar.html:37
 msgid "¿No tienes cuenta?"
 msgstr "Don't have an account?"
 
-#: ./templates/cuentas/sesion_iniciar.html:35
+#: ./templates/cuentas/sesion_iniciar.html:38
 msgid "Regístrate"
 msgstr "Sign up"
 

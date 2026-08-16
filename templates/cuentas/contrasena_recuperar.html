@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block titulo %}{% translate "Recuperar contraseña" %} — Ojo Avizor{% endblock %}
+
+{% block contenido %}
+<div class="page-narrow">
+    <div class="card p-6 sm:p-8">
+        <div class="text-center mb-6">
+            <img src="{% static 'marca/logo-apilado.png' %}" alt="Ojo Avizor" class="logo-claro h-16 w-auto mx-auto">
+            <img src="{% static 'marca/logo-apilado-modo-oscuro.png' %}" alt="Ojo Avizor" class="logo-oscuro h-16 w-auto mx-auto">
+            <h1 class="titulo-pagina mt-3">{% translate "Recuperar contraseña" %}</h1>
+            <p class="text-sm text-stone-500 dark:text-stone-400 mt-1">
+                {% translate "Escribe el correo de tu cuenta y te enviamos un enlace para elegir una contraseña nueva." %}
+            </p>
+        </div>
+
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+            <div>
+                <label class="field-label" for="{{ form.email.id_for_label }}">{% translate "Correo" %}</label>
+                {{ form.email }}
+                {% for error in form.email.errors %}
+                <p class="field-error">{{ error }}</p>
+                {% endfor %}
+            </div>
+            <button type="submit" class="btn-primary w-full">{% translate "Enviar enlace" %}</button>
+        </form>
+    </div>
+    <p class="text-sm text-center mt-4 text-stone-600 dark:text-stone-400">
+        <a class="btn-link" href="{% url 'cuentas:iniciar_sesion' %}">{% translate "Volver a iniciar sesión" %}</a>
+    </p>
+</div>
+{% endblock %}

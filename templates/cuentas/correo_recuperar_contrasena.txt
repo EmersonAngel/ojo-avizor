@@ -1,0 +1,10 @@
+{% load i18n %}{% autoescape off %}
+{% blocktranslate %}Recibimos un pedido para cambiar la contraseña de tu cuenta en Ojo Avizor ({{ user }}).{% endblocktranslate %}
+
+{% translate "Si fuiste tú, entra a este enlace para elegir una contraseña nueva:" %}
+{{ protocol }}://{{ domain }}{% url 'cuentas:password_reset_confirm' uidb64=uid token=token %}
+
+{% translate "Si no lo pediste tú, ignora este correo: tu contraseña sigue siendo la misma." %}
+
+{% translate "El equipo de Ojo Avizor" %}
+{% endautoescape %}

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load i18n iconos %}
+
+{% block titulo %}{% translate "Contraseña actualizada" %} — Ojo Avizor{% endblock %}
+
+{% block contenido %}
+<div class="page-narrow">
+    <div class="card p-6 sm:p-8 text-center">
+        <span class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[var(--exito-fondo)] text-[var(--exito)] mx-auto mb-4">
+            {% icono "check-circulo" clase="w-7 h-7" %}
+        </span>
+        <h1 class="titulo-pagina">{% translate "Contraseña actualizada" %}</h1>
+        <p class="text-stone-600 dark:text-stone-400 mt-2">
+            {% translate "Ya puedes iniciar sesión con tu contraseña nueva." %}
+        </p>
+        <a class="btn-primary w-full mt-5 justify-center" href="{% url 'cuentas:iniciar_sesion' %}">{% translate "Iniciar sesión" %}</a>
+    </div>
+</div>
+{% endblock %}
