@@ -91,13 +91,20 @@ Día más largo de trabajo continuo. En orden aproximado:
   siempre dentro de las restricciones propias de la guía (sin degradados
   marcados, sombras fuertes ni animaciones llamativas).
 
-## 15 de agosto (noche) — dockerización
+## 15–16 de agosto (noche) — dockerización
 
 `Dockerfile` (Python 3.12-slim, gunicorn + WhiteNoise para servir estáticos
 sin depender de nginx), `docker-compose.yml` para desarrollo local (Postgres
 + la app con el código montado y recarga automática) y `entrypoint.sh` que
 espera a que la base de datos acepte conexiones antes de migrar. Ver la
 sección «Ejecutar con Docker» del `README.md` para los comandos.
+
+Verificado de punta a punta con `docker compose up`: migraciones aplicadas
+automáticamente, servidor respondiendo, estáticos (incluido el mapa mundial
+del apartado anterior) servidos correctamente, y la suite de pruebas
+completa en verde corriendo dentro del contenedor. Docker Desktop tardó
+casi una hora en levantar el daemon en este entorno — una vez arriba, todo
+funcionó a la primera sin ajustes.
 
 ---
 
