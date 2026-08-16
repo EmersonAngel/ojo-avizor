@@ -76,9 +76,6 @@
             <div>
                 <label class="field-label" for="fotos">{% translate "Fotografías" %}</label>
                 <input type="file" id="fotos" name="fotos" accept="image/*" multiple>
-                {% if not corrigiendo %}
-                <p class="field-hint">{% translate "Sin conexión no se pueden adjuntar fotos; se pueden agregar más tarde desde la bandeja de revisión." %}</p>
-                {% endif %}
             </div>
         </div>
 
@@ -96,23 +93,22 @@
     document.getElementById('form-registro').addEventListener('submit', function (evento) {
         if (navigator.onLine) return; // hay conexión: envío normal al servidor
 
-        const fotos = document.getElementById('fotos');
-        if (fotos && fotos.files.length > 0) {
-            evento.preventDefault();
-            window.alert(
-                '{% translate "Sin conexión no se pueden enviar fotografías. Quítalas del formulario o espera a recuperar la señal." %}'
-            );
-            return;
-        }
-
         evento.preventDefault();
+        const formulario = this;
         const datos = {};
-        new FormData(this).forEach((valor, clave) => {
-            if (clave !== 'csrfmiddlewaretoken' && clave !== 'fotos') datos[clave] = valor;
+        const fotos = [];
+        new FormData(formulario).forEach((valor, clave) => {
+            if (clave === 'csrfmiddlewaretoken') return;
+            if (clave === 'fotos') {
+                if (valor instanceof File && valor.size > 0) fotos.push(valor);
+            } else {
+                datos[clave] = valor;
+            }
         });
-        window.OjoAvizorOffline.encolar(datos);
-        this.reset();
-        document.getElementById('mensaje-offline').classList.remove('hidden');
+        window.OjoAvizorOffline.encolar(datos, fotos).then(() => {
+            formulario.reset();
+            document.getElementById('mensaje-offline').classList.remove('hidden');
+        });
     });
 </script>
 {% endif %}

@@ -1,30 +1,58 @@
-// Cola de avistamientos sin conexión (RF-23).
-// Alcance acotado: guarda los campos de texto del formulario de registro
-// en localStorage cuando no hay conexión y los envía al servidor en
-// cuanto se detecta conexión de nuevo. No incluye fotografías: si el
-// dispositivo está sin conexión y el observador adjuntó una foto, se le
-// pide esperar a tener señal (ver comentario en registro_crear.html).
+// Cola de avistamientos sin conexión (RF-23), con fotografías incluidas.
+// Usa IndexedDB en vez de localStorage: las fotos son binarias y pueden
+// pesar varios MB, y localStorage solo guarda texto con un límite de
+// ~5-10MB por origen — insuficiente para fotos de campo.
 (function () {
-    const CLAVE_COLA = 'ojo_avizor_cola_registros';
+    const NOMBRE_BD = 'ojo_avizor_offline';
+    const VERSION_BD = 1;
+    const ALMACEN = 'cola_registros';
 
-    function leerCola() {
-        try {
-            return JSON.parse(localStorage.getItem(CLAVE_COLA)) || [];
-        } catch (error) {
-            return [];
-        }
+    function abrirBD() {
+        return new Promise((resolve, reject) => {
+            const peticion = indexedDB.open(NOMBRE_BD, VERSION_BD);
+            peticion.onupgradeneeded = () => {
+                peticion.result.createObjectStore(ALMACEN, { keyPath: 'id', autoIncrement: true });
+            };
+            peticion.onsuccess = () => resolve(peticion.result);
+            peticion.onerror = () => reject(peticion.error);
+        });
     }
 
-    function guardarCola(cola) {
-        localStorage.setItem(CLAVE_COLA, JSON.stringify(cola));
-        actualizarIndicador();
+    async function leerCola() {
+        const bd = await abrirBD();
+        return new Promise((resolve, reject) => {
+            const peticion = bd.transaction(ALMACEN, 'readonly').objectStore(ALMACEN).getAll();
+            peticion.onsuccess = () => resolve(peticion.result);
+            peticion.onerror = () => reject(peticion.error);
+        });
     }
 
-    function actualizarIndicador() {
-        const cantidad = leerCola().length;
+    async function actualizarIndicador() {
+        const cantidad = (await leerCola()).length;
         document.querySelectorAll('[data-cola-registros]').forEach((elemento) => {
             elemento.textContent = cantidad > 0 ? `${cantidad} en cola` : '';
             elemento.classList.toggle('hidden', cantidad === 0);
+        });
+    }
+
+    async function encolar(datos, fotos) {
+        const bd = await abrirBD();
+        await new Promise((resolve, reject) => {
+            const tx = bd.transaction(ALMACEN, 'readwrite');
+            tx.objectStore(ALMACEN).add({ datos, fotos: fotos || [] });
+            tx.oncomplete = resolve;
+            tx.onerror = () => reject(tx.error);
+        });
+        await actualizarIndicador();
+    }
+
+    async function eliminarDeCola(id) {
+        const bd = await abrirBD();
+        return new Promise((resolve, reject) => {
+            const tx = bd.transaction(ALMACEN, 'readwrite');
+            tx.objectStore(ALMACEN).delete(id);
+            tx.oncomplete = resolve;
+            tx.onerror = () => reject(tx.error);
         });
     }
 
@@ -33,9 +61,12 @@
         return coincidencia ? coincidencia[1] : '';
     }
 
-    async function enviarUno(datos) {
+    async function enviarUno(item) {
         const formData = new FormData();
-        Object.entries(datos).forEach(([clave, valor]) => formData.append(clave, valor));
+        Object.entries(item.datos).forEach(([clave, valor]) => formData.append(clave, valor));
+        (item.fotos || []).forEach((foto, indice) => {
+            formData.append('fotos', foto, foto.name || `foto-${indice}.jpg`);
+        });
         const respuesta = await fetch(window.OJO_AVIZOR_URL_REGISTRO_CREAR, {
             method: 'POST',
             headers: { 'X-CSRFToken': obtenerCsrfToken() },
@@ -51,24 +82,17 @@
 
     async function procesarCola() {
         if (!navigator.onLine) return;
-        const cola = leerCola();
-        if (cola.length === 0) return;
-        const restantes = [];
+        const cola = await leerCola();
         for (const item of cola) {
             try {
                 const exito = await enviarUno(item);
-                if (!exito) restantes.push(item);
+                if (exito) await eliminarDeCola(item.id);
             } catch (error) {
-                restantes.push(item);
+                // Sin red de verdad todavía, o error de conexión: se
+                // reintenta solo con el próximo evento 'online'.
             }
         }
-        guardarCola(restantes);
-    }
-
-    function encolar(datos) {
-        const cola = leerCola();
-        cola.push(datos);
-        guardarCola(cola);
+        await actualizarIndicador();
     }
 
     window.OjoAvizorOffline = { encolar, procesarCola, actualizarIndicador, leerCola };
