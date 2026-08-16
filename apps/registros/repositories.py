@@ -1,4 +1,6 @@
 """Consultas de la app registros: inventario consolidado (RF-26), avistamientos por especie."""
+from django.db.models import Count
+
 from .models import Registro
 
 
@@ -26,4 +28,21 @@ def listar_ultimos_publicados(cantidad=6):
     return (
         Registro.publicados.select_related('especie', 'usuario')
         .order_by('-fecha_avistamiento', '-fecha_envio')[:cantidad]
+    )
+
+
+def contar_por_estado_de_usuario(usuario):
+    """Cuántos registros tiene un usuario en cada estado, para su página de cuenta."""
+    conteos = {estado: 0 for estado, _ in Registro.Estado.choices}
+    filas = Registro.objects.filter(usuario=usuario).values('estado').annotate(total=Count('id'))
+    for fila in filas:
+        conteos[fila['estado']] = fila['total']
+    return conteos
+
+
+def contar_especies_distintas_de_usuario(usuario):
+    """Especies distintas que un usuario ha avistado, contando solo aportes ya aprobados."""
+    return (
+        Registro.publicados.filter(usuario=usuario, especie__isnull=False)
+        .values('especie').distinct().count()
     )

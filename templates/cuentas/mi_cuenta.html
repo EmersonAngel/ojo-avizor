@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load i18n iconos %}
+
+{% block titulo %}{% translate "Mi cuenta" %} — Ojo Avizor{% endblock %}
+
+{% block contenido %}
+<div class="page">
+    <h1 class="titulo-pagina mb-6 inline-flex items-center gap-2">
+        {% icono "usuario" clase="w-6 h-6" %} {% translate "Mi cuenta" %}
+    </h1>
+
+    <div class="card p-5 sm:p-6 mb-6">
+        <div class="flex items-center gap-4">
+            <span class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[var(--superficie-alt)] text-[var(--azul-medio)] flex-shrink-0">
+                {% icono "usuario" clase="w-7 h-7" %}
+            </span>
+            <div class="min-w-0">
+                <p class="font-display text-xl font-bold text-stone-900 dark:text-stone-100 truncate">{{ user.seudonimo }}</p>
+                <p class="text-sm text-stone-500 dark:text-stone-400">{{ user.get_rol_display }}</p>
+            </div>
+        </div>
+        <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 text-sm">
+            <div>
+                <dt class="text-stone-500 dark:text-stone-400">{% translate "Correo" %}</dt>
+                <dd class="text-stone-900 dark:text-stone-100 mt-0.5">{{ user.correo }}</dd>
+            </div>
+            <div>
+                <dt class="text-stone-500 dark:text-stone-400">{% translate "Miembro desde" %}</dt>
+                <dd class="text-stone-900 dark:text-stone-100 mt-0.5">{{ user.fecha_registro|date:"d \d\e F \d\e Y" }}</dd>
+            </div>
+        </dl>
+        <p class="text-xs text-stone-400 dark:text-stone-500 mt-4">
+            {% translate "Tu nombre real y tu correo nunca se muestran en público — solo tu seudónimo." %}
+        </p>
+    </div>
+
+    <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400 mb-3">
+        {% translate "Mis aportes" %}
+    </h2>
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-2">
+        <div class="card p-4 text-center">
+            <p class="font-display text-2xl sm:text-3xl font-bold text-[var(--cian)]">{{ total_aportes }}</p>
+            <p class="text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-0.5">{% translate "en total" %}</p>
+        </div>
+        <div class="card p-4 text-center">
+            <p class="font-display text-2xl sm:text-3xl font-bold text-[var(--cian)]">{{ conteos.APROBADO }}</p>
+            <p class="text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-0.5">{% translate "aprobados" %}</p>
+        </div>
+        <div class="card p-4 text-center">
+            <p class="font-display text-2xl sm:text-3xl font-bold text-[var(--cian)]">{{ conteos.PENDIENTE }}</p>
+            <p class="text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-0.5">{% translate "pendientes" %}</p>
+        </div>
+        <div class="card p-4 text-center">
+            <p class="font-display text-2xl sm:text-3xl font-bold text-[var(--cian)]">{{ especies_distintas }}</p>
+            <p class="text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-0.5">{% translate "especies distintas" %}</p>
+        </div>
+    </div>
+    {% if conteos.DEVUELTO %}
+    <p class="text-sm text-stone-500 dark:text-stone-400 mb-6">
+        {% blocktranslate count contador=conteos.DEVUELTO %}Tienes {{ contador }} registro devuelto esperando una corrección.{% plural %}Tienes {{ contador }} registros devueltos esperando corrección.{% endblocktranslate %}
+    </p>
+    {% endif %}
+
+    <div class="flex flex-wrap gap-3">
+        <a href="{% url 'registros:mis_registros' %}" class="btn-secondary">
+            {% icono "busqueda" clase="w-4 h-4" %} {% translate "Ver mis avistamientos" %}
+        </a>
+        <a href="{% url 'registros:crear' %}" class="btn-primary">
+            {% icono "mas" clase="w-4 h-4" %} {% translate "Registrar avistamiento" %}
+        </a>
+    </div>
+</div>
+{% endblock %}
