@@ -1,7 +1,7 @@
 {
   "name": "Ojo Avizor",
   "short_name": "Ojo Avizor",
-  "description": "Inventario participativo de avifauna de Pijao, Quindío.",
+  "description": "Inventario participativo de avifauna, construido por la comunidad.",
   "lang": "es",
   "start_url": "/",
   "scope": "/",
