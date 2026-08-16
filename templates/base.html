@@ -22,6 +22,13 @@
     <link rel="apple-touch-icon" href="{% static 'marca/apple-touch-icon.png' %}">
     <link rel="manifest" href="{% static 'manifest.json' %}">
 
+    <!-- iOS no lee manifest.json para esto: sin estas etiquetas, el ícono
+         agregado a la pantalla de inicio abre Safari con su barra en vez
+         de pantalla completa (Android sí lo toma de display: standalone). -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Ojo Avizor">
+
     <script>
         // Aplica el tema ANTES de pintar, para evitar el destello claro→oscuro
         // al entrar con el tema oscuro guardado (docs/identidad-visual.md, apartado 9).
