@@ -1,7 +1,16 @@
 {% extends "base.html" %}
-{% load i18n iconos %}
+{% load i18n static iconos %}
 
 {% block titulo %}{% if corrigiendo %}{% translate "Corregir avistamiento" %}{% else %}{% translate "Registrar avistamiento" %}{% endif %} — Ojo Avizor{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+{% endblock %}
+
+{% block scripts_antes_de_alpine %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
+<script src="{% static 'js/mapa-ubicacion.js' %}" defer></script>
+{% endblock %}
 
 {% block contenido %}
 <div class="page">
@@ -38,9 +47,24 @@
             <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400">{% translate "¿Dónde y cuándo?" %}</h2>
             {% include "_campo.html" with field=form.lugar %}
             {% include "_campo.html" with field=form.fecha_avistamiento %}
-            <div class="grid grid-cols-2 gap-4">
-                {% include "_campo.html" with field=form.latitud %}
-                {% include "_campo.html" with field=form.longitud %}
+
+            <div x-data="mapaUbicacion('{{ form.latitud.value|default_if_none:"" }}', '{{ form.longitud.value|default_if_none:"" }}')">
+                <label class="field-label">{% translate "Punto exacto (opcional, no se publica)" %}</label>
+                <p class="field-hint !mt-0 mb-2">{% translate "Toca el mapa para marcar el sitio, o arrastra el punto para ajustarlo." %}</p>
+                <div x-ref="mapa" class="w-full h-56 sm:h-64 rounded-xl border border-stone-200 dark:border-stone-800 z-0"></div>
+                <div class="flex flex-wrap items-center gap-2 mt-2">
+                    <button type="button" @click="usarMiUbicacion()" :disabled="buscandoUbicacion" class="btn-secondary !px-3 !py-1.5 text-xs">
+                        {% icono "ubicacion" clase="w-3.5 h-3.5" %}
+                        <span x-text="buscandoUbicacion ? '{% translate "Buscando…" %}' : '{% translate "Usar mi ubicación" %}'"></span>
+                    </button>
+                    <button type="button" @click="quitarPunto()" x-show="lat" x-cloak class="btn-ghost !px-3 !py-1.5 text-xs">
+                        {% translate "Quitar punto" %}
+                    </button>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mt-3">
+                    {% include "_campo.html" with field=form.latitud %}
+                    {% include "_campo.html" with field=form.longitud %}
+                </div>
             </div>
         </div>
 

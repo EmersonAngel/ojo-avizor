@@ -16,6 +16,11 @@ class RegistroForm(forms.ModelForm):
             'fecha_avistamiento': forms.DateInput(attrs={'type': 'date'}, format='%Y-%m-%d'),
             'comportamiento': forms.Textarea(attrs={'rows': 2}),
             'info_adicional': forms.Textarea(attrs={'rows': 2}),
+            # x-model conecta estos campos con el mapa de mapa-ubicacion.js:
+            # marcar el punto en el mapa actualiza estos números, y escribir
+            # un número mueve el punto (ver registro_crear.html).
+            'latitud': forms.NumberInput(attrs={'step': 'any', 'x-model': 'lat', '@change': 'actualizarDesdeCampos()'}),
+            'longitud': forms.NumberInput(attrs={'step': 'any', 'x-model': 'lng', '@change': 'actualizarDesdeCampos()'}),
         }
         labels = {
             'especie': _('Especie (si la identificas)'),

@@ -40,6 +40,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/htmx.org@2.0.4" defer></script>
     <script src="{% static 'js/mapa-distribucion.js' %}" defer></script>
+    {% block scripts_antes_de_alpine %}{% endblock %}
     <script src="https://unpkg.com/alpinejs@3.x.x" defer></script>
     <script>
         // Puente temporal mientras se migran las plantillas a las variables de
