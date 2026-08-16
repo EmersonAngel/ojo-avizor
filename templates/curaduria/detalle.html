@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load i18n iconos %}
+
+{% block titulo %}{{ registro.especie.nombre_cientifico|default:"Sin identificar" }} — {% translate "Bandeja de revisión" %} — Ojo Avizor{% endblock %}
+
+{% block contenido %}
+<div class="page">
+    <a class="btn-link" href="{% url 'curaduria:bandeja' %}">{% icono "flecha-izquierda" clase="w-4 h-4" %} {% translate "Bandeja de revisión" %}</a>
+
+    <div class="card p-5 sm:p-6 mt-4">
+        <div class="flex justify-between items-start gap-3">
+            <div class="min-w-0">
+                <h1 class="font-display italic text-xl sm:text-2xl font-bold text-stone-900 dark:text-stone-100">
+                    {{ registro.especie.nombre_cientifico|default:"Sin identificar" }}
+                </h1>
+                {% if registro.sin_identificar %}
+                <span class="badge bg-accent-100 dark:bg-accent-900/50 text-accent-800 dark:text-accent-300 mt-2">
+                    {% icono "ayuda" clase="w-3.5 h-3.5" %} {% translate "Pide ayuda para identificarla" %}
+                </span>
+                {% endif %}
+            </div>
+            <span class="text-xs text-stone-400 dark:text-stone-500 flex-shrink-0 whitespace-nowrap">{{ registro.fecha_avistamiento }}</span>
+        </div>
+
+        <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-5 text-sm">
+            <div>
+                <dt class="text-stone-400 dark:text-stone-500 inline-flex items-center gap-1.5">{% icono "ubicacion" clase="w-4 h-4" %} {% translate "Lugar" %}</dt>
+                <dd class="text-stone-800 dark:text-stone-200 mt-0.5">{{ registro.lugar }}</dd>
+            </div>
+            <div>
+                <dt class="text-stone-400 dark:text-stone-500 inline-flex items-center gap-1.5">{% icono "brujula" clase="w-4 h-4" %} {% translate "Coordenadas" %}</dt>
+                <dd class="text-stone-800 dark:text-stone-200 mt-0.5">
+                    {% if registro.latitud and registro.longitud %}{{ registro.latitud }}, {{ registro.longitud }}{% else %}{% translate "sin coordenadas" %}{% endif %}
+                </dd>
+            </div>
+            <div>
+                <dt class="text-stone-400 dark:text-stone-500 inline-flex items-center gap-1.5">{% icono "usuario" clase="w-4 h-4" %} {% translate "Aportado por" %}</dt>
+                <dd class="text-stone-800 dark:text-stone-200 mt-0.5">{{ registro.usuario.seudonimo }}</dd>
+            </div>
+            <div>
+                <dt class="text-stone-400 dark:text-stone-500 inline-flex items-center gap-1.5">{% icono "documento" clase="w-4 h-4" %} {% translate "Enviado" %}</dt>
+                <dd class="text-stone-800 dark:text-stone-200 mt-0.5">{{ registro.fecha_envio }}</dd>
+            </div>
+        </dl>
+
+        <p class="text-xs text-stone-500 dark:text-stone-400 bg-stone-50 dark:bg-stone-800/60 border border-stone-200 dark:border-stone-700 rounded-lg p-3 mt-4">
+            {% translate "Las coordenadas solo son visibles aquí; nunca se publican (RN-06)." %}
+        </p>
+
+        {% if registro.comportamiento or registro.sustrato or registro.info_adicional %}
+        <div class="mt-5 pt-5 border-t border-stone-100 dark:border-stone-800 space-y-3 text-sm">
+            {% if registro.comportamiento %}
+            <div>
+                <dt class="text-stone-400 dark:text-stone-500">{% translate "Comportamiento" %}</dt>
+                <dd class="text-stone-700 dark:text-stone-300 mt-0.5">{{ registro.comportamiento }}</dd>
+            </div>
+            {% endif %}
+            {% if registro.sustrato %}
+            <div>
+                <dt class="text-stone-400 dark:text-stone-500">{% translate "Sustrato" %}</dt>
+                <dd class="text-stone-700 dark:text-stone-300 mt-0.5">{{ registro.sustrato }}</dd>
+            </div>
+            {% endif %}
+            {% if registro.info_adicional %}
+            <div>
+                <dt class="text-stone-400 dark:text-stone-500">{% translate "Información adicional" %}</dt>
+                <dd class="text-stone-700 dark:text-stone-300 mt-0.5">{{ registro.info_adicional }}</dd>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% if registro.fotografias.all %}
+        <div class="mt-5 pt-5 border-t border-stone-100 dark:border-stone-800">
+            <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400 mb-3">
+                {% translate "Fotografías" %}
+            </h2>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {% for foto in registro.fotografias.all %}
+                <a href="{{ foto.archivo.url }}" target="_blank" rel="noopener" class="block aspect-square rounded-xl overflow-hidden border border-stone-200 dark:border-stone-800">
+                    <img src="{{ foto.archivo.url }}" alt="" class="w-full h-full object-cover">
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="flex gap-2 mt-6 pt-5 border-t border-stone-100 dark:border-stone-800">
+            <form method="post" action="{% url 'curaduria:aprobar' registro.pk %}" class="flex-1">
+                {% csrf_token %}
+                <button type="submit" class="btn-primary w-full">{% icono "check" clase="w-4 h-4" %} {% translate "Aprobar" %}</button>
+            </form>
+            <a class="btn-secondary flex-1 justify-center" href="{% url 'curaduria:devolver' registro.pk %}">{% icono "deshacer" clase="w-4 h-4" %} {% translate "Devolver" %}</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -22,6 +22,15 @@ def bandeja(request):
 
 
 @requiere_rol(*_ROLES_REVISION)
+def detalle(request, pk):
+    try:
+        registro = repositories.obtener_pendiente(pk)
+    except Registro.DoesNotExist:
+        raise Http404
+    return render(request, 'curaduria/detalle.html', {'registro': registro})
+
+
+@requiere_rol(*_ROLES_REVISION)
 def aprobar(request, pk):
     try:
         registro = repositories.obtener_pendiente(pk)

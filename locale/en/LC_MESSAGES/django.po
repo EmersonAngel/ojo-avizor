@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Ojo Avizor\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-16 01:54-0500\n"
+"POT-Creation-Date: 2026-08-16 02:12-0500\n"
 "PO-Revision-Date: 2026-08-15 20:00-0500\n"
 "Last-Translator: Ojo Avizor\n"
 "Language: en\n"
@@ -424,15 +424,16 @@ msgstr "My sightings"
 msgid "Fichas de especie"
 msgstr "Species records"
 
-#: ./templates/_nav_enlaces.html:15 ./templates/curaduria/bandeja.html:4 ./templates/curaduria/bandeja.html:8 ./templates/curaduria/devolver.html:8
+#: ./templates/_nav_enlaces.html:15 ./templates/curaduria/bandeja.html:4 ./templates/curaduria/bandeja.html:8 ./templates/curaduria/detalle.html:4 ./templates/curaduria/detalle.html:8
+#: ./templates/curaduria/devolver.html:8
 msgid "Bandeja de revisión"
 msgstr "Review queue"
 
-#: ./templates/_nav_enlaces.html:20 ./templates/base.html:418 ./templates/cuentas/contrasena_completa.html:16 ./templates/cuentas/sesion_iniciar.html:4 ./templates/cuentas/sesion_iniciar.html:12
+#: ./templates/_nav_enlaces.html:20 ./templates/base.html:438 ./templates/cuentas/contrasena_completa.html:16 ./templates/cuentas/sesion_iniciar.html:4 ./templates/cuentas/sesion_iniciar.html:12
 msgid "Iniciar sesión"
 msgstr "Log in"
 
-#: ./templates/_nav_enlaces.html:22 ./templates/base.html:419 ./templates/cuentas/usuario_registrar.html:4 ./templates/cuentas/usuario_registrar.html:12
+#: ./templates/_nav_enlaces.html:22 ./templates/base.html:439 ./templates/cuentas/usuario_registrar.html:4 ./templates/cuentas/usuario_registrar.html:12
 msgid "Crear cuenta"
 msgstr "Create account"
 
@@ -465,40 +466,40 @@ msgstr "English"
 msgid "Inventario participativo de avifauna, construido por la comunidad."
 msgstr "A participatory bird inventory, built by the community."
 
-#: ./templates/base.html:369 ./templates/base.html:391
+#: ./templates/base.html:389 ./templates/base.html:411
 msgid "Cambiar tema"
 msgstr "Switch theme"
 
-#: ./templates/base.html:376
+#: ./templates/base.html:396
 msgid "Abrir menú"
 msgstr "Open menu"
 
 # | msgid "Crear cuenta"
-#: ./templates/base.html:400
+#: ./templates/base.html:420
 msgid "Menú de la cuenta"
 msgstr "Account menu"
 
-#: ./templates/base.html:455
+#: ./templates/base.html:475
 msgid "Cerrar"
 msgstr "Close"
 
-#: ./templates/base.html:471
+#: ./templates/base.html:491
 msgid "inventario participativo de avifauna"
 msgstr "participatory bird inventory"
 
-#: ./templates/base.html:473
+#: ./templates/base.html:493
 msgid "Un proyecto de la comunidad, para la comunidad."
 msgstr "A project by the community, for the community."
 
-#: ./templates/base.html:475 ./templates/condiciones_uso.html:4 ./templates/condiciones_uso.html:8
+#: ./templates/base.html:495 ./templates/condiciones_uso.html:4 ./templates/condiciones_uso.html:8
 msgid "Condiciones de uso"
 msgstr "Terms of use"
 
-#: ./templates/base.html:479
+#: ./templates/base.html:499
 msgid "Un proyecto de la comunidad de Pijao, con el acompañamiento de:"
 msgstr "A project by the Pijao community, supported by:"
 
-#: ./templates/base.html:508
+#: ./templates/base.html:528
 msgid "Volver arriba"
 msgstr "Back to top"
 
@@ -942,7 +943,7 @@ msgstr "Requests to become a reviewer"
 msgid "Rechazar"
 msgstr "Reject"
 
-#: ./templates/cuentas/panel_admin.html:67 ./templates/curaduria/bandeja.html:55
+#: ./templates/cuentas/panel_admin.html:67 ./templates/curaduria/bandeja.html:66 ./templates/curaduria/detalle.html:91
 msgid "Aprobar"
 msgstr "Approve"
 
@@ -1007,25 +1008,73 @@ msgstr "Already have an account?"
 msgid "Inicia sesión"
 msgstr "Log in"
 
-#: ./templates/curaduria/bandeja.html:10
+#: ./templates/curaduria/bandeja.html:10 ./templates/curaduria/detalle.html:47
 msgid "Las coordenadas solo son visibles aquí; nunca se publican (RN-06)."
 msgstr "Coordinates are only visible here; they are never published."
 
-#: ./templates/curaduria/bandeja.html:23
+#: ./templates/curaduria/bandeja.html:23 ./templates/curaduria/detalle.html:18
 msgid "Pide ayuda para identificarla"
 msgstr "Asked for help identifying it"
 
-#: ./templates/curaduria/bandeja.html:37
+#: ./templates/curaduria/bandeja.html:37 ./templates/curaduria/detalle.html:33
 msgid "sin coordenadas"
 msgstr "no coordinates"
 
-#: ./templates/curaduria/bandeja.html:57
+#: ./templates/curaduria/bandeja.html:56
+#, python-format
+msgid "Ver todos los datos y %(contador)s foto"
+msgid_plural "Ver todos los datos y %(contador)s fotos"
+msgstr[0] "View all details and %(contador)s photo"
+msgstr[1] "View all details and %(contador)s photos"
+
+# | msgid "Ver todo el catálogo"
+#: ./templates/curaduria/bandeja.html:58
+msgid "Ver todos los datos"
+msgstr "View all details"
+
+#: ./templates/curaduria/bandeja.html:68 ./templates/curaduria/detalle.html:93
 msgid "Devolver"
 msgstr "Return"
 
-#: ./templates/curaduria/bandeja.html:64
+#: ./templates/curaduria/bandeja.html:75
 msgid "Estás al día: no hay registros pendientes de revisión."
 msgstr "You're all caught up: no records waiting for review."
+
+#: ./templates/curaduria/detalle.html:27 ./templates/registros/registro_mis.html:36
+msgid "Lugar"
+msgstr "Place"
+
+# | msgid "sin coordenadas"
+#: ./templates/curaduria/detalle.html:31
+msgid "Coordenadas"
+msgstr "Coordinates"
+
+# | msgid "aportado por"
+#: ./templates/curaduria/detalle.html:37
+msgid "Aportado por"
+msgstr "Contributed by"
+
+# | msgid "Enviar"
+#: ./templates/curaduria/detalle.html:41
+msgid "Enviado"
+msgstr "Submitted"
+
+# | msgid "Corregir avistamiento"
+#: ./templates/curaduria/detalle.html:54
+msgid "Comportamiento"
+msgstr "Behavior"
+
+#: ./templates/curaduria/detalle.html:60
+msgid "Sustrato"
+msgstr "Substrate"
+
+#: ./templates/curaduria/detalle.html:66
+msgid "Información adicional"
+msgstr "Additional information"
+
+#: ./templates/curaduria/detalle.html:76 ./templates/registros/registro_crear.html:77
+msgid "Fotografías"
+msgstr "Photos"
 
 #: ./templates/curaduria/devolver.html:4 ./templates/curaduria/devolver.html:11
 msgid "Devolver registro"
@@ -1084,10 +1133,6 @@ msgstr "Remove point"
 msgid "Detalles (opcional)"
 msgstr "Details (optional)"
 
-#: ./templates/registros/registro_crear.html:77
-msgid "Fotografías"
-msgstr "Photos"
-
 #: ./templates/registros/registro_crear.html:80
 msgid "Sin conexión no se pueden adjuntar fotos; se pueden agregar más tarde desde la bandeja de revisión."
 msgstr "Photos can't be attached while offline; they can be added later from the review queue."
@@ -1131,10 +1176,6 @@ msgstr "All"
 #: ./templates/registros/registro_mis.html:35
 msgid "Especie"
 msgstr "Species"
-
-#: ./templates/registros/registro_mis.html:36
-msgid "Lugar"
-msgstr "Place"
 
 #: ./templates/registros/registro_mis.html:37
 msgid "Fecha"

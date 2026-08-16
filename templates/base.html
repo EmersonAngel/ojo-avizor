@@ -221,6 +221,15 @@
            especie_formulario.html). Forzarlo a 100%/100% deja que el viewBox
            siga controlando el encuadre interno, solo cambia el tamaño de la caja. */
         svg[x-ref="svg"] { width: 100%; height: 100%; display: block; }
+
+        /* El ícono del selector de fecha (input type="date") lo dibuja el
+           navegador, no el CSS del sitio: en modo oscuro seguía saliendo
+           oscuro sobre un campo oscuro y casi no se veía. color-scheme
+           adapta los controles nativos que lo soportan (Firefox incluido);
+           el filtro cubre Chrome/Edge/Safari, que ignoran color-scheme para
+           este ícono en particular. */
+        [data-tema="oscuro"] input[type="date"] { color-scheme: dark; }
+        [data-tema="oscuro"] input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); }
     </style>
 
     <style type="text/tailwindcss">
@@ -259,7 +268,11 @@
             .btn-secondary {
                 @apply btn focus-visible:ring-[var(--azul-medio)];
                 background-color: transparent;
-                color: var(--azul-profundo);
+                /* --azul-profundo, no --texto: en oscuro esa variable cambia de
+                   significado (pasa a ser color de superficie, no de texto — ver
+                   su declaración en :root) y el botón casi no se distinguía del
+                   fondo. --texto está pensado para leerse en los dos temas. */
+                color: var(--texto);
                 border: 1px solid var(--borde);
                 border-radius: var(--radio-chico);
                 min-height: 44px;
@@ -275,7 +288,7 @@
             .btn-outline-barra {
                 @apply btn;
                 background-color: transparent;
-                color: var(--azul-profundo);
+                color: var(--texto);
                 border: 1px solid var(--borde);
                 border-radius: var(--radio-chico);
                 min-height: 44px;
@@ -283,6 +296,13 @@
             .btn-outline-barra:hover { background-color: var(--superficie-alt); border-color: var(--azul-medio); }
             .barra-superior-nav .btn-outline-barra { color: var(--texto-en-barra); border-color: var(--barra-hover); }
             .barra-superior-nav .btn-outline-barra:hover { background-color: var(--barra-hover); border-color: rgba(255, 255, 255, .35); }
+            /* Se usa en decenas de plantillas ("Volver al catálogo", "Regístrate"...)
+               pero nunca tuvo regla propia: quedaba con el azul/subrayado por
+               defecto del navegador, sin adaptarse al tema ni a la marca. */
+            .btn-link {
+                @apply inline-flex items-center gap-1.5 text-sm font-medium hover:underline transition-colors;
+                color: var(--azul-medio);
+            }
             .btn-danger { @apply btn rounded-lg bg-red-600 text-white shadow-sm shadow-red-900/20 hover:bg-red-700 hover:shadow-md focus-visible:ring-red-500; }
             .btn-ghost { @apply btn rounded-lg bg-transparent text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 focus-visible:ring-stone-400; }
 
@@ -290,7 +310,7 @@
                 @apply flex items-center gap-2 rounded-lg px-3 py-2 sm:py-1.5 text-sm font-medium w-full sm:w-auto transition-colors;
                 color: var(--texto);
             }
-            .nav-link:hover { background-color: var(--superficie-alt); color: var(--azul-profundo); }
+            .nav-link:hover { background-color: var(--superficie-alt); color: var(--azul-medio); }
             /* Dentro de la barra superior el fondo es siempre oscuro: los enlaces
                de navegación usan el texto claro de la barra en vez del color por
                defecto. El panel del menú desplegable (.dropdown-item, más abajo)
