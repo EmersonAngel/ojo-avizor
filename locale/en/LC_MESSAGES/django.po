@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Ojo Avizor\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-16 01:39-0500\n"
+"POT-Creation-Date: 2026-08-16 01:54-0500\n"
 "PO-Revision-Date: 2026-08-15 20:00-0500\n"
 "Last-Translator: Ojo Avizor\n"
 "Language: en\n"
@@ -760,6 +760,14 @@ msgstr "6. Everything goes through review"
 msgid "Ningún aporte se publica sin que un Revisor lo apruebe. Si te devuelven un registro, siempre viene con un motivo explicado — se conserva, no se elimina — y puedes corregirlo y reenviarlo."
 msgstr "No contribution is published until a Reviewer approves it. If a record is returned to you, it always comes with an explained reason — it is kept, not deleted — and you can correct and resend it."
 
+#: ./templates/cuentas/_boton_google.html:4
+msgid "o"
+msgstr "or"
+
+#: ./templates/cuentas/_boton_google.html:15
+msgid "Continuar con Google"
+msgstr "Continue with Google"
+
 # | msgid "Contraseña"
 #: ./templates/cuentas/contrasena_completa.html:4 ./templates/cuentas/contrasena_completa.html:12
 msgid "Contraseña actualizada"
@@ -966,11 +974,11 @@ msgstr "Log in"
 msgid "¿Olvidaste tu contraseña?"
 msgstr "Forgot your password?"
 
-#: ./templates/cuentas/sesion_iniciar.html:37
+#: ./templates/cuentas/sesion_iniciar.html:38
 msgid "¿No tienes cuenta?"
 msgstr "Don't have an account?"
 
-#: ./templates/cuentas/sesion_iniciar.html:38
+#: ./templates/cuentas/sesion_iniciar.html:39
 msgid "Regístrate"
 msgstr "Sign up"
 
@@ -991,11 +999,11 @@ msgstr ""
 msgid "Registrarme"
 msgstr "Sign up"
 
-#: ./templates/cuentas/usuario_registrar.html:37
+#: ./templates/cuentas/usuario_registrar.html:38
 msgid "¿Ya tienes cuenta?"
 msgstr "Already have an account?"
 
-#: ./templates/cuentas/usuario_registrar.html:38
+#: ./templates/cuentas/usuario_registrar.html:39
 msgid "Inicia sesión"
 msgstr "Log in"
 

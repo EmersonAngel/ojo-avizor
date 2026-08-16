@@ -36,11 +36,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',  # exige django-allauth, aunque el sitio sea uno solo.
 
     'apps.cuentas',
     'apps.catalogo',
     'apps.registros',
     'apps.curaduria',
+
+    # Inicio de sesión con Google — ver la nota junto a SOCIALACCOUNT_PROVIDERS
+    # más abajo sobre las credenciales.
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
 
 MIDDLEWARE = [
@@ -50,8 +58,16 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+SITE_ID = 1
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -123,3 +139,47 @@ LOGOUT_REDIRECT_URL = '/'
 # (ver EMAIL_BACKEND en desarrollo.py); en producción hace falta configurar
 # un proveedor SMTP real vía variables de entorno.
 DEFAULT_FROM_EMAIL = env('DJANGO_DEFAULT_FROM_EMAIL', 'Ojo Avizor <no-responder@ojoavizor.local>')
+
+# Inicio de sesión con Google (django-allauth). Requiere un ID de cliente y
+# un secreto de OAuth de un proyecto en Google Cloud Console — ver la guía
+# en README.md, sección "Inicio de sesión con Google". Sin esas dos
+# variables de entorno, el botón "Continuar con Google" da error al
+# usarse, pero el resto del sitio (correo/contraseña) sigue funcionando
+# igual: no es una dependencia dura.
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': env('GOOGLE_CLIENT_ID', ''),
+            'secret': env('GOOGLE_CLIENT_SECRET', ''),
+            'key': '',
+        },
+        'SCOPE': ['profile', 'email'],
+        'AUTH_PARAMS': {'access_type': 'online'},
+    },
+}
+
+# Usuario (apps/cuentas/models.py) usa 'correo' como identificador y no
+# tiene un campo 'username' funcional propio (el heredado de AbstractUser
+# no se usa para nada en la lógica de negocio) — se lo decimos a allauth
+# explícitamente en vez de dejar que asuma los nombres por defecto de
+# Django ('email' y 'username').
+ACCOUNT_USER_MODEL_EMAIL_FIELD = 'correo'
+ACCOUNT_USER_MODEL_USERNAME_FIELD = 'username'
+ACCOUNT_LOGIN_METHODS = {'email'}
+ACCOUNT_SIGNUP_FIELDS = ['email*']
+# Google ya verificó el correo: no tiene sentido que allauth pida verificarlo
+# otra vez con un correo propio — sería una fricción extra sin motivo real,
+# y el proyecto no tiene SMTP configurado por defecto en desarrollo.
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+
+# apps/cuentas/adapters.py completa nombre_real, seudónimo y rol (RF-27,
+# RF-10) al crear la cuenta la primera vez: Google no manda esos campos.
+SOCIALACCOUNT_ADAPTER = 'apps.cuentas.adapters.AdaptadorCuentasSociales'
+# Si alguien ya tiene cuenta por correo/contraseña y entra con Google usando
+# el mismo correo, se conecta a esa cuenta en vez de fallar o duplicarla:
+# el correo de Google ya viene verificado, así que es una conexión segura.
+SOCIALACCOUNT_EMAIL_AUTHENTICATION = True
+SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
+SOCIALACCOUNT_AUTO_SIGNUP = True
+SOCIALACCOUNT_LOGIN_ON_GET = True
+SOCIALACCOUNT_QUERY_EMAIL = True

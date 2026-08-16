@@ -108,6 +108,43 @@ Cualquier comando de `manage.py` de este README funciona igual, anteponiendo `do
 
 ---
 
+## Inicio de sesión con Google
+
+Es opcional: sin configurarlo, el botón "Continuar con Google" aparece en las pantallas de inicio de sesión y registro pero falla al usarse — el resto del sitio (correo/contraseña, recuperar contraseña) funciona exactamente igual. Usa [django-allauth](https://docs.allauth.org/).
+
+### 1. Crear el proyecto y la pantalla de consentimiento
+
+1. Entra a [console.cloud.google.com](https://console.cloud.google.com/) y crea un proyecto nuevo (o usa uno existente).
+2. Ve a **APIs y servicios → Pantalla de consentimiento de OAuth**.
+   - Tipo de usuario: **Externo** (a menos que tengas Google Workspace).
+   - Completa nombre de la app ("Ojo Avizor"), correo de soporte y los datos obligatorios.
+   - Mientras la app esté en modo **Prueba**, solo los correos que agregues como "usuarios de prueba" van a poder iniciar sesión — para abrirlo a cualquiera hay que publicarla.
+
+### 2. Crear las credenciales OAuth
+
+1. Ve a **APIs y servicios → Credenciales → Crear credenciales → ID de cliente de OAuth**.
+2. Tipo de aplicación: **Aplicación web**.
+3. **Orígenes de JavaScript autorizados**: `http://localhost:8000` (agrega el dominio real cuando despliegues).
+4. **URI de redirección autorizados** (tiene que ser exacto, con esta forma — la define django-allauth, no se puede cambiar):
+   ```
+   http://localhost:8000/accounts/google/login/callback/
+   ```
+   En producción, agrega también `https://tu-dominio.com/accounts/google/login/callback/`.
+5. Guarda: te da un **Client ID** (termina en `.apps.googleusercontent.com`) y un **Client Secret** (empieza con `GOCSPX-`).
+
+### 3. Configurar el proyecto
+
+Pon los dos valores en tu `.env`:
+
+```bash
+GOOGLE_CLIENT_ID=tu-id.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=GOCSPX-tu-secreto
+```
+
+Reinicia el servidor. Los campos propios de la cuenta que Google no manda (seudónimo, rol) se completan solos la primera vez que alguien entra así — ver `apps/cuentas/adapters.py`.
+
+---
+
 ## Comandos de gestión propios
 
 ### Importar especies desde CSV (RF-14)

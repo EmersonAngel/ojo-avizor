@@ -15,6 +15,12 @@ urlpatterns = [
     # Fuera de i18n_patterns y de STATIC_URL a propósito: el service worker
     # solo puede controlar las rutas bajo la ruta desde la que se sirve.
     path('sw.js', views.service_worker, name='service_worker'),
+    # Inicio de sesión con Google (django-allauth): también fuera de
+    # i18n_patterns a propósito. El URI de redirección se registra tal
+    # cual en Google Cloud Console; si quedara bajo /es/ o /en/ según el
+    # idioma activo, cambiaría de URL según la sesión y habría que
+    # registrar cada variante por separado.
+    path('accounts/', include('allauth.urls')),
 ]
 
 urlpatterns += i18n_patterns(
