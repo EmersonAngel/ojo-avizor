@@ -35,7 +35,8 @@ Jerarquía de permisos: Administrador ⊃ Revisor ⊃ Observador ⊃ Visitante. 
 | `nombre_cientifico` | varchar(150) | Obligatorio, único |
 | `familia` | varchar(100) | Opcional |
 | `orden` | varchar(100) | Opcional |
-| `distribucion` | text | Opcional |
+| `distribucion` | text | Opcional. Notas libres (altitud, hábitat) que complementan el mapa. |
+| `paises_distribucion` | JSONField (lista de str) | Opcional. Códigos ISO 3166-1 alfa-2 en minúscula, de la lista curada en `apps/catalogo/paises.py` (América y el Caribe). Colorea el mapa de distribución en la ficha pública. Fuera del alcance original del MVP (RF-22 estaba excluido); se construyó por pedido explícito, ver registro de cambios. |
 | `tamano_cm` | numeric(5,1) | Opcional |
 | `historia_natural` | text | Opcional |
 | `dato_curioso` | text | Opcional. Pensado para el uso didáctico posterior. |

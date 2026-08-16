@@ -39,6 +39,7 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/htmx.org@2.0.4" defer></script>
+    <script src="{% static 'js/mapa-distribucion.js' %}" defer></script>
     <script src="https://unpkg.com/alpinejs@3.x.x" defer></script>
     <script>
         // Puente temporal mientras se migran las plantillas a las variables de
@@ -356,17 +357,17 @@
             </p>
 
             <div class="mt-6 pt-6 border-t border-[var(--borde)]">
-                <p class="mb-2">{% translate "Un proyecto de la comunidad de Pijao, con el acompañamiento de:" %}</p>
-                {% comment %}
-                Pendiente: static/marca/ todavía no tiene los logos institucionales (Universidad
-                Alexander von Humboldt y Fundación Smurfit Westrock Colombia — apartado 7 de la
-                guía). Mientras no existan esos archivos, se muestra el nombre en texto.
-                {% endcomment %}
-                <p class="font-medium text-[var(--texto)]">
-                    Corporación Universitaria Empresarial Alexander von Humboldt
-                    <span aria-hidden="true"> · </span>
-                    Fundación Smurfit Westrock Colombia
-                </p>
+                <p class="mb-3">{% translate "Un proyecto de la comunidad de Pijao, con el acompañamiento de:" %}</p>
+                <div class="flex flex-wrap items-center justify-center gap-4">
+                    <span class="inline-flex items-center bg-white rounded-lg px-3 py-2 shadow-sm">
+                        <img src="{% static 'marca/Logo_Universidad_Humboldt.webp' %}"
+                             alt="Corporación Universitaria Empresarial Alexander von Humboldt" class="h-8 sm:h-9 w-auto object-contain">
+                    </span>
+                    <span class="inline-flex items-center bg-white rounded-lg px-3 py-2 shadow-sm">
+                        <img src="{% static 'marca/Logo_Fundacion_SmurfitWestrock.png' %}"
+                             alt="Fundación Smurfit Westrock Colombia" class="h-8 sm:h-9 w-auto object-contain">
+                    </span>
+                </div>
             </div>
             {% endblock %}
         </div>

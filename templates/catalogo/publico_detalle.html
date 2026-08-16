@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n static iconos %}
+{% load i18n static iconos mapa %}
 
 {% block titulo %}{{ especie.nombre_cientifico }} — Ojo Avizor{% endblock %}
 {% block meta_titulo %}{{ especie.nombre_cientifico }}{% if especie.nombres_comunes.first %} · {{ especie.nombres_comunes.first.nombre }}{% endif %}{% endblock %}
@@ -34,10 +34,38 @@
     </div>
 
     <div class="mt-6 space-y-4">
-        {% if especie.distribucion %}
+        {% if especie.paises_distribucion or especie.distribucion %}
         <div class="card p-5 animate-fade-up" style="animation-delay:60ms">
             <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400">{% translate "Distribución" %}</h2>
-            <p class="text-stone-700 dark:text-stone-300 mt-1">{{ especie.distribucion }}</p>
+            {% if especie.paises_distribucion %}
+            {{ especie.paises_distribucion|json_script:"codigos-especie" }}
+            <div class="mt-3 rounded-xl overflow-hidden border border-stone-200 dark:border-stone-800 bg-[var(--superficie-alt)]"
+                 x-data="mapaDistribucion(JSON.parse(document.getElementById('codigos-especie').textContent))">
+                <div class="relative aspect-[16/8] touch-none select-none cursor-grab active:cursor-grabbing"
+                     x-ref="contenedor" role="img" aria-label="{% translate 'Mapa de distribución' %}: {{ especie.paises_distribucion|nombres_paises|join:', ' }}"
+                     @wheel="ruedaMouse($event)"
+                     @pointerdown="iniciarArrastre($event)"
+                     @pointermove="moverArrastre($event)"
+                     @pointerup="terminarArrastre($event)" @pointercancel="terminarArrastre($event)"
+                     :class="arrastrando ? 'cursor-grabbing' : 'cursor-grab'">
+                    {% svg_mapa_mundo %}
+                </div>
+                <div class="flex items-center justify-between gap-2 px-3 py-2 border-t border-stone-200 dark:border-stone-800 text-xs">
+                    <p class="text-stone-500 dark:text-stone-400 truncate">{{ especie.paises_distribucion|nombres_paises|join:", " }}</p>
+                    <div class="flex items-center gap-1 flex-shrink-0">
+                        <button type="button" @click="alejar()" aria-label="{% translate 'Alejar' %}"
+                                class="w-7 h-7 rounded-lg bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 flex items-center justify-center hover:bg-stone-50 dark:hover:bg-stone-700">−</button>
+                        <button type="button" @click="restablecer()" aria-label="{% translate 'Restablecer zoom' %}"
+                                class="w-7 h-7 rounded-lg bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 flex items-center justify-center hover:bg-stone-50 dark:hover:bg-stone-700">{% icono "brujula" clase="w-3.5 h-3.5" %}</button>
+                        <button type="button" @click="acercar()" aria-label="{% translate 'Acercar' %}"
+                                class="w-7 h-7 rounded-lg bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 flex items-center justify-center hover:bg-stone-50 dark:hover:bg-stone-700">+</button>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% if especie.distribucion %}
+            <p class="text-stone-700 dark:text-stone-300 mt-3">{{ especie.distribucion }}</p>
+            {% endif %}
         </div>
         {% endif %}
         {% if especie.historia_natural %}

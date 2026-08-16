@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n iconos %}
+{% load i18n iconos mapa %}
 
 {% block titulo %}{{ accion }} — Ojo Avizor{% endblock %}
 
@@ -14,6 +14,7 @@
         <div class="card p-5 sm:p-6 space-y-4">
             <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400">{% translate "Datos de la especie" %}</h2>
             {% for field in form %}
+            {% if field.name != 'paises_distribucion' %}
             <div>
                 <label class="field-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
                 {{ field }}
@@ -21,7 +22,48 @@
                 <p class="field-error">{{ error }}</p>
                 {% endfor %}
             </div>
+            {% endif %}
             {% endfor %}
+        </div>
+
+        <div class="card p-5 sm:p-6">
+            <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400">{{ form.paises_distribucion.label }}</h2>
+            <p class="field-hint mb-4">{{ form.paises_distribucion.help_text }}</p>
+            {% for error in form.paises_distribucion.errors %}<p class="field-error mb-3">{{ error }}</p>{% endfor %}
+            {% with valores=form.paises_distribucion.value %}
+            {{ valores|json_script:"codigos-iniciales" }}
+            <div class="grid sm:grid-cols-2 gap-5"
+                 x-data="mapaDistribucion(JSON.parse(document.getElementById('codigos-iniciales').textContent) || [])">
+                <div class="grid grid-cols-2 gap-x-3 gap-y-1.5 content-start max-h-72 overflow-y-auto pr-1">
+                    {% lista_paises as paises %}
+                    {% for codigo, nombre in paises %}
+                    <label class="flex items-center gap-1.5 text-sm text-stone-700 dark:text-stone-300 py-0.5">
+                        <input type="checkbox" name="paises_distribucion" value="{{ codigo }}" x-model="codigos" @change="colorear()"
+                               class="rounded border-stone-300 dark:border-stone-600 text-[var(--azul-medio)] focus:ring-[var(--azul-medio)]">
+                        {{ nombre }}
+                    </label>
+                    {% endfor %}
+                </div>
+                <div>
+                    <div class="relative aspect-[16/8] rounded-xl overflow-hidden border border-stone-200 dark:border-stone-800 bg-[var(--superficie-alt)] touch-none select-none"
+                         x-ref="contenedor"
+                         :class="arrastrando ? 'cursor-grabbing' : 'cursor-grab'"
+                         @wheel="ruedaMouse($event)"
+                         @pointerdown="iniciarArrastre($event)" @pointermove="moverArrastre($event)"
+                         @pointerup="terminarArrastre($event)" @pointercancel="terminarArrastre($event)">
+                        {% svg_mapa_mundo %}
+                    </div>
+                    <div class="flex items-center justify-end gap-1 mt-2">
+                        <button type="button" @click="alejar()" aria-label="{% translate 'Alejar' %}"
+                                class="w-7 h-7 rounded-lg bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 flex items-center justify-center hover:bg-stone-50 dark:hover:bg-stone-700">−</button>
+                        <button type="button" @click="restablecer()" aria-label="{% translate 'Restablecer zoom' %}"
+                                class="w-7 h-7 rounded-lg bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 flex items-center justify-center hover:bg-stone-50 dark:hover:bg-stone-700">{% icono "brujula" clase="w-3.5 h-3.5" %}</button>
+                        <button type="button" @click="acercar()" aria-label="{% translate 'Acercar' %}"
+                                class="w-7 h-7 rounded-lg bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 flex items-center justify-center hover:bg-stone-50 dark:hover:bg-stone-700">+</button>
+                    </div>
+                </div>
+            </div>
+            {% endwith %}
         </div>
 
         <div class="card p-5 sm:p-6">

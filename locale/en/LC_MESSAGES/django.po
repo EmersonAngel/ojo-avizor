@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Ojo Avizor\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-15 20:24-0500\n"
+"POT-Creation-Date: 2026-08-15 20:53-0500\n"
 "PO-Revision-Date: 2026-08-15 20:00-0500\n"
 "Last-Translator: Ojo Avizor\n"
 "Language: en\n"
@@ -16,62 +16,225 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
 
-#: ./apps/catalogo/forms.py:17 ./templates/catalogo/especie_listar.html:23
-msgid "Nombre científico"
-msgstr "Scientific name"
-
-#: ./apps/catalogo/forms.py:18 ./templates/catalogo/especie_listar.html:24
-msgid "Familia"
-msgstr "Family"
-
-#: ./apps/catalogo/forms.py:19
-msgid "Orden"
-msgstr "Order"
-
-#: ./apps/catalogo/forms.py:20 ./templates/catalogo/publico_detalle.html:39
+#: ./apps/catalogo/forms.py:15 ./templates/catalogo/publico_detalle.html:39
 msgid "Distribución"
 msgstr "Distribution"
 
-#: ./apps/catalogo/forms.py:21
+#: ./apps/catalogo/forms.py:16
+msgid "Países donde se encuentra la especie. Se muestran como mapa en la ficha pública."
+msgstr "Countries where the species is found. Shown as a map on the public record."
+
+#: ./apps/catalogo/forms.py:26 ./templates/catalogo/especie_listar.html:23
+msgid "Nombre científico"
+msgstr "Scientific name"
+
+#: ./apps/catalogo/forms.py:27 ./templates/catalogo/especie_listar.html:24
+msgid "Familia"
+msgstr "Family"
+
+#: ./apps/catalogo/forms.py:28
+msgid "Orden"
+msgstr "Order"
+
+#: ./apps/catalogo/forms.py:29
+msgid "Notas sobre la distribución"
+msgstr "Notes on distribution"
+
+#: ./apps/catalogo/forms.py:30
 msgid "Tamaño (cm)"
 msgstr "Size (cm)"
 
-#: ./apps/catalogo/forms.py:22 ./templates/catalogo/publico_detalle.html:45
+#: ./apps/catalogo/forms.py:31 ./templates/catalogo/publico_detalle.html:73
 msgid "Historia natural"
 msgstr "Natural history"
 
-#: ./apps/catalogo/forms.py:23
+#: ./apps/catalogo/forms.py:32
 msgid "Dato curioso"
 msgstr "Fun fact"
 
-#: ./apps/catalogo/forms.py:24
+#: ./apps/catalogo/forms.py:33
 msgid "Foto de referencia"
 msgstr "Reference photo"
 
 # | msgid "Nombre real"
-#: ./apps/catalogo/forms.py:33
+#: ./apps/catalogo/forms.py:42
 msgid "Nombre"
 msgstr "Name"
 
-#: ./apps/catalogo/forms.py:34
+#: ./apps/catalogo/forms.py:43
 msgid "Región"
 msgstr "Region"
 
-#: ./apps/catalogo/forms.py:35
+#: ./apps/catalogo/forms.py:44
 msgid "Propio del municipio"
 msgstr "Specific to the municipality"
 
-#: ./apps/catalogo/forms.py:36 ./templates/registros/registro_mis.html:38
+#: ./apps/catalogo/forms.py:45 ./templates/registros/registro_mis.html:38
 msgid "Estado"
 msgstr "Status"
 
-#: ./apps/catalogo/models.py:43 ./apps/curaduria/models.py:17 ./apps/registros/models.py:32 ./templates/registros/registro_mis.html:23
+#: ./apps/catalogo/models.py:18
+#, python-format
+msgid "Código de país no reconocido: %(codigos)s."
+msgstr "Unrecognized country code: %(codigos)s."
+
+#: ./apps/catalogo/models.py:60 ./apps/curaduria/models.py:17 ./apps/registros/models.py:32 ./templates/registros/registro_mis.html:23
 msgid "Aprobado"
 msgstr "Approved"
 
-#: ./apps/catalogo/models.py:44
+#: ./apps/catalogo/models.py:61
 msgid "Propuesto"
 msgstr "Proposed"
+
+#: ./apps/catalogo/paises.py:12
+msgid "Canadá"
+msgstr "Canada"
+
+# | msgid "Estado"
+#: ./apps/catalogo/paises.py:13
+msgid "Estados Unidos"
+msgstr "United States"
+
+#: ./apps/catalogo/paises.py:14
+msgid "México"
+msgstr "Mexico"
+
+#: ./apps/catalogo/paises.py:15
+msgid "Belice"
+msgstr "Belize"
+
+#: ./apps/catalogo/paises.py:16
+msgid "Guatemala"
+msgstr "Guatemala"
+
+#: ./apps/catalogo/paises.py:17
+msgid "Honduras"
+msgstr "Honduras"
+
+#: ./apps/catalogo/paises.py:18
+msgid "El Salvador"
+msgstr "El Salvador"
+
+#: ./apps/catalogo/paises.py:19
+msgid "Nicaragua"
+msgstr "Nicaragua"
+
+#: ./apps/catalogo/paises.py:20
+msgid "Costa Rica"
+msgstr "Costa Rica"
+
+#: ./apps/catalogo/paises.py:21
+msgid "Panamá"
+msgstr "Panama"
+
+#: ./apps/catalogo/paises.py:22
+msgid "Cuba"
+msgstr "Cuba"
+
+#: ./apps/catalogo/paises.py:23
+msgid "Jamaica"
+msgstr "Jamaica"
+
+#: ./apps/catalogo/paises.py:24
+msgid "Haití"
+msgstr "Haiti"
+
+#: ./apps/catalogo/paises.py:25
+msgid "República Dominicana"
+msgstr "Dominican Republic"
+
+#: ./apps/catalogo/paises.py:26
+msgid "Bahamas"
+msgstr "Bahamas"
+
+#: ./apps/catalogo/paises.py:27
+msgid "Puerto Rico"
+msgstr "Puerto Rico"
+
+#: ./apps/catalogo/paises.py:28
+msgid "Trinidad y Tobago"
+msgstr "Trinidad and Tobago"
+
+# | msgid "aprobados"
+#: ./apps/catalogo/paises.py:29
+msgid "Barbados"
+msgstr "Barbados"
+
+#: ./apps/catalogo/paises.py:30
+msgid "Granada"
+msgstr "Grenada"
+
+#: ./apps/catalogo/paises.py:31
+msgid "Santa Lucía"
+msgstr "Saint Lucia"
+
+#: ./apps/catalogo/paises.py:32
+msgid "San Vicente y las Granadinas"
+msgstr "Saint Vincent and the Grenadines"
+
+#: ./apps/catalogo/paises.py:33
+msgid "Antigua y Barbuda"
+msgstr "Antigua and Barbuda"
+
+#: ./apps/catalogo/paises.py:34
+msgid "Dominica"
+msgstr "Dominica"
+
+#: ./apps/catalogo/paises.py:35
+msgid "San Cristóbal y Nieves"
+msgstr "Saint Kitts and Nevis"
+
+#: ./apps/catalogo/paises.py:36
+msgid "Colombia"
+msgstr "Colombia"
+
+#: ./apps/catalogo/paises.py:37
+msgid "Venezuela"
+msgstr "Venezuela"
+
+#: ./apps/catalogo/paises.py:38
+msgid "Guyana"
+msgstr "Guyana"
+
+#: ./apps/catalogo/paises.py:39
+msgid "Surinam"
+msgstr "Suriname"
+
+#: ./apps/catalogo/paises.py:40
+msgid "Guayana Francesa"
+msgstr "French Guiana"
+
+#: ./apps/catalogo/paises.py:41
+msgid "Ecuador"
+msgstr "Ecuador"
+
+#: ./apps/catalogo/paises.py:42
+msgid "Perú"
+msgstr "Peru"
+
+#: ./apps/catalogo/paises.py:43
+msgid "Brasil"
+msgstr "Brazil"
+
+#: ./apps/catalogo/paises.py:44
+msgid "Bolivia"
+msgstr "Bolivia"
+
+#: ./apps/catalogo/paises.py:45
+msgid "Paraguay"
+msgstr "Paraguay"
+
+#: ./apps/catalogo/paises.py:46
+msgid "Chile"
+msgstr "Chile"
+
+#: ./apps/catalogo/paises.py:47
+msgid "Argentina"
+msgstr "Argentina"
+
+#: ./apps/catalogo/paises.py:48
+msgid "Uruguay"
+msgstr "Uruguay"
 
 #: ./apps/cuentas/forms.py:10
 msgid "Usuario"
@@ -254,35 +417,35 @@ msgstr "English"
 msgid "Inventario participativo de avifauna, construido por la comunidad."
 msgstr "A participatory bird inventory, built by the community."
 
-#: ./templates/base.html:285 ./templates/base.html:303
+#: ./templates/base.html:286 ./templates/base.html:304
 msgid "Cambiar tema"
 msgstr "Switch theme"
 
-#: ./templates/base.html:292
+#: ./templates/base.html:293
 msgid "Abrir menú"
 msgstr "Open menu"
 
-#: ./templates/base.html:336
+#: ./templates/base.html:337
 msgid "Cerrar"
 msgstr "Close"
 
-#: ./templates/base.html:352
+#: ./templates/base.html:353
 msgid "inventario participativo de avifauna"
 msgstr "participatory bird inventory"
 
-#: ./templates/base.html:354
+#: ./templates/base.html:355
 msgid "Un proyecto de la comunidad, para la comunidad."
 msgstr "A project by the community, for the community."
 
-#: ./templates/base.html:356 ./templates/condiciones_uso.html:4 ./templates/condiciones_uso.html:8
+#: ./templates/base.html:357 ./templates/condiciones_uso.html:4 ./templates/condiciones_uso.html:8
 msgid "Condiciones de uso"
 msgstr "Terms of use"
 
-#: ./templates/base.html:360
+#: ./templates/base.html:361
 msgid "Un proyecto de la comunidad de Pijao, con el acompañamiento de:"
 msgstr "A project by the Pijao community, supported by:"
 
-#: ./templates/base.html:390
+#: ./templates/base.html:391
 msgid "Volver arriba"
 msgstr "Back to top"
 
@@ -303,19 +466,31 @@ msgstr "No species published yet — the first records are on their way."
 msgid "Datos de la especie"
 msgstr "Species details"
 
-#: ./templates/catalogo/especie_formulario.html:28 ./templates/catalogo/especie_listar.html:25
+#: ./templates/catalogo/especie_formulario.html:57 ./templates/catalogo/publico_detalle.html:56
+msgid "Alejar"
+msgstr "Zoom out"
+
+#: ./templates/catalogo/especie_formulario.html:59 ./templates/catalogo/publico_detalle.html:58
+msgid "Restablecer zoom"
+msgstr "Reset zoom"
+
+#: ./templates/catalogo/especie_formulario.html:61 ./templates/catalogo/publico_detalle.html:60
+msgid "Acercar"
+msgstr "Zoom in"
+
+#: ./templates/catalogo/especie_formulario.html:70 ./templates/catalogo/especie_listar.html:25
 msgid "Nombres comunes"
 msgstr "Common names"
 
-#: ./templates/catalogo/especie_formulario.html:29
+#: ./templates/catalogo/especie_formulario.html:71
 msgid "Incluye las denominaciones propias del municipio, si las hay."
 msgstr "Include names specific to the municipality, if any."
 
-#: ./templates/catalogo/especie_formulario.html:47 ./templates/cuentas/panel_admin.html:79
+#: ./templates/catalogo/especie_formulario.html:89 ./templates/cuentas/panel_admin.html:79
 msgid "Guardar"
 msgstr "Save"
 
-#: ./templates/catalogo/especie_formulario.html:48 ./templates/curaduria/devolver.html:26 ./templates/registros/registro_crear.html:65
+#: ./templates/catalogo/especie_formulario.html:90 ./templates/curaduria/devolver.html:26 ./templates/registros/registro_crear.html:65
 msgid "Cancelar"
 msgstr "Cancel"
 
@@ -391,7 +566,7 @@ msgstr "Search for a species by name…"
 msgid "Explorar el catálogo"
 msgstr "Explore the catalog"
 
-#: ./templates/catalogo/portada.html:35 ./templates/catalogo/publico_detalle.html:72
+#: ./templates/catalogo/portada.html:35 ./templates/catalogo/publico_detalle.html:100
 msgid "Registrar un avistamiento"
 msgstr "Report a sighting"
 
@@ -428,19 +603,24 @@ msgstr "in"
 msgid "Ficha de %(nombre)s en el inventario de avifauna de Ojo Avizor."
 msgstr "%(nombre)s record in the Ojo Avizor bird inventory."
 
-#: ./templates/catalogo/publico_detalle.html:51
+# | msgid "Distribución"
+#: ./templates/catalogo/publico_detalle.html:45
+msgid "Mapa de distribución"
+msgstr "Distribution map"
+
+#: ./templates/catalogo/publico_detalle.html:79
 msgid "¿Sabías que…?"
 msgstr "Did you know…?"
 
-#: ./templates/catalogo/publico_detalle.html:57
+#: ./templates/catalogo/publico_detalle.html:85
 msgid "Avistamientos registrados en Pijao"
 msgstr "Sightings recorded in Pijao"
 
-#: ./templates/catalogo/publico_detalle.html:65
+#: ./templates/catalogo/publico_detalle.html:93
 msgid "aportado por"
 msgstr "contributed by"
 
-#: ./templates/catalogo/publico_detalle.html:71
+#: ./templates/catalogo/publico_detalle.html:99
 msgid "Todavía no hay avistamientos aprobados de esta especie — podrías reportar el primero."
 msgstr "No approved sightings of this species yet — you could report the first one."
 

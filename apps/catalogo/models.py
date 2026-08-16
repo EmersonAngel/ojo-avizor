@@ -4,8 +4,20 @@ Ver docs/modelo-datos.md. Solo Revisor y Administrador crean o editan
 fichas; esa regla se aplica en services.py, no aquí.
 """
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+
+from .paises import CODIGOS_VALIDOS
+
+
+def validar_paises_distribucion(valor):
+    invalidos = set(valor) - CODIGOS_VALIDOS
+    if invalidos:
+        raise ValidationError(
+            _('Código de país no reconocido: %(codigos)s.'),
+            params={'codigos': ', '.join(sorted(invalidos))},
+        )
 
 
 class Especie(models.Model):
@@ -15,6 +27,11 @@ class Especie(models.Model):
     familia = models.CharField(max_length=100, blank=True)
     orden = models.CharField(max_length=100, blank=True)
     distribucion = models.TextField(blank=True)
+    paises_distribucion = models.JSONField(
+        default=list,
+        blank=True,
+        validators=[validar_paises_distribucion],
+    )
     tamano_cm = models.DecimalField(max_digits=5, decimal_places=1, null=True, blank=True)
     historia_natural = models.TextField(blank=True)
     dato_curioso = models.TextField(blank=True)

@@ -142,4 +142,6 @@ Total de especies, total de avistamientos y número de observadores participante
 
 **Excepción sobre RNF-13:** aunque la traducción al inglés queda fuera, **prepara la estructura de internacionalización desde el inicio** — envuelve las cadenas visibles con `gettext`. Añadir idiomas después obliga a rehacer todas las plantillas.
 
+**Excepción sobre RF-22:** se construyó por pedido explícito del 15/08/2026, pese a estar fuera del MVP original. Implementación deliberadamente liviana para no romper RNF-01/RNF-02: mapa SVG estático (sin librería de mapas ni tiles), coloreado por país vía `paises_distribucion` (ver `docs/modelo-datos.md`). RF-12 y RF-25 se construyeron por la misma vía (ver "Mi cuenta" y el panel de administración).
+
 **Sobre RF-19:** el campo `especie` del modelo Registro admite `NULL` y existe el campo `sin_identificar` precisamente para habilitarlo más adelante. Deja la estructura, no la funcionalidad.
