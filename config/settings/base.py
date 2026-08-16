@@ -135,9 +135,19 @@ LOGIN_URL = 'cuentas:iniciar_sesion'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
-# Recuperar contraseña: en desarrollo el correo se imprime en la consola
-# (ver EMAIL_BACKEND en desarrollo.py); en producción hace falta configurar
-# un proveedor SMTP real vía variables de entorno.
+# Correo saliente (recuperar contraseña, notificaciones de curaduría — ver
+# apps/cuentas/services.py:notificar_por_correo). En desarrollo se imprime
+# en la consola (ver EMAIL_BACKEND en desarrollo.py) y estas variables no
+# hacen falta. En producción, sin un proveedor SMTP real configurado, el
+# envío falla en silencio (fail_silently=True a propósito, para que un
+# correo roto no tumbe la aprobación de un registro) — hay que completar
+# las variables DJANGO_EMAIL_* en el .env de producción.
+EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
+EMAIL_HOST = env('DJANGO_EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = int(env('DJANGO_EMAIL_PORT', '587'))
+EMAIL_HOST_USER = env('DJANGO_EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = env('DJANGO_EMAIL_HOST_PASSWORD', '')
+EMAIL_USE_TLS = env_bool('DJANGO_EMAIL_USE_TLS', True)
 DEFAULT_FROM_EMAIL = env('DJANGO_DEFAULT_FROM_EMAIL', 'Ojo Avizor <no-responder@ojoavizor.local>')
 
 # Inicio de sesión con Google (django-allauth). Requiere un ID de cliente y

@@ -145,6 +145,25 @@ Reinicia el servidor. Los campos propios de la cuenta que Google no manda (seud�
 
 ---
 
+## Correo saliente en producción
+
+Recuperar contraseña y las notificaciones por correo (aprobación/devolución de un avistamiento, respuesta a una solicitud de revisor — ver `apps/cuentas/services.py:notificar_por_correo`) necesitan un proveedor SMTP real. En desarrollo no hace falta nada: el correo se imprime en la consola (`EMAIL_BACKEND` en `config/settings/desarrollo.py`).
+
+Con una cuenta de Gmail (gratis, suficiente para el volumen de esta plataforma):
+
+1. Activa la verificación en dos pasos en la cuenta que va a enviar los correos.
+2. Genera una **contraseña de aplicación** en [myaccount.google.com/apppasswords](https://myaccount.google.com/apppasswords) — Gmail no acepta la contraseña normal de la cuenta para esto.
+3. Completa en tu `.env`:
+   ```bash
+   DJANGO_EMAIL_HOST_USER=tu-cuenta@gmail.com
+   DJANGO_EMAIL_HOST_PASSWORD=la-contraseña-de-aplicación-de-16-letras
+   DJANGO_DEFAULT_FROM_EMAIL=Ojo Avizor <tu-cuenta@gmail.com>
+   ```
+
+`DJANGO_EMAIL_HOST`, `DJANGO_EMAIL_PORT` y `DJANGO_EMAIL_USE_TLS` ya traen el valor correcto para Gmail por defecto (ver `.env.example`); solo hace falta tocarlos si se usa otro proveedor. Sin esta configuración, el envío falla en silencio (`fail_silently=True`, a propósito: un correo roto no debe tumbar la aprobación de un registro) — la plataforma sigue funcionando igual, simplemente nadie recibe el aviso.
+
+---
+
 ## Comandos de gestión propios
 
 ### Importar especies desde CSV (RF-14)
