@@ -1,5 +1,6 @@
 """Formularios de la app registros."""
 from django import forms
+from django.utils.translation import gettext_lazy as _
 
 from .models import Registro
 
@@ -17,8 +18,8 @@ class RegistroForm(forms.ModelForm):
             'info_adicional': forms.Textarea(attrs={'rows': 2}),
         }
         labels = {
-            'especie': 'Especie (si la identificas)',
-            'sin_identificar': 'Pido ayuda para identificarla',
-            'latitud': 'Latitud (opcional, no se publica)',
-            'longitud': 'Longitud (opcional, no se publica)',
+            'especie': _('Especie (si la identificas)'),
+            'sin_identificar': _('Pido ayuda para identificarla'),
+            'latitud': _('Latitud (opcional, no se publica)'),
+            'longitud': _('Longitud (opcional, no se publica)'),
         }

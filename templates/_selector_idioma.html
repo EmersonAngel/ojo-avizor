@@ -1,0 +1,11 @@
+{% load i18n %}
+<form action="{% url 'set_language' %}" method="post" class="inline-flex items-center rounded-lg overflow-hidden text-xs font-semibold">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ request.path }}">
+    <button type="submit" name="language" value="es"
+            class="px-1.5 py-1 {% if LANGUAGE_CODE == 'es' %}bg-[var(--barra-hover)]{% else %}opacity-60 hover:opacity-100{% endif %}"
+            aria-label="{% translate 'Español' %}" {% if LANGUAGE_CODE == 'es' %}aria-current="true"{% endif %}>ES</button>
+    <button type="submit" name="language" value="en"
+            class="px-1.5 py-1 {% if LANGUAGE_CODE == 'en' %}bg-[var(--barra-hover)]{% else %}opacity-60 hover:opacity-100{% endif %}"
+            aria-label="{% translate 'English' %}" {% if LANGUAGE_CODE == 'en' %}aria-current="true"{% endif %}>EN</button>
+</form>

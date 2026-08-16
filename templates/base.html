@@ -278,6 +278,7 @@
             </a>
 
             <div class="flex items-center gap-1 sm:hidden">
+                {% include "_selector_idioma.html" %}
                 <button type="button" class="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-[var(--barra-hover)]"
                         @click="oscuro = !oscuro; document.documentElement.setAttribute('data-tema', oscuro ? 'oscuro' : 'claro'); document.documentElement.classList.toggle('dark', oscuro); localStorage.setItem('tema', oscuro ? 'oscuro' : 'claro')"
                         aria-label="{% translate 'Cambiar tema' %}">
@@ -295,6 +296,7 @@
 
             <nav class="hidden sm:flex text-sm items-center gap-1 barra-superior-nav">
                 {% include "_nav_enlaces.html" %}
+                {% include "_selector_idioma.html" %}
                 <button type="button" class="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-[var(--barra-hover)] ml-1"
                         @click="oscuro = !oscuro; document.documentElement.setAttribute('data-tema', oscuro ? 'oscuro' : 'claro'); document.documentElement.classList.toggle('dark', oscuro); localStorage.setItem('tema', oscuro ? 'oscuro' : 'claro')"
                         aria-label="{% translate 'Cambiar tema' %}">
