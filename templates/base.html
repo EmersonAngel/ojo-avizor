@@ -370,6 +370,23 @@
         </div>
     </footer>
 
+    <button type="button"
+            x-data="{ visible: false }"
+            x-show="visible"
+            x-cloak
+            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 translate-y-2"
+            x-transition:enter-end="opacity-100 translate-y-0"
+            x-transition:leave="transition ease-in duration-150"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0 translate-y-2"
+            @scroll.window.throttle="visible = window.scrollY > 500"
+            @click="window.scrollTo({ top: 0, behavior: 'smooth' })"
+            class="fixed bottom-5 right-5 z-30 w-11 h-11 rounded-full flex items-center justify-center shadow-lg bg-[var(--azul-medio)] text-white hover:brightness-90 transition-[filter]"
+            aria-label="{% translate 'Volver arriba' %}">
+        <span class="rotate-90 inline-flex">{% icono "flecha-izquierda" clase="w-5 h-5" %}</span>
+    </button>
+
     {% if user.is_authenticated %}
     <script>
         window.OJO_AVIZOR_URL_REGISTRO_CREAR = "{% url 'registros:crear' %}";
