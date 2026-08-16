@@ -53,6 +53,7 @@ _ICONOS = {
     'grafico': '<path d="M4 21V10M10 21V4M16 21v-8M2 21h20"/>',
     'mas': '<path d="M12 4.5v15M4.5 12h15"/>',
     'flecha-izquierda': '<path d="M19 12H5M11 18l-6-6 6-6"/>',
+    'flecha-abajo': '<path d="M6 9l6 6 6-6"/>',
 }
 
 

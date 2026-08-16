@@ -1,0 +1,19 @@
+{% load i18n iconos %}
+<a href="{% url 'cuentas:mi_cuenta' %}" class="dropdown-item">
+    {% icono "usuario" clase="w-4 h-4" %} {% translate "Mi cuenta" %}
+</a>
+{% if user.rol == 'ADMINISTRADOR' %}
+<a href="{% url 'cuentas:panel_admin' %}" class="dropdown-item">
+    {% icono "usuarios" clase="w-4 h-4" %} {% translate "Panel de administración" %}
+    {% if solicitudes_revisor_pendientes %}
+    <span class="badge-devuelto !py-0.5 !px-1.5 ml-auto">{{ solicitudes_revisor_pendientes }}</span>
+    {% endif %}
+</a>
+{% endif %}
+<div class="border-t border-[var(--borde)] my-1.5"></div>
+<form method="post" action="{% url 'cuentas:cerrar_sesion' %}">
+    {% csrf_token %}
+    <button type="submit" class="dropdown-item">
+        {% icono "flecha-izquierda" clase="w-4 h-4 rotate-180" %} {% translate "Salir" %}
+    </button>
+</form>

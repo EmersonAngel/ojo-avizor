@@ -15,19 +15,7 @@
     {% icono "check-circulo" clase="w-4 h-4" %} {% translate "Bandeja de revisión" %}
 </a>
 {% endif %}
-{% if user.rol == 'ADMINISTRADOR' %}
-<a class="nav-link {% if vista == 'panel_admin' %}nav-link-activo{% endif %}" href="{% url 'cuentas:panel_admin' %}">
-    {% icono "usuarios" clase="w-4 h-4" %} {% translate "Panel" %}
-</a>
-{% endif %}
 <span data-cola-registros class="hidden badge-devuelto my-1 sm:my-0"></span>
-<div class="usuario-mini w-full sm:w-auto flex items-center justify-between sm:justify-start gap-2 mt-2 sm:mt-0 sm:ml-1 sm:pl-3 sm:border-l pt-2 sm:pt-0 border-t sm:border-t-0">
-    <a href="{% url 'cuentas:mi_cuenta' %}" class="usuario-etiqueta text-sm inline-flex items-center gap-1.5 hover:underline">{% icono "usuario" clase="w-4 h-4" %} {{ user.seudonimo }}</a>
-    <form method="post" action="{% url 'cuentas:cerrar_sesion' %}">
-        {% csrf_token %}
-        <button type="submit" class="btn-ghost !px-2.5 !py-1 text-xs">{% translate "Salir" %}</button>
-    </form>
-</div>
 {% else %}
 <a class="nav-link" href="{% url 'cuentas:iniciar_sesion' %}">{% translate "Iniciar sesión" %}</a>
 <a class="btn-primary !px-3 !py-1.5 text-sm w-full sm:w-auto mt-1 sm:mt-0" href="{% url 'cuentas:registrar' %}">

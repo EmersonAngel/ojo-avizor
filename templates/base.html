@@ -261,19 +261,25 @@
                 color: var(--texto);
             }
             .nav-link:hover { background-color: var(--superficie-alt); color: var(--azul-profundo); }
-            /* Dentro de la barra superior el fondo es siempre oscuro: el enlace,
-               el nombre de usuario y "Salir" usan el texto claro de la barra en
-               vez del color por defecto (pensado para el menú desplegable, que
-               sí sigue el tema normal). */
+            /* Dentro de la barra superior el fondo es siempre oscuro: los enlaces
+               de navegación usan el texto claro de la barra en vez del color por
+               defecto. El panel del menú desplegable (.dropdown-item, más abajo)
+               es la excepción: es un panel flotante con fondo claro/oscuro según
+               el tema normal, no según la barra. */
             .barra-superior-nav .nav-link { color: var(--texto-en-barra); }
             .barra-superior-nav .nav-link:hover { background-color: var(--barra-hover); color: var(--texto-en-barra); }
             .barra-superior-nav .btn-ghost { color: var(--texto-en-barra); }
             .barra-superior-nav .btn-ghost:hover { background-color: var(--barra-hover); }
-            .barra-superior-nav .usuario-etiqueta { color: var(--texto-en-barra); opacity: .85; }
-            .barra-superior-nav .usuario-mini { border-color: var(--barra-hover); }
 
-            .usuario-mini { border-color: var(--borde); }
-            .usuario-etiqueta { color: var(--texto-suave); }
+            /* Menú desplegable del usuario (base.html + _menu_usuario.html): color
+               fijo, independiente del contexto donde se incluya (barra oscura o
+               menú móvil claro) — por eso no usa .nav-link, que sí cambia según
+               .barra-superior-nav. */
+            .dropdown-item {
+                @apply flex items-center gap-2 w-full text-left px-3.5 py-2 text-sm transition-colors;
+                color: var(--texto);
+            }
+            .dropdown-item:hover { background-color: var(--superficie-alt); }
 
             .card { @apply bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-sm transition-colors; }
             .card-interactive { @apply card hover:-translate-y-0.5 hover:shadow-lg hover:shadow-stone-900/5 dark:hover:shadow-black/20 hover:border-primary-200 dark:hover:border-primary-800 transition-all duration-200; }
@@ -311,7 +317,7 @@
     {% block extra_head %}{% endblock %}
 </head>
 <body class="min-h-screen flex flex-col antialiased transition-colors duration-200"
-      x-data="{ menuAbierto: false, oscuro: document.documentElement.getAttribute('data-tema') === 'oscuro', barraElevada: false }"
+      x-data="{ menuAbierto: false, menuUsuario: false, oscuro: document.documentElement.getAttribute('data-tema') === 'oscuro', barraElevada: false }"
       @scroll.window.throttle="barraElevada = window.scrollY > 8">
 
     <header class="sticky top-0 z-20 barra-superior" :class="barraElevada ? 'barra-superior--elevada' : ''">
@@ -342,20 +348,55 @@
                 </button>
             </div>
 
-            <nav class="hidden sm:flex text-sm items-center gap-1 barra-superior-nav">
-                {% include "_nav_enlaces.html" %}
-                {% include "_selector_idioma.html" %}
-                <button type="button" class="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-[var(--barra-hover)] ml-1"
-                        @click="oscuro = !oscuro; document.documentElement.setAttribute('data-tema', oscuro ? 'oscuro' : 'claro'); document.documentElement.classList.toggle('dark', oscuro); localStorage.setItem('tema', oscuro ? 'oscuro' : 'claro')"
-                        aria-label="{% translate 'Cambiar tema' %}">
-                    <span x-show="!oscuro" x-cloak>{% icono "luna" clase="w-5 h-5" %}</span>
-                    <span x-show="oscuro" x-cloak>{% icono "sol" clase="w-5 h-5" %}</span>
-                </button>
+            <nav class="hidden sm:flex text-sm items-center gap-4 barra-superior-nav">
+                <div class="flex items-center gap-1">
+                    {% include "_nav_enlaces.html" %}
+                </div>
+
+                <div class="flex items-center gap-1 pl-3 border-l border-[var(--barra-hover)]">
+                    {% include "_selector_idioma.html" %}
+                    <button type="button" class="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-[var(--barra-hover)]"
+                            @click="oscuro = !oscuro; document.documentElement.setAttribute('data-tema', oscuro ? 'oscuro' : 'claro'); document.documentElement.classList.toggle('dark', oscuro); localStorage.setItem('tema', oscuro ? 'oscuro' : 'claro')"
+                            aria-label="{% translate 'Cambiar tema' %}">
+                        <span x-show="!oscuro" x-cloak>{% icono "luna" clase="w-5 h-5" %}</span>
+                        <span x-show="oscuro" x-cloak>{% icono "sol" clase="w-5 h-5" %}</span>
+                    </button>
+
+                    {% if user.is_authenticated %}
+                    <div class="relative">
+                        <button type="button" class="relative flex items-center gap-1.5 rounded-lg pl-1.5 pr-2 py-1.5 hover:bg-[var(--barra-hover)]"
+                                @click="menuUsuario = !menuUsuario" :aria-expanded="menuUsuario.toString()"
+                                aria-label="{% translate 'Menú de la cuenta' %}">
+                            <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[var(--barra-hover)] flex-shrink-0">
+                                {% icono "usuario" clase="w-3.5 h-3.5" %}
+                            </span>
+                            <span class="hidden md:inline max-w-[8rem] truncate">{{ user.seudonimo }}</span>
+                            <span class="transition-transform" :class="menuUsuario ? 'rotate-180' : ''">{% icono "flecha-abajo" clase="w-3.5 h-3.5" %}</span>
+                            {% if solicitudes_revisor_pendientes %}
+                            <span class="absolute top-0.5 left-0.5 w-2.5 h-2.5 rounded-full bg-[var(--error)] ring-2 ring-[var(--fondo-barra)]" aria-hidden="true"></span>
+                            {% endif %}
+                        </button>
+                        <div x-show="menuUsuario" x-cloak @click.outside="menuUsuario = false" @keydown.escape.window="menuUsuario = false"
+                             x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+                             class="absolute right-0 mt-2 w-60 rounded-xl border border-[var(--borde)] bg-[var(--blanco)] shadow-[var(--sombra-elevada)] py-1.5 z-30"
+                             @click="menuUsuario = false">
+                            {% include "_menu_usuario.html" %}
+                        </div>
+                    </div>
+                    {% else %}
+                    <a class="nav-link" href="{% url 'cuentas:iniciar_sesion' %}">{% translate "Iniciar sesión" %}</a>
+                    <a class="btn-primary !px-3 !py-1.5 text-sm" href="{% url 'cuentas:registrar' %}">{% translate "Crear cuenta" %}</a>
+                    {% endif %}
+                </div>
             </nav>
         </div>
         <nav class="sm:hidden border-t border-[var(--borde)] bg-[var(--blanco)] px-4 py-3 flex flex-col items-start gap-1 text-sm"
              x-show="menuAbierto" x-cloak @click="menuAbierto = false">
             {% include "_nav_enlaces.html" %}
+            {% if user.is_authenticated %}
+            <div class="border-t border-[var(--borde)] w-full my-1"></div>
+            {% include "_menu_usuario.html" %}
+            {% endif %}
         </nav>
     </header>
 
