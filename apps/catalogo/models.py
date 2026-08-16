@@ -5,6 +5,7 @@ fichas; esa regla se aplica en services.py, no aquí.
 """
 from django.conf import settings
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 
 class Especie(models.Model):
@@ -39,8 +40,8 @@ class NombreComun(models.Model):
     """Nombre común de una especie. Una especie admite varios (RF-17)."""
 
     class Estado(models.TextChoices):
-        APROBADO = 'APROBADO', 'Aprobado'
-        PROPUESTO = 'PROPUESTO', 'Propuesto'
+        APROBADO = 'APROBADO', _('Aprobado')
+        PROPUESTO = 'PROPUESTO', _('Propuesto')
 
     especie = models.ForeignKey(Especie, on_delete=models.CASCADE, related_name='nombres_comunes')
     nombre = models.CharField(max_length=100, db_index=True)

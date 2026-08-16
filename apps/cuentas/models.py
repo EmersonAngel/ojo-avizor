@@ -5,19 +5,20 @@ datos: es el usuario no autenticado.
 """
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 
 class Usuario(AbstractUser):
     """Usuario de la plataforma. Extiende AbstractUser (RF-09, RF-27)."""
 
     class Rol(models.TextChoices):
-        ADMINISTRADOR = 'ADMINISTRADOR', 'Administrador'
-        REVISOR = 'REVISOR', 'Revisor'
-        OBSERVADOR = 'OBSERVADOR', 'Observador'
+        ADMINISTRADOR = 'ADMINISTRADOR', _('Administrador')
+        REVISOR = 'REVISOR', _('Revisor')
+        OBSERVADOR = 'OBSERVADOR', _('Observador')
 
     class Estado(models.TextChoices):
-        ACTIVO = 'ACTIVO', 'Activo'
-        SUSPENDIDO = 'SUSPENDIDO', 'Suspendido'
+        ACTIVO = 'ACTIVO', _('Activo')
+        SUSPENDIDO = 'SUSPENDIDO', _('Suspendido')
 
     # nombre_real: obligatorio, nunca visible en el catálogo público (RN-02).
     nombre_real = models.CharField(max_length=150)

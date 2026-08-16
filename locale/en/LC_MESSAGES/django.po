@@ -5,15 +5,73 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Ojo Avizor\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-15 19:52-0500\n"
+"POT-Creation-Date: 2026-08-15 20:24-0500\n"
 "PO-Revision-Date: 2026-08-15 20:00-0500\n"
 "Last-Translator: Ojo Avizor\n"
-"Language-Team: English\n"
 "Language: en\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Language-Team: English\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ./apps/catalogo/forms.py:17 ./templates/catalogo/especie_listar.html:23
+msgid "Nombre científico"
+msgstr "Scientific name"
+
+#: ./apps/catalogo/forms.py:18 ./templates/catalogo/especie_listar.html:24
+msgid "Familia"
+msgstr "Family"
+
+#: ./apps/catalogo/forms.py:19
+msgid "Orden"
+msgstr "Order"
+
+#: ./apps/catalogo/forms.py:20 ./templates/catalogo/publico_detalle.html:39
+msgid "Distribución"
+msgstr "Distribution"
+
+#: ./apps/catalogo/forms.py:21
+msgid "Tamaño (cm)"
+msgstr "Size (cm)"
+
+#: ./apps/catalogo/forms.py:22 ./templates/catalogo/publico_detalle.html:45
+msgid "Historia natural"
+msgstr "Natural history"
+
+#: ./apps/catalogo/forms.py:23
+msgid "Dato curioso"
+msgstr "Fun fact"
+
+#: ./apps/catalogo/forms.py:24
+msgid "Foto de referencia"
+msgstr "Reference photo"
+
+# | msgid "Nombre real"
+#: ./apps/catalogo/forms.py:33
+msgid "Nombre"
+msgstr "Name"
+
+#: ./apps/catalogo/forms.py:34
+msgid "Región"
+msgstr "Region"
+
+#: ./apps/catalogo/forms.py:35
+msgid "Propio del municipio"
+msgstr "Specific to the municipality"
+
+#: ./apps/catalogo/forms.py:36 ./templates/registros/registro_mis.html:38
+msgid "Estado"
+msgstr "Status"
+
+#: ./apps/catalogo/models.py:43 ./apps/curaduria/models.py:17 ./apps/registros/models.py:32 ./templates/registros/registro_mis.html:23
+msgid "Aprobado"
+msgstr "Approved"
+
+#: ./apps/catalogo/models.py:44
+msgid "Propuesto"
+msgstr "Proposed"
 
 #: ./apps/cuentas/forms.py:10
 msgid "Usuario"
@@ -55,9 +113,39 @@ msgstr "An account with this nickname already exists."
 msgid "Las contraseñas no coinciden."
 msgstr "Passwords do not match."
 
+#: ./apps/cuentas/models.py:15
+msgid "Administrador"
+msgstr "Administrator"
+
+# | msgid "revisores"
+#: ./apps/cuentas/models.py:16
+msgid "Revisor"
+msgstr "Reviewer"
+
+# | msgid "observadores"
+#: ./apps/cuentas/models.py:17
+msgid "Observador"
+msgstr "Observer"
+
+#: ./apps/cuentas/models.py:20
+msgid "Activo"
+msgstr "Active"
+
+#: ./apps/cuentas/models.py:21
+msgid "Suspendido"
+msgstr "Suspended"
+
 #: ./apps/curaduria/forms.py:8
 msgid "Motivo de la devolución"
 msgstr "Reason for returning it"
+
+#: ./apps/curaduria/models.py:18 ./apps/registros/models.py:33 ./templates/registros/registro_mis.html:26
+msgid "Devuelto"
+msgstr "Returned"
+
+#: ./apps/curaduria/models.py:42
+msgid "El motivo es obligatorio cuando la decisión es DEVUELTO."
+msgstr "A reason is required when the decision is DEVUELTO."
 
 #: ./apps/registros/forms.py:21
 msgid "Especie (si la identificas)"
@@ -74,6 +162,20 @@ msgstr "Latitude (optional, never published)"
 #: ./apps/registros/forms.py:24
 msgid "Longitud (opcional, no se publica)"
 msgstr "Longitude (optional, never published)"
+
+# | msgid "No tienes avistamientos con este estado."
+#: ./apps/registros/models.py:16
+msgid "La fecha de avistamiento no puede ser futura."
+msgstr "The sighting date cannot be in the future."
+
+# | msgid "observadores"
+#: ./apps/registros/models.py:30
+msgid "Borrador"
+msgstr "Draft"
+
+#: ./apps/registros/models.py:31 ./templates/registros/registro_mis.html:20
+msgid "Pendiente"
+msgstr "Pending"
 
 #: ./templates/404.html:4
 msgid "Página no encontrada"
@@ -140,39 +242,47 @@ msgstr "Page %(actual)s of %(total)s"
 msgid "Siguiente"
 msgstr "Next"
 
+#: ./templates/_selector_idioma.html:7
+msgid "Español"
+msgstr "Spanish"
+
+#: ./templates/_selector_idioma.html:10
+msgid "English"
+msgstr "English"
+
 #: ./templates/base.html:10
 msgid "Inventario participativo de avifauna, construido por la comunidad."
 msgstr "A participatory bird inventory, built by the community."
 
-#: ./templates/base.html:284 ./templates/base.html:301
+#: ./templates/base.html:285 ./templates/base.html:303
 msgid "Cambiar tema"
 msgstr "Switch theme"
 
-#: ./templates/base.html:291
+#: ./templates/base.html:292
 msgid "Abrir menú"
 msgstr "Open menu"
 
-#: ./templates/base.html:334
+#: ./templates/base.html:336
 msgid "Cerrar"
 msgstr "Close"
 
-#: ./templates/base.html:350
+#: ./templates/base.html:352
 msgid "inventario participativo de avifauna"
 msgstr "participatory bird inventory"
 
-#: ./templates/base.html:352
+#: ./templates/base.html:354
 msgid "Un proyecto de la comunidad, para la comunidad."
 msgstr "A project by the community, for the community."
 
-#: ./templates/base.html:354 ./templates/condiciones_uso.html:4 ./templates/condiciones_uso.html:8
+#: ./templates/base.html:356 ./templates/condiciones_uso.html:4 ./templates/condiciones_uso.html:8
 msgid "Condiciones de uso"
 msgstr "Terms of use"
 
-#: ./templates/base.html:358
+#: ./templates/base.html:360
 msgid "Un proyecto de la comunidad de Pijao, con el acompañamiento de:"
 msgstr "A project by the Pijao community, supported by:"
 
-#: ./templates/base.html:388
+#: ./templates/base.html:390
 msgid "Volver arriba"
 msgstr "Back to top"
 
@@ -216,14 +326,6 @@ msgstr "Catalog layer 1: the curated information for each species."
 #: ./templates/catalogo/especie_listar.html:14
 msgid "Nueva ficha"
 msgstr "New record"
-
-#: ./templates/catalogo/especie_listar.html:23
-msgid "Nombre científico"
-msgstr "Scientific name"
-
-#: ./templates/catalogo/especie_listar.html:24
-msgid "Familia"
-msgstr "Family"
 
 #: ./templates/catalogo/especie_listar.html:38 ./templates/catalogo/especie_listar.html:61
 msgid "Editar"
@@ -325,14 +427,6 @@ msgstr "in"
 #, python-format
 msgid "Ficha de %(nombre)s en el inventario de avifauna de Ojo Avizor."
 msgstr "%(nombre)s record in the Ojo Avizor bird inventory."
-
-#: ./templates/catalogo/publico_detalle.html:39
-msgid "Distribución"
-msgstr "Distribution"
-
-#: ./templates/catalogo/publico_detalle.html:45
-msgid "Historia natural"
-msgstr "Natural history"
 
 #: ./templates/catalogo/publico_detalle.html:51
 msgid "¿Sabías que…?"
@@ -660,18 +754,6 @@ msgstr "Report"
 msgid "Todos"
 msgstr "All"
 
-#: ./templates/registros/registro_mis.html:20
-msgid "Pendiente"
-msgstr "Pending"
-
-#: ./templates/registros/registro_mis.html:23
-msgid "Aprobado"
-msgstr "Approved"
-
-#: ./templates/registros/registro_mis.html:26
-msgid "Devuelto"
-msgstr "Returned"
-
 #: ./templates/registros/registro_mis.html:35
 msgid "Especie"
 msgstr "Species"
@@ -683,10 +765,6 @@ msgstr "Place"
 #: ./templates/registros/registro_mis.html:37
 msgid "Fecha"
 msgstr "Date"
-
-#: ./templates/registros/registro_mis.html:38
-msgid "Estado"
-msgstr "Status"
 
 #: ./templates/registros/registro_mis.html:53 ./templates/registros/registro_mis.html:73
 msgid "Corregir"

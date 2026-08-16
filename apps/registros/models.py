@@ -8,11 +8,12 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 
 def validar_fecha_no_futura(valor):
     if valor > timezone.localdate():
-        raise ValidationError('La fecha de avistamiento no puede ser futura.')
+        raise ValidationError(_('La fecha de avistamiento no puede ser futura.'))
 
 
 class RegistroPublicadoManager(models.Manager):
@@ -26,10 +27,10 @@ class Registro(models.Model):
     """Un avistamiento aportado por un Observador. Entidad central (RF-01)."""
 
     class Estado(models.TextChoices):
-        BORRADOR = 'BORRADOR', 'Borrador'
-        PENDIENTE = 'PENDIENTE', 'Pendiente'
-        APROBADO = 'APROBADO', 'Aprobado'
-        DEVUELTO = 'DEVUELTO', 'Devuelto'
+        BORRADOR = 'BORRADOR', _('Borrador')
+        PENDIENTE = 'PENDIENTE', _('Pendiente')
+        APROBADO = 'APROBADO', _('Aprobado')
+        DEVUELTO = 'DEVUELTO', _('Devuelto')
 
     especie = models.ForeignKey(
         'catalogo.Especie',

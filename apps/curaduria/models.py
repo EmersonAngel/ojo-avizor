@@ -7,14 +7,15 @@ del proceso.
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 
 class Revision(models.Model):
     """Decisión de curaduría sobre un Registro (RF-07, RF-08)."""
 
     class Decision(models.TextChoices):
-        APROBADO = 'APROBADO', 'Aprobado'
-        DEVUELTO = 'DEVUELTO', 'Devuelto'
+        APROBADO = 'APROBADO', _('Aprobado')
+        DEVUELTO = 'DEVUELTO', _('Devuelto')
 
     registro = models.ForeignKey(
         'registros.Registro',
@@ -38,7 +39,7 @@ class Revision(models.Model):
     def clean(self):
         # RN-08 / RF-08: devolver exige motivo, visible para el autor.
         if self.decision == self.Decision.DEVUELTO and not self.motivo.strip():
-            raise ValidationError({'motivo': 'El motivo es obligatorio cuando la decisión es DEVUELTO.'})
+            raise ValidationError({'motivo': _('El motivo es obligatorio cuando la decisión es DEVUELTO.')})
 
     def __str__(self):
         return f'Revisión #{self.pk} — {self.decision} (registro #{self.registro_id})'
