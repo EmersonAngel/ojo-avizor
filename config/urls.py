@@ -4,7 +4,8 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 from django.conf.urls.i18n import i18n_patterns
-from django.views.generic.base import RedirectView
+
+from apps.catalogo import views as catalogo_views
 
 from . import views
 
@@ -17,7 +18,9 @@ urlpatterns = [
 ]
 
 urlpatterns += i18n_patterns(
-    path('', RedirectView.as_view(pattern_name='catalogo:publico_listado'), name='inicio'),
+    # Portada (abrebocas, no el catálogo): apartado nuevo, distinto de
+    # catalogo:publico_listado, que sigue siendo la búsqueda/listado en sí.
+    path('', catalogo_views.portada, name='inicio'),
     path('condiciones-de-uso/', views.condiciones_uso, name='condiciones_uso'),
     path('cuentas/', include('apps.cuentas.urls')),
     path('catalogo/', include('apps.catalogo.urls')),

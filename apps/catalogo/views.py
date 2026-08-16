@@ -15,6 +15,20 @@ from .models import Especie
 _ROLES_GESTION = (Usuario.Rol.REVISOR, Usuario.Rol.ADMINISTRADOR)
 
 
+def portada(request):
+    """Puerta de entrada del sitio: presenta el proyecto antes del catálogo en sí,
+    no lo reemplaza (RF-03 sigue viviendo en especie_listar_publico)."""
+    contexto = {
+        'total_especies': repositories.contar_especies(),
+        'total_avistamientos': registros_repositories.contar_avistamientos_publicados(),
+        'total_observadores': registros_repositories.contar_observadores_participantes(),
+        'familias': repositories.listar_familias(),
+        'especies_recientes': repositories.listar_recientes(),
+        'ultimos_avistamientos': registros_repositories.listar_ultimos_publicados(),
+    }
+    return render(request, 'catalogo/portada.html', contexto)
+
+
 def especie_listar_publico(request):
     """RF-03, RF-05: catálogo público, con búsqueda por nombre científico y común.
 
@@ -33,9 +47,6 @@ def especie_listar_publico(request):
         'query': query,
         'familias': repositories.listar_familias(),
         'total_especies': repositories.contar_especies(),
-        'total_avistamientos': registros_repositories.contar_avistamientos_publicados(),
-        'total_observadores': registros_repositories.contar_observadores_participantes(),
-        'ultimos_avistamientos': registros_repositories.listar_ultimos_publicados(),
     }
     return render(request, 'catalogo/publico_listado.html', contexto)
 

@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% load i18n iconos %}
+
+{% block titulo %}Ojo Avizor — {% translate "Inventario de avifauna de Pijao" %}{% endblock %}
+
+{% block contenido %}
+<div class="hero">
+    <div class="hero-blobs">
+        <div class="absolute -top-24 -right-16 w-72 h-72 bg-[var(--cian)] opacity-20 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-32 -left-16 w-72 h-72 bg-[var(--azul-medio)] opacity-20 rounded-full blur-3xl"></div>
+    </div>
+    <div class="page-wide relative !pt-14 sm:!pt-20 !pb-24 text-center">
+        <span class="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide bg-white/10 text-[var(--texto-en-barra)] px-3 py-1 rounded-full mb-4">
+            {% icono "ave" clase="w-3.5 h-3.5" %} {% translate "Un proyecto de la comunidad de Pijao" %}
+        </span>
+        <h1 class="font-display text-4xl sm:text-6xl font-bold bg-gradient-to-r from-white to-[var(--cian)] bg-clip-text text-transparent leading-tight">
+            {% translate "Cada ave que ves, cuenta una historia del territorio" %}
+        </h1>
+        <p class="text-[var(--texto-en-barra)] opacity-90 mt-4 max-w-xl mx-auto">
+            {% translate "Ojo Avizor reúne lo que la gente de Pijao observa, día a día, en un solo inventario abierto para todos." %}
+        </p>
+
+        <form action="{% url 'catalogo:publico_listado' %}" method="get" class="mt-8 max-w-lg mx-auto relative">
+            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400">{% icono "busqueda" clase="w-5 h-5" %}</span>
+            <input type="search" name="q"
+                   placeholder="{% translate 'Busca una especie por nombre…' %}"
+                   class="!pl-10 !py-3 !rounded-xl shadow-lg border-0 focus:!ring-2 focus:!ring-white/50">
+        </form>
+
+        <div class="flex flex-wrap items-center justify-center gap-3 mt-6">
+            <a href="{% url 'catalogo:publico_listado' %}" class="btn-secondary !bg-white !border-white">
+                {% icono "libro" clase="w-4 h-4" %} {% translate "Explorar el catálogo" %}
+            </a>
+            <a href="{% if user.is_authenticated %}{% url 'registros:crear' %}{% else %}{% url 'cuentas:registrar' %}{% endif %}" class="btn-primary">
+                {% icono "mas" clase="w-4 h-4" %} {% translate "Registrar un avistamiento" %}
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="page-wide -mt-14 relative">
+    <div class="grid grid-cols-3 gap-3 sm:gap-4 mb-12">
+        <a href="{% url 'catalogo:inventario' %}" class="card-interactive p-4 sm:p-5 text-center">
+            <p class="font-display text-2xl sm:text-3xl font-bold text-[var(--cian)]">{{ total_especies }}</p>
+            <p class="text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-0.5">{% translate "especies" %}</p>
+        </a>
+        <a href="{% url 'catalogo:inventario' %}" class="card-interactive p-4 sm:p-5 text-center">
+            <p class="font-display text-2xl sm:text-3xl font-bold text-[var(--cian)]">{{ total_avistamientos }}</p>
+            <p class="text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-0.5">{% translate "avistamientos" %}</p>
+        </a>
+        <a href="{% url 'catalogo:inventario' %}" class="card-interactive p-4 sm:p-5 text-center">
+            <p class="font-display text-2xl sm:text-3xl font-bold text-[var(--cian)]">{{ total_observadores }}</p>
+            <p class="text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-0.5">{% translate "observadores" %}</p>
+        </a>
+    </div>
+
+    {% if familias %}
+    <div class="mb-12">
+        <h2 class="titulo-pagina !text-xl mb-3">{% translate "Explora por familia" %}</h2>
+        <div class="flex flex-wrap gap-2">
+            {% for familia in familias %}
+            <a href="{% url 'catalogo:publico_listado' %}?q={{ familia }}"
+               class="badge bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 hover:bg-[var(--superficie-alt)] hover:text-[var(--azul-medio)] transition-colors">
+                {{ familia }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if especies_recientes %}
+    <div class="mb-12">
+        <div class="flex justify-between items-center mb-3">
+            <h2 class="titulo-pagina !text-xl">{% translate "Últimas fichas agregadas" %}</h2>
+            <a href="{% url 'catalogo:publico_listado' %}" class="btn-link !text-sm">{% translate "Ver todo el catálogo" %}</a>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {% for especie in especies_recientes %}
+            <a href="{% url 'catalogo:especie_detalle' especie.pk %}" class="card-interactive p-4 animate-fade-up" style="animation-delay: {% widthratio forloop.counter0 1 60 %}ms">
+                {% if especie.foto_referencia %}
+                <img src="{{ especie.foto_referencia.url }}" alt="{{ especie.nombre_cientifico }}" class="w-full h-28 object-cover rounded-xl mb-3">
+                {% else %}
+                <div class="w-full h-28 rounded-xl mb-3 flex items-center justify-center bg-[var(--superficie-alt)] text-[var(--azul-medio)]">{% icono "ave" clase="w-8 h-8" %}</div>
+                {% endif %}
+                <p class="font-display italic font-semibold text-stone-900 dark:text-stone-100 truncate">{{ especie.nombre_cientifico }}</p>
+                <p class="text-sm text-stone-500 dark:text-stone-400 truncate">
+                    {% for nombre in especie.nombres_comunes.all %}{{ nombre.nombre }}{% if not forloop.last %}, {% endif %}{% empty %}{% translate "Sin nombre común registrado" %}{% endfor %}
+                </p>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if ultimos_avistamientos %}
+    <div class="mb-4">
+        <h2 class="titulo-pagina !text-xl mb-3">{% translate "Actividad reciente" %}</h2>
+        <ul class="card divide-y divide-stone-100 dark:divide-stone-800">
+            {% for avistamiento in ultimos_avistamientos %}
+            <li class="p-4 flex items-start gap-3">
+                <span class="text-stone-400 dark:text-stone-500 mt-0.5">{% icono "ubicacion" clase="w-4 h-4" %}</span>
+                <div class="text-sm min-w-0">
+                    <p class="text-stone-700 dark:text-stone-300">
+                        <span class="font-medium text-stone-900 dark:text-stone-100">{{ avistamiento.usuario.seudonimo }}</span>
+                        {% translate "avistó" %}
+                        {% if avistamiento.especie %}
+                        <a href="{% url 'catalogo:especie_detalle' avistamiento.especie.pk %}" class="font-display italic text-[var(--azul-medio)] hover:underline">{{ avistamiento.especie.nombre_cientifico }}</a>
+                        {% else %}
+                        <span class="italic">{% translate "un ave sin identificar" %}</span>
+                        {% endif %}
+                        {% translate "en" %} {{ avistamiento.lugar }}
+                    </p>
+                    <p class="text-stone-400 dark:text-stone-500 text-xs mt-0.5">{{ avistamiento.fecha_avistamiento }}</p>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
