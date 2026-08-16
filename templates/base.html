@@ -158,8 +158,53 @@
 
         /* Barra superior (apartado 5 de la guía): en claro usa azul-profundo; en
            oscuro usa --fondo-barra (ver su declaración en :root) para que no se
-           note la costura contra la página ni contra el logo de modo oscuro. */
-        .barra-superior { background-color: var(--fondo-barra); box-shadow: var(--sombra-tarjeta); color: var(--texto-en-barra); }
+           note la costura contra la página ni contra el logo de modo oscuro.
+           La sombra crece un poco al bajar (.barra-superior--elevada, activada
+           desde Alpine según scrollY) para que la barra se perciba flotando
+           sobre el contenido en vez de pegada a él — sin sombras marcadas ni
+           animación llamativa, solo una transición de 200ms. */
+        .barra-superior {
+            position: relative;
+            background-color: var(--fondo-barra);
+            background-image: radial-gradient(500px 180px at 10% 0%, color-mix(in srgb, var(--cian) 16%, transparent), transparent 70%);
+            box-shadow: var(--sombra-tarjeta);
+            color: var(--texto-en-barra);
+            transition: box-shadow .2s ease;
+        }
+        .barra-superior--elevada { box-shadow: var(--sombra-elevada); }
+
+        /* Línea de brillo superior e hilo cian inferior: dan a la barra una
+           sensación de placa con volumen en vez de un bloque de color plano,
+           sin recurrir a degradados marcados (apartado 8 de la guía). */
+        .barra-superior::before {
+            content: '';
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 1px;
+            background: rgba(255, 255, 255, .08);
+        }
+        .barra-superior::after {
+            content: '';
+            position: absolute;
+            inset: auto 0 0 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--cian) 50%, transparent);
+            opacity: .5;
+        }
+
+        /* Pestaña activa (apartado 5: "subrayado de 3px en --cian"), única
+           excepción documentada al uso de cian fuera de acentos decorativos. */
+        .nav-link { position: relative; }
+        .nav-link-activo::after {
+            content: '';
+            position: absolute;
+            left: 12px;
+            right: 12px;
+            bottom: -2px;
+            height: 3px;
+            border-radius: var(--radio-pill);
+            background: var(--cian);
+        }
 
         /* Logotipo: se intercambia el archivo según el tema (apartado 6). */
         .logo-oscuro { display: none; }
@@ -265,9 +310,10 @@
     {% block extra_head %}{% endblock %}
 </head>
 <body class="min-h-screen flex flex-col antialiased transition-colors duration-200"
-      x-data="{ menuAbierto: false, oscuro: document.documentElement.getAttribute('data-tema') === 'oscuro' }">
+      x-data="{ menuAbierto: false, oscuro: document.documentElement.getAttribute('data-tema') === 'oscuro', barraElevada: false }"
+      @scroll.window.throttle="barraElevada = window.scrollY > 8">
 
-    <header class="sticky top-0 z-20 barra-superior">
+    <header class="sticky top-0 z-20 barra-superior" :class="barraElevada ? 'barra-superior--elevada' : ''">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 h-20 sm:h-28 flex justify-between items-center">
             <a href="/" class="flex items-center shrink-0" aria-label="Ojo Avizor">
                 {% comment %}
