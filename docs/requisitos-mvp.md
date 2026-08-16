@@ -5,6 +5,21 @@
 
 ---
 
+## Estado actual — 15 de agosto de 2026
+
+**Los 20 requisitos funcionales y los 11 no funcionales de este documento
+están implementados y probados.** Detalle día a día en `docs/bitacora.md`.
+
+Además, tres funciones que este documento marca como fuera de alcance se
+construyeron por pedido explícito del usuario, con la excepción anotada en
+cada RF correspondiente más abajo: historial de aportes propios (roza
+RF-12, ver «Mi cuenta»), panel de estadísticas (roza RF-25, ver panel de
+administrador) y ubicación sobre mapa (RF-22, ver la excepción explícita).
+El resto de la lista de «Fuera del alcance» sigue exactamente fuera: no se
+empezó ninguno.
+
+---
+
 ## Cuentas y roles
 
 ### RF-09 · Autenticar a los usuarios que aportan

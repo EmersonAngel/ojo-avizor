@@ -1,0 +1,4 @@
+# entrypoint.sh se ejecuta dentro del contenedor Linux: un salto de línea
+# CRLF (que Git para Windows suele aplicar por defecto) rompe el shebang.
+entrypoint.sh text eol=lf
+*.sh text eol=lf

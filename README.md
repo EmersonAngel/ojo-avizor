@@ -83,6 +83,31 @@ La plataforma queda disponible en `http://localhost:8000/`. El catálogo públic
 
 ---
 
+## Ejecutar con Docker
+
+Alternativa a la instalación local: no necesitas Python ni PostgreSQL instalados en la máquina, solo Docker.
+
+```bash
+cp .env.example .env
+# edita .env: pon una DJANGO_SECRET_KEY propia y un DB_PASSWORD
+docker compose up --build
+```
+
+Esto levanta dos servicios: `db` (PostgreSQL 16, con los datos en un volumen que persiste entre reinicios) y `web` (la aplicación, con el código montado desde el host — los cambios se recargan solos, igual que con `runserver` local). La plataforma queda en `http://localhost:8000/`.
+
+En otra terminal, con los contenedores corriendo:
+
+```bash
+docker compose exec web python manage.py createsuperuser
+docker compose exec web python manage.py importar_especies datos_ejemplo/especies_ejemplo.csv --usuario correo_de_un_revisor@ejemplo.com
+```
+
+Cualquier comando de `manage.py` de este README funciona igual, anteponiendo `docker compose exec web`.
+
+**Sobre la imagen:** el `Dockerfile` está pensado también para producción — usa el mismo mecanismo con `gunicorn` y WhiteNoise (sirve los estáticos compilados sin depender de un nginx aparte) cuando se ejecuta sin el `command:` de desarrollo que trae `docker-compose.yml`. `DJANGO_SETTINGS_MODULE=config.settings.produccion` es el valor por defecto de la imagen; `docker-compose.yml` lo cambia a `desarrollo` explícitamente.
+
+---
+
 ## Comandos de gestión propios
 
 ### Importar especies desde CSV (RF-14)
