@@ -21,6 +21,10 @@ urlpatterns = [
     # idioma activo, cambiaría de URL según la sesión y habría que
     # registrar cada variante por separado.
     path('accounts/', include('allauth.urls')),
+    # API mínima para la app móvil nativa (Expo): fuera de i18n_patterns
+    # por el mismo motivo que sw.js/accounts/ — un cliente que no es
+    # navegador no necesita el prefijo de idioma en la URL.
+    path('api-movil/', include('apps.api_movil.urls')),
 ]
 
 urlpatterns += i18n_patterns(

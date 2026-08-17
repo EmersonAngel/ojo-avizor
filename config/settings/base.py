@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'apps.catalogo',
     'apps.registros',
     'apps.curaduria',
+    'apps.api_movil',
 
     # Inicio de sesión con Google — ver la nota junto a SOCIALACCOUNT_PROVIDERS
     # más abajo sobre las credenciales.
