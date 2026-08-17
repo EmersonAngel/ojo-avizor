@@ -1,13 +1,14 @@
+import { Ionicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
-import { FlatList, Modal, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { FlatList, Image, Modal, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
-import type { EspecieCache } from '../almacenamiento/especiesCache';
+import type { EspecieCacheGuardada } from '../almacenamiento/especiesCache';
 
 interface Props {
-  especies: EspecieCache[];
+  especies: EspecieCacheGuardada[];
   especieId: number | null;
   nombreEspecie: string | null;
-  onSeleccionar: (especie: EspecieCache | null) => void;
+  onSeleccionar: (especie: EspecieCacheGuardada | null) => void;
 }
 
 export default function SelectorEspecie({ especies, especieId, nombreEspecie, onSeleccionar }: Props) {
@@ -26,7 +27,8 @@ export default function SelectorEspecie({ especies, especieId, nombreEspecie, on
   return (
     <View>
       <Pressable style={estilos.campo} onPress={() => setAbierto(true)}>
-        <Text style={especieId ? estilos.textoElegido : estilos.textoPlaceholder}>
+        <Ionicons name="search-outline" size={18} color="#888" />
+        <Text style={[especieId ? estilos.textoElegido : estilos.textoPlaceholder, estilos.textoCampo]}>
           {especieId ? nombreEspecie : 'Toca para elegir una especie (opcional)'}
         </Text>
       </Pressable>
@@ -59,10 +61,19 @@ export default function SelectorEspecie({ especies, especieId, nombreEspecie, on
                   setBusqueda('');
                 }}
               >
-                <Text style={estilos.nombreCientifico}>{item.nombreCientifico}</Text>
-                {item.nombresComunes.length > 0 && (
-                  <Text style={estilos.nombresComunes}>{item.nombresComunes.join(', ')}</Text>
+                {item.fotoLocal || item.fotoReferencia ? (
+                  <Image source={{ uri: item.fotoLocal ?? item.fotoReferencia! }} style={estilos.miniatura} />
+                ) : (
+                  <View style={[estilos.miniatura, estilos.miniaturaVacia]}>
+                    <Ionicons name="image-outline" size={20} color="#aaa" />
+                  </View>
                 )}
+                <View style={estilos.textoFila}>
+                  <Text style={estilos.nombreCientifico}>{item.nombreCientifico}</Text>
+                  {item.nombresComunes.length > 0 && (
+                    <Text style={estilos.nombresComunes}>{item.nombresComunes.join(', ')}</Text>
+                  )}
+                </View>
               </Pressable>
             )}
           />
@@ -74,6 +85,7 @@ export default function SelectorEspecie({ especies, especieId, nombreEspecie, on
               setBusqueda('');
             }}
           >
+            <Ionicons name="help-circle-outline" size={18} color="#1B2D55" />
             <Text style={estilos.botonSinIdentificarTexto}>No sé identificarla / pedir ayuda</Text>
           </Pressable>
           <Pressable style={estilos.botonCerrar} onPress={() => setAbierto(false)}>
@@ -87,12 +99,16 @@ export default function SelectorEspecie({ especies, especieId, nombreEspecie, on
 
 const estilos = StyleSheet.create({
   campo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 8,
     padding: 12,
     marginBottom: 12,
   },
+  textoCampo: { flex: 1 },
   textoElegido: { fontStyle: 'italic', color: '#111' },
   textoPlaceholder: { color: '#888' },
   contenedorModal: { flex: 1, paddingTop: 60, paddingHorizontal: 16 },
@@ -104,10 +120,27 @@ const estilos = StyleSheet.create({
     marginBottom: 12,
   },
   vacio: { textAlign: 'center', color: '#888', marginTop: 24 },
-  fila: { paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: '#eee' },
+  fila: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  miniatura: { width: 48, height: 48, borderRadius: 8, backgroundColor: '#eee' },
+  miniaturaVacia: { alignItems: 'center', justifyContent: 'center' },
+  textoFila: { flex: 1 },
   nombreCientifico: { fontStyle: 'italic', fontSize: 16 },
   nombresComunes: { color: '#666', marginTop: 2 },
-  botonSinIdentificar: { paddingVertical: 14, alignItems: 'center', marginTop: 8 },
+  botonSinIdentificar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    paddingVertical: 14,
+    marginTop: 8,
+  },
   botonSinIdentificarTexto: { color: '#1B2D55', fontWeight: '600' },
   botonCerrar: { paddingVertical: 14, alignItems: 'center' },
   botonCerrarTexto: { color: '#888' },

@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
@@ -16,16 +17,30 @@ export default function Navegador() {
     <NavigationContainer>
       <Tab.Navigator
         screenOptions={{
+          tabBarActiveTintColor: '#1B2D55',
+          tabBarInactiveTintColor: '#999',
           headerRight: () => (
             <Pressable onPress={cerrarSesion} style={{ marginRight: 16 }}>
-              <Text style={{ color: '#B3261E' }}>Salir</Text>
+              <Ionicons name="log-out-outline" size={22} color="#B3261E" />
             </Pressable>
           ),
           headerTitle: sesion ? `Hola, ${sesion.seudonimo}` : 'Ojo Avizor',
         }}
       >
-        <Tab.Screen name="Registrar" component={PantallaRegistrarAvistamiento} />
-        <Tab.Screen name="Borradores" component={PantallaBorradores} />
+        <Tab.Screen
+          name="Registrar"
+          component={PantallaRegistrarAvistamiento}
+          options={{
+            tabBarIcon: ({ color, size }) => <Ionicons name="add-circle-outline" size={size} color={color} />,
+          }}
+        />
+        <Tab.Screen
+          name="Borradores"
+          component={PantallaBorradores}
+          options={{
+            tabBarIcon: ({ color, size }) => <Ionicons name="folder-open-outline" size={size} color={color} />,
+          }}
+        />
       </Tab.Navigator>
     </NavigationContainer>
   );

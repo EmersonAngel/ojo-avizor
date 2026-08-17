@@ -31,7 +31,9 @@ export function abrirBD(): Promise<SQLite.SQLiteDatabase> {
         CREATE TABLE IF NOT EXISTS especies_cache (
           id INTEGER PRIMARY KEY,
           nombre_cientifico TEXT NOT NULL,
-          nombres_comunes_json TEXT NOT NULL DEFAULT '[]'
+          nombres_comunes_json TEXT NOT NULL DEFAULT '[]',
+          foto_referencia TEXT,
+          foto_local TEXT
         );
       `);
       return bd;

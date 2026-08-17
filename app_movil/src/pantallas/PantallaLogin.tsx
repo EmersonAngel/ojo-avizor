@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {
   ActivityIndicator,
+  Image,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -36,6 +37,7 @@ export default function PantallaLogin() {
       style={estilos.contenedor}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
+      <Image source={require('../../assets/logo.png')} style={estilos.logo} resizeMode="contain" />
       <Text style={estilos.titulo}>Ojo Avizor</Text>
       <Text style={estilos.subtitulo}>Registro de campo</Text>
 
@@ -66,6 +68,7 @@ export default function PantallaLogin() {
 
 const estilos = StyleSheet.create({
   contenedor: { flex: 1, justifyContent: 'center', padding: 24, backgroundColor: '#fff' },
+  logo: { width: 96, height: 96, alignSelf: 'center', marginBottom: 12 },
   titulo: { fontSize: 28, fontWeight: 'bold', color: '#1B2D55', textAlign: 'center' },
   subtitulo: { textAlign: 'center', color: '#666', marginBottom: 32 },
   campo: {

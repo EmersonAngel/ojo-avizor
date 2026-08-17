@@ -7,5 +7,6 @@ export async function obtenerEspecies(): Promise<EspecieCache[]> {
     id: especie.id,
     nombreCientifico: especie.nombre_cientifico,
     nombresComunes: especie.nombres_comunes,
+    fotoReferencia: especie.foto_referencia,
   }));
 }

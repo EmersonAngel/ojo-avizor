@@ -47,6 +47,9 @@ def especies_listado(request):
             'id': especie.pk,
             'nombre_cientifico': especie.nombre_cientifico,
             'nombres_comunes': [nc.nombre for nc in especie.nombres_comunes.all()],
+            'foto_referencia': (
+                request.build_absolute_uri(especie.foto_referencia.url) if especie.foto_referencia else None
+            ),
         }
         for especie in especies
     ]

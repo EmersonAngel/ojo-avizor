@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import {
@@ -11,7 +12,7 @@ import {
   View,
 } from 'react-native';
 
-import { listarEspeciesCache, type EspecieCache } from '../almacenamiento/especiesCache';
+import { listarEspeciesCache, type EspecieCacheGuardada } from '../almacenamiento/especiesCache';
 import {
   guardarBorrador,
   guardarPendiente,
@@ -24,7 +25,9 @@ import { ErrorApi } from '../api/cliente';
 import { enviarRegistro } from '../api/registros';
 import { useConectividad } from '../contexto/ConectividadContexto';
 import SelectorEspecie from '../componentes/SelectorEspecie';
+import SelectorFecha from '../componentes/SelectorFecha';
 import SelectorFotos from '../componentes/SelectorFotos';
+import SelectorMapa from '../componentes/SelectorMapa';
 
 const DATOS_VACIOS: DatosRegistro = {
   especieId: null,
@@ -46,7 +49,7 @@ export default function PantallaRegistrarAvistamiento() {
   const idBorrador: number | undefined = ruta.params?.idBorrador;
   const { conectado } = useConectividad();
 
-  const [especies, setEspecies] = useState<EspecieCache[]>([]);
+  const [especies, setEspecies] = useState<EspecieCacheGuardada[]>([]);
   const [datos, setDatos] = useState<DatosRegistro>(DATOS_VACIOS);
   const [cargando, setCargando] = useState(Boolean(idBorrador));
   const [enviando, setEnviando] = useState(false);
@@ -144,7 +147,10 @@ export default function PantallaRegistrarAvistamiento() {
 
   return (
     <ScrollView style={estilos.contenedor} contentContainerStyle={estilos.contenido}>
-      <Text style={estilos.seccion}>¿Qué viste?</Text>
+      <View style={estilos.filaSeccion}>
+        <Ionicons name="paw-outline" size={16} color="#666" />
+        <Text style={estilos.seccion}>¿Qué viste?</Text>
+      </View>
       <SelectorEspecie
         especies={especies}
         especieId={datos.especieId}
@@ -159,18 +165,26 @@ export default function PantallaRegistrarAvistamiento() {
         }
       />
 
-      <Text style={estilos.seccion}>¿Dónde y cuándo?</Text>
+      <View style={estilos.filaSeccion}>
+        <Ionicons name="location-outline" size={16} color="#666" />
+        <Text style={estilos.seccion}>¿Dónde y cuándo?</Text>
+      </View>
       <TextInput
         style={estilos.campo}
         placeholder="Lugar"
         value={datos.lugar}
         onChangeText={(v) => actualizar('lugar', v)}
       />
-      <TextInput
-        style={estilos.campo}
-        placeholder="Fecha (AAAA-MM-DD)"
-        value={datos.fechaAvistamiento}
-        onChangeText={(v) => actualizar('fechaAvistamiento', v)}
+      <SelectorFecha valor={datos.fechaAvistamiento} onCambiar={(v) => actualizar('fechaAvistamiento', v)} />
+
+      <View style={estilos.filaEtiquetaChica}>
+        <Ionicons name="pin-outline" size={14} color="#555" />
+        <Text style={estilos.etiquetaChica}>Punto exacto (opcional, no se publica)</Text>
+      </View>
+      <SelectorMapa
+        latitud={datos.latitud}
+        longitud={datos.longitud}
+        onCambiar={(lat, lng) => setDatos((anterior) => ({ ...anterior, latitud: lat, longitud: lng }))}
       />
       <View style={estilos.filaDoble}>
         <TextInput
@@ -189,7 +203,10 @@ export default function PantallaRegistrarAvistamiento() {
         />
       </View>
 
-      <Text style={estilos.seccion}>Detalles (opcional)</Text>
+      <View style={estilos.filaSeccion}>
+        <Ionicons name="document-text-outline" size={16} color="#666" />
+        <Text style={estilos.seccion}>Detalles (opcional)</Text>
+      </View>
       <TextInput
         style={estilos.campo}
         placeholder="Comportamiento"
@@ -211,15 +228,26 @@ export default function PantallaRegistrarAvistamiento() {
         multiline
       />
 
-      <Text style={estilos.seccion}>Fotografías</Text>
+      <View style={estilos.filaSeccion}>
+        <Ionicons name="camera-outline" size={16} color="#666" />
+        <Text style={estilos.seccion}>Fotografías</Text>
+      </View>
       <SelectorFotos fotos={datos.fotos} onCambiar={(fotos) => actualizar('fotos', fotos)} />
 
       <View style={estilos.acciones}>
         <Pressable style={estilos.botonSecundario} onPress={guardarComoBorrador} disabled={enviando}>
+          <Ionicons name="save-outline" size={18} color="#1B2D55" />
           <Text style={estilos.botonSecundarioTexto}>Guardar borrador</Text>
         </Pressable>
         <Pressable style={estilos.botonPrimario} onPress={enviar} disabled={enviando}>
-          {enviando ? <ActivityIndicator color="#fff" /> : <Text style={estilos.botonPrimarioTexto}>Enviar</Text>}
+          {enviando ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <>
+              <Ionicons name="send-outline" size={18} color="#fff" />
+              <Text style={estilos.botonPrimarioTexto}>Enviar</Text>
+            </>
+          )}
         </Pressable>
       </View>
     </ScrollView>
@@ -230,7 +258,10 @@ const estilos = StyleSheet.create({
   cargando: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   contenedor: { flex: 1, backgroundColor: '#fff' },
   contenido: { padding: 16, paddingBottom: 48 },
-  seccion: { fontSize: 13, fontWeight: '700', color: '#666', textTransform: 'uppercase', marginTop: 16, marginBottom: 8 },
+  filaSeccion: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 16, marginBottom: 8 },
+  seccion: { fontSize: 13, fontWeight: '700', color: '#666', textTransform: 'uppercase' },
+  filaEtiquetaChica: { flexDirection: 'row', alignItems: 'center', gap: 4, marginBottom: 6 },
+  etiquetaChica: { fontSize: 13, color: '#555' },
   campo: {
     borderWidth: 1,
     borderColor: '#ccc',
@@ -243,19 +274,25 @@ const estilos = StyleSheet.create({
   acciones: { flexDirection: 'row', gap: 10, marginTop: 20 },
   botonSecundario: {
     flex: 1,
+    flexDirection: 'row',
+    gap: 6,
     borderWidth: 1,
     borderColor: '#1B2D55',
     borderRadius: 8,
     paddingVertical: 14,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   botonSecundarioTexto: { color: '#1B2D55', fontWeight: '600' },
   botonPrimario: {
     flex: 1,
+    flexDirection: 'row',
+    gap: 6,
     backgroundColor: '#1B2D55',
     borderRadius: 8,
     paddingVertical: 14,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   botonPrimarioTexto: { color: '#fff', fontWeight: '600' },
 });

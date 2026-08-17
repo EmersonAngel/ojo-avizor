@@ -10,6 +10,7 @@ interface SesionContextoValor {
   cargando: boolean;
   iniciarSesion: (correo: string, password: string) => Promise<void>;
   cerrarSesion: () => Promise<void>;
+  sincronizarCatalogo: () => Promise<boolean>;
 }
 
 const SesionContexto = createContext<SesionContextoValor | undefined>(undefined);
@@ -24,21 +25,32 @@ export function SesionProveedor({ children }: { children: React.ReactNode }) {
       .finally(() => setCargando(false));
   }, []);
 
-  const iniciarSesion = useCallback(async (correo: string, password: string) => {
-    const nuevaSesion = await iniciarSesionApi(correo, password);
-    await guardarSesion(nuevaSesion);
-    setSesion(nuevaSesion);
-    // Cachea el catálogo para que el selector funcione ya sin señal en
-    // campo. Si falla (poco probable justo tras loguearse con éxito), no
-    // bloquea el inicio de sesión — el selector simplemente queda vacío
-    // hasta la próxima vez que haya conexión.
+  // Descarga las fichas de especies que ya existen en el sitio (nombre,
+  // nombres comunes y foto) para que el selector del formulario funcione
+  // sin conexión. Devuelve si tuvo éxito, para poder avisar al usuario
+  // cuando se dispara a mano (ver PantallaBorradores) en vez de fallar
+  // en silencio como en el inicio de sesión.
+  const sincronizarCatalogo = useCallback(async (): Promise<boolean> => {
     try {
       const especies = await obtenerEspecies();
       await guardarEspeciesEnCache(especies);
+      return true;
     } catch {
-      // silencioso a propósito, ver comentario arriba
+      return false;
     }
   }, []);
+
+  const iniciarSesion = useCallback(
+    async (correo: string, password: string) => {
+      const nuevaSesion = await iniciarSesionApi(correo, password);
+      await guardarSesion(nuevaSesion);
+      setSesion(nuevaSesion);
+      // No bloquea el inicio de sesión si falla: el selector simplemente
+      // queda vacío hasta la próxima sincronización con conexión.
+      await sincronizarCatalogo();
+    },
+    [sincronizarCatalogo],
+  );
 
   const cerrarSesion = useCallback(async () => {
     await borrarSesion();
@@ -46,7 +58,7 @@ export function SesionProveedor({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <SesionContexto.Provider value={{ sesion, cargando, iniciarSesion, cerrarSesion }}>
+    <SesionContexto.Provider value={{ sesion, cargando, iniciarSesion, cerrarSesion, sincronizarCatalogo }}>
       {children}
     </SesionContexto.Provider>
   );
