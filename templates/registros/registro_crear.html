@@ -4,11 +4,14 @@
 {% block titulo %}{% if corrigiendo %}{% translate "Corregir avistamiento" %}{% else %}{% translate "Registrar avistamiento" %}{% endif %} — Ojo Avizor{% endblock %}
 
 {% block extra_head %}
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="{% static 'vendor/leaflet/leaflet.css' %}">
 {% endblock %}
 
 {% block scripts_antes_de_alpine %}
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
+<!-- Leaflet servido localmente, no desde CDN: en campo, sin conexión, un
+     observador que ya visitó esta página antes debe poder volver a abrirla
+     (el service worker la cachea) y que la librería del mapa cargue igual. -->
+<script src="{% static 'vendor/leaflet/leaflet.js' %}" defer></script>
 <script src="{% static 'js/mapa-ubicacion.js' %}" defer></script>
 {% endblock %}
 
@@ -51,6 +54,10 @@
             <div x-data="mapaUbicacion('{{ form.latitud.value|default_if_none:"" }}', '{{ form.longitud.value|default_if_none:"" }}')">
                 <label class="field-label">{% translate "Punto exacto (opcional, no se publica)" %}</label>
                 <p class="field-hint !mt-0 mb-2">{% translate "Toca el mapa para marcar el sitio, o arrastra el punto para ajustarlo." %}</p>
+                <p x-show="sinConexion" x-cloak class="field-hint !mt-0 mb-2 flex items-start gap-1.5">
+                    {% icono "wifi-off" clase="w-3.5 h-3.5 flex-shrink-0 mt-0.5" %}
+                    {% translate "Sin conexión no se ve el mapa (las imágenes vienen de internet), pero puedes escribir la latitud y longitud a mano si las conoces." %}
+                </p>
                 <div x-ref="mapa" class="w-full h-56 sm:h-64 rounded-xl border border-stone-200 dark:border-stone-800 z-0"></div>
                 <div class="flex flex-wrap items-center gap-2 mt-2">
                     <button type="button" @click="usarMiUbicacion()" :disabled="buscandoUbicacion" class="btn-secondary !px-3 !py-1.5 text-xs">

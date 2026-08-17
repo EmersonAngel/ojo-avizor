@@ -12,6 +12,12 @@ function mapaUbicacion(latInicial, lngInicial) {
         lat: latInicial || '',
         lng: lngInicial || '',
         buscandoUbicacion: false,
+        // El mapa en sí (Leaflet) ya se sirve local, pero las teselas de
+        // OpenStreetMap son imágenes que se piden en vivo a un servidor
+        // externo — sin conexión no hay forma de mostrarlas. Se avisa en
+        // vez de dejar un mapa en blanco sin explicación; los campos de
+        // latitud/longitud siguen funcionando a mano igual.
+        sinConexion: !navigator.onLine,
         _mapa: null,
         _marcador: null,
 
