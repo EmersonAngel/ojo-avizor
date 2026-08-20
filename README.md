@@ -83,6 +83,25 @@ La plataforma queda disponible en `http://localhost:8000/`. El catálogo públic
 
 ---
 
+## Estilos (Tailwind CSS)
+
+El CSS se compila con Tailwind CLI a `static/css/tailwind.css` — **no** desde el CDN en tiempo de ejecución (`cdn.tailwindcss.com`), que se descartó a propósito: su compilador JIT en el navegador podía romperse en runtime (ver commit "unifica el sistema de color…") y dejaba toda la interfaz sin ninguna clase de utilidad aplicada. `static/css/tailwind.css` se commitea al repositorio: el despliegue (Docker/`collectstatic`) no corre ningún paso de Node, solo sirve lo que ya está generado.
+
+Si editas `static/css/entrada.css`, `tailwind.config.js`, o agregas clases nuevas en las plantillas, hay que recompilar:
+
+```bash
+npm install     # una sola vez
+npm run build:css
+```
+
+Para no tener que recompilar a mano en cada cambio mientras desarrollas:
+
+```bash
+npm run watch:css
+```
+
+---
+
 ## Ejecutar con Docker
 
 Alternativa a la instalación local: no necesitas Python ni PostgreSQL instalados en la máquina, solo Docker.

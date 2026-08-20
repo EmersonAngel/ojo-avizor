@@ -1,0 +1,13 @@
+{
+  "name": "ojo-avizor-estilos",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Build de Tailwind CSS para el sitio Django — reemplaza el CDN en tiempo de ejecución (ver README.md, sección \"Estilos (Tailwind CSS)\").",
+  "scripts": {
+    "build:css": "tailwindcss -i ./static/css/entrada.css -o ./static/css/tailwind.css --minify",
+    "watch:css": "tailwindcss -i ./static/css/entrada.css -o ./static/css/tailwind.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.0"
+  }
+}

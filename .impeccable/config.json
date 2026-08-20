@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "dark-glow",
+        "value": "*",
+        "files": [
+          "templates/base.html"
+        ],
+        "createdAt": "2026-08-20T23:34:42.228Z",
+        "reason": "docs/identidad-visual.md ya documenta esta sombra tintada de marca (var(--sombra-elevada), rgba(27,45,85,.12) en claro) a proposito, como elevacion sutil de la barra al hacer scroll, no como halo brillante generico."
+      }
+    ]
+  }
+}

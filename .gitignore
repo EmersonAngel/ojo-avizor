@@ -10,3 +10,8 @@ media/
 .claude/worktrees/
 respaldos/
 .idea/
+
+# Build de Tailwind (raíz del proyecto — no confundir con app_movil/node_modules).
+# static/css/tailwind.css SÍ se commitea: no hay paso de build de Node en el
+# despliegue (Docker/collectstatic solo sirven lo que ya está en el repo).
+node_modules/
