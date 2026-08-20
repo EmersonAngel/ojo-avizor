@@ -20,7 +20,7 @@
                         {{ registro.especie.nombre_cientifico|default:"Sin identificar" }}
                     </a>
                     {% if registro.sin_identificar %}
-                    <span class="badge bg-accent-100 dark:bg-accent-900/50 text-accent-800 dark:text-accent-300 mt-1">{% icono "ayuda" clase="w-3.5 h-3.5" %} {% translate "Pide ayuda para identificarla" %}</span>
+                    <span class="badge mt-1" style="background-color: var(--alerta-fondo); color: var(--alerta);">{% icono "ayuda" clase="w-3.5 h-3.5" %} {% translate "Pide ayuda para identificarla" %}</span>
                     {% endif %}
                 </div>
                 <span class="text-xs text-stone-400 dark:text-stone-500 flex-shrink-0 whitespace-nowrap">{{ registro.fecha_avistamiento }}</span>

@@ -14,7 +14,7 @@
         </div>
 
         {% if form.errors %}
-        <p class="text-sm text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-900 rounded-lg p-3 mb-4">
+        <p class="text-sm rounded-lg p-3 mb-4" style="color: var(--error); background-color: var(--error-fondo); border: 1px solid var(--error);">
             {% translate "Correo o contraseña incorrectos." %}
         </p>
         {% endif %}

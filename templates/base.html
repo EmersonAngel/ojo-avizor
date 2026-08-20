@@ -69,8 +69,14 @@
                             800: '#92400e', 900: '#78350f', 950: '#451a03',
                         },
                     },
+                    // Serif de sistema, no descargada: identidad-visual.md apartado 3
+                    // solo pide cursiva para nombres científicos, no una tipografía
+                    // aparte, pero el font-display ya está en decenas de plantillas
+                    // como tratamiento de título — nunca se cargó "Fraunces" (no hay
+                    // @font-face ni <link> en ningún lado), así que ya caía aquí en
+                    // silencio. Se deja explícito en vez de una referencia muerta.
                     fontFamily: {
-                        display: ['"Fraunces"', 'ui-serif', 'Georgia', 'serif'],
+                        display: ['ui-serif', 'Georgia', 'serif'],
                     },
                 },
             },
@@ -250,10 +256,11 @@
                 @apply w-full rounded-lg border border-dashed border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-900 px-3 py-2.5 text-sm text-stone-600 dark:text-stone-400;
             }
             input[type="checkbox"] {
-                @apply h-[1.1rem] w-[1.1rem] rounded border-stone-300 dark:border-stone-600 text-primary-700 align-middle;
+                @apply h-[1.1rem] w-[1.1rem] rounded border-stone-300 dark:border-stone-600 align-middle;
+                accent-color: var(--azul-medio);
             }
             input:focus, select:focus, textarea:focus {
-                @apply outline-none ring-2 ring-primary-600 ring-offset-1 dark:ring-offset-stone-950 border-primary-600;
+                @apply outline-none ring-2 ring-[var(--azul-medio)] ring-offset-1 dark:ring-offset-stone-950 border-[var(--azul-medio)];
             }
         }
         @layer components {
@@ -310,7 +317,13 @@
                 @apply inline-flex items-center gap-1.5 text-sm font-medium hover:underline transition-colors;
                 color: var(--azul-medio);
             }
-            .btn-danger { @apply btn rounded-lg bg-red-600 text-white shadow-sm shadow-red-900/20 hover:bg-red-700 hover:shadow-md focus-visible:ring-red-500; }
+            .btn-danger {
+                @apply btn text-white shadow-sm hover:shadow-md;
+                background-color: var(--error);
+                border-radius: var(--radio-chico);
+                --tw-ring-color: var(--error);
+            }
+            .btn-danger:hover { filter: brightness(.92); }
             .btn-ghost { @apply btn rounded-lg bg-transparent text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 focus-visible:ring-stone-400; }
 
             .nav-link {
@@ -339,15 +352,20 @@
             .dropdown-item:hover { background-color: var(--superficie-alt); }
 
             .card { @apply bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-sm transition-colors; }
-            .card-interactive { @apply card hover:-translate-y-0.5 hover:shadow-lg hover:shadow-stone-900/5 dark:hover:shadow-black/20 hover:border-primary-200 dark:hover:border-primary-800 transition-all duration-200; }
+            .card-interactive { @apply card hover:-translate-y-0.5 hover:shadow-lg hover:shadow-stone-900/5 dark:hover:shadow-black/20 hover:border-[var(--azul-medio)] transition-all duration-200; }
 
             .badge { @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold; }
-            .badge-pendiente { @apply badge bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300; }
-            .badge-aprobado { @apply badge bg-primary-100 dark:bg-primary-900/50 text-primary-800 dark:text-primary-300; }
-            .badge-devuelto { @apply badge bg-accent-100 dark:bg-accent-900/50 text-accent-800 dark:text-accent-300; }
+            /* Estados de un registro (identidad-visual.md, apartado 5):
+               PENDIENTE → alerta · APROBADO → éxito · DEVUELTO → error.
+               Antes usaban la paleta verde/ámbar por defecto de Tailwind
+               (primary-*/accent-*), fuera de la lista de colores permitida
+               — "devuelto" incluso quedaba en ámbar en vez de rojo. */
+            .badge-pendiente { @apply badge; background-color: var(--alerta-fondo); color: var(--alerta); }
+            .badge-aprobado { @apply badge; background-color: var(--exito-fondo); color: var(--exito); }
+            .badge-devuelto { @apply badge; background-color: var(--error-fondo); color: var(--error); }
 
             .field-label { @apply block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1; }
-            .field-error { @apply text-sm text-red-600 dark:text-red-400 mt-1; }
+            .field-error { @apply text-sm mt-1; color: var(--error); }
             .field-hint { @apply text-xs text-stone-500 dark:text-stone-400 mt-1; }
 
             .page { @apply max-w-3xl mx-auto px-4 py-8; }
@@ -476,7 +494,7 @@
                  x-transition:leave-end="opacity-0"
                  x-init="setTimeout(() => { mensajes = mensajes.filter(m => m.id !== mensaje.id) }, 5000)"
                  class="rounded-xl p-3 shadow-lg border text-sm flex items-start justify-between gap-3"
-                 :class="mensaje.tipo === 'error' ? 'bg-red-50 dark:bg-red-950 text-red-800 dark:text-red-200 border-red-200 dark:border-red-900' : 'bg-primary-50 dark:bg-primary-950 text-primary-800 dark:text-primary-200 border-primary-200 dark:border-primary-900'">
+                 :class="mensaje.tipo === 'error' ? 'bg-[var(--error-fondo)] text-[var(--error)] border-[var(--error)]' : 'bg-[var(--exito-fondo)] text-[var(--exito)] border-[var(--exito)]'">
                 <span x-text="mensaje.texto"></span>
                 <button type="button" @click="mensajes = mensajes.filter(m => m.id !== mensaje.id)" class="opacity-60 hover:opacity-100 flex-shrink-0" aria-label="{% translate 'Cerrar' %}">{% icono "cerrar" clase="w-4 h-4" %}</button>
             </div>

@@ -32,7 +32,7 @@
             <button type="submit" class="btn-primary w-full">{% translate "Guardar contraseña" %}</button>
         </form>
         {% else %}
-        <p class="text-sm text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-900 rounded-lg p-3">
+        <p class="text-sm rounded-lg p-3" style="color: var(--error); background-color: var(--error-fondo); border: 1px solid var(--error);">
             {% translate "Este enlace para elegir una contraseña nueva ya no es válido — puede que ya lo hayas usado, o que haya caducado. Pide uno nuevo." %}
         </p>
         <a class="btn-secondary w-full mt-4 justify-center" href="{% url 'cuentas:password_reset' %}">{% translate "Pedir un enlace nuevo" %}</a>

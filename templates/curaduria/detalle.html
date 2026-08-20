@@ -14,7 +14,7 @@
                     {{ registro.especie.nombre_cientifico|default:"Sin identificar" }}
                 </h1>
                 {% if registro.sin_identificar %}
-                <span class="badge bg-accent-100 dark:bg-accent-900/50 text-accent-800 dark:text-accent-300 mt-2">
+                <span class="badge mt-2" style="background-color: var(--alerta-fondo); color: var(--alerta);">
                     {% icono "ayuda" clase="w-3.5 h-3.5" %} {% translate "Pide ayuda para identificarla" %}
                 </span>
                 {% endif %}

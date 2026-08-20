@@ -22,14 +22,14 @@
     </h1>
 
     {% if ultima_revision %}
-    <div class="card p-4 bg-accent-50 dark:bg-accent-950 border-accent-200 dark:border-accent-900 mb-6">
-        <p class="text-sm font-semibold text-accent-800 dark:text-accent-300">{% translate "Motivo de la devolución:" %}</p>
-        <p class="text-sm text-accent-900 dark:text-accent-200 mt-1">{{ ultima_revision.motivo }}</p>
+    <div class="card p-4 mb-6" style="background-color: var(--error-fondo); border-color: var(--error);">
+        <p class="text-sm font-semibold" style="color: var(--error);">{% translate "Motivo de la devolución:" %}</p>
+        <p class="text-sm mt-1" style="color: var(--texto);">{{ ultima_revision.motivo }}</p>
     </div>
     {% endif %}
 
     {% if not corrigiendo %}
-    <div id="mensaje-offline" class="hidden card p-4 bg-accent-50 dark:bg-accent-950 border-accent-200 dark:border-accent-900 mb-6 text-sm text-accent-900 dark:text-accent-200 flex items-start gap-2">
+    <div id="mensaje-offline" class="hidden card p-4 mb-6 text-sm flex items-start gap-2" style="background-color: var(--alerta-fondo); border-color: var(--alerta); color: var(--alerta);">
         <span class="inline-flex mt-0.5">{% icono "wifi-off" clase="w-4 h-4" %}</span>
         <span>{% translate "Sin conexión: el registro quedó guardado en este dispositivo y se enviará solo cuando vuelva la señal." %}</span>
     </div>
