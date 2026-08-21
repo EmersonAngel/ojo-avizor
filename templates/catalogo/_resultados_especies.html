@@ -3,21 +3,25 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-2">
     {% for especie in especies %}
     <a href="{% url 'catalogo:especie_detalle' especie.pk %}"
-       class="group card-interactive p-4 flex gap-4 animate-fade-up"
+       class="group card-interactive overflow-hidden animate-fade-up"
        style="animation-delay: {% widthratio forloop.counter0 1 40 %}ms">
         {% if especie.foto_referencia %}
-        <img src="{{ especie.foto_referencia.url }}" alt="{{ especie.nombre_cientifico }}"
-             class="w-16 h-16 object-cover rounded-xl flex-shrink-0">
+        <div class="aspect-[4/3] overflow-hidden bg-[var(--superficie-alt)]">
+            <img src="{{ especie.foto_referencia.url }}" alt="{{ especie.nombre_cientifico }}"
+                 class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.04]">
+        </div>
         {% else %}
-        <div class="w-16 h-16 rounded-xl flex-shrink-0 flex items-center justify-center bg-[var(--superficie-alt)] text-[var(--azul-medio)] transition-colors group-hover:bg-[var(--azul-medio)] group-hover:text-white">{% icono "ave" clase="w-7 h-7" %}</div>
+        <div class="aspect-[4/3] flex items-center justify-center bg-[var(--superficie-alt)] text-[var(--azul-medio)] transition-colors group-hover:bg-[var(--azul-medio)] group-hover:text-white">
+            {% icono "ave" clase="w-14 h-14 sm:w-16 sm:h-16" %}
+        </div>
         {% endif %}
-        <div class="min-w-0">
-            <p class="font-display italic font-semibold text-stone-900 dark:text-stone-100 truncate">{{ especie.nombre_cientifico }}</p>
-            <p class="text-sm text-stone-500 dark:text-stone-400 truncate">
+        <div class="p-4">
+            <p class="font-display italic font-bold text-lg sm:text-xl leading-tight text-stone-900 dark:text-stone-100 truncate">{{ especie.nombre_cientifico }}</p>
+            <p class="text-sm text-stone-500 dark:text-stone-400 truncate mt-0.5">
                 {% for nombre in especie.nombres_comunes.all %}{{ nombre.nombre }}{% if not forloop.last %}, {% endif %}{% empty %}{% translate "Sin nombre común registrado" %}{% endfor %}
             </p>
             {% if especie.familia or especie.tamano_cm %}
-            <div class="flex flex-wrap gap-1.5 mt-1.5">
+            <div class="flex flex-wrap gap-1.5 mt-2">
                 {% if especie.familia %}<span class="badge bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 !py-0.5">{{ especie.familia }}</span>{% endif %}
                 {% if especie.tamano_cm %}<span class="badge bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 !py-0.5">{{ especie.tamano_cm }} cm</span>{% endif %}
             </div>

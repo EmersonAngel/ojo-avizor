@@ -9,11 +9,8 @@
         <div class="absolute -top-24 -right-16 w-72 h-72 bg-[var(--cian)] opacity-20 rounded-full blur-3xl"></div>
         <div class="absolute -bottom-32 -left-16 w-72 h-72 bg-[var(--azul-medio)] opacity-20 rounded-full blur-3xl"></div>
     </div>
-    <div class="page-wide relative !pt-14 sm:!pt-20 !pb-24 text-center">
-        <span class="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide bg-white/10 text-[var(--texto-en-barra)] px-3 py-1 rounded-full mb-4">
-            {% icono "ave" clase="w-3.5 h-3.5" %} {% translate "Un proyecto de la comunidad de Pijao" %}
-        </span>
-        <h1 class="font-display text-4xl sm:text-6xl font-bold bg-gradient-to-r from-white to-[var(--cian)] bg-clip-text text-transparent leading-tight">
+    <div class="page-wide relative !pt-16 sm:!pt-24 !pb-24 text-center">
+        <h1 class="font-display text-4xl sm:text-6xl font-bold text-white leading-tight">
             {% translate "Cada ave que ves, cuenta una historia del territorio" %}
         </h1>
         <p class="text-[var(--texto-en-barra)] opacity-90 mt-4 max-w-xl mx-auto">
@@ -75,19 +72,7 @@
             <a href="{% url 'catalogo:publico_listado' %}" class="btn-link !text-sm">{% translate "Ver todo el catálogo" %}</a>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {% for especie in especies_recientes %}
-            <a href="{% url 'catalogo:especie_detalle' especie.pk %}" class="card-interactive p-4 animate-fade-up" style="animation-delay: {% widthratio forloop.counter0 1 60 %}ms">
-                {% if especie.foto_referencia %}
-                <img src="{{ especie.foto_referencia.url }}" alt="{{ especie.nombre_cientifico }}" class="w-full h-28 object-cover rounded-xl mb-3">
-                {% else %}
-                <div class="w-full h-28 rounded-xl mb-3 flex items-center justify-center bg-[var(--superficie-alt)] text-[var(--azul-medio)]">{% icono "ave" clase="w-8 h-8" %}</div>
-                {% endif %}
-                <p class="font-display italic font-semibold text-stone-900 dark:text-stone-100 truncate">{{ especie.nombre_cientifico }}</p>
-                <p class="text-sm text-stone-500 dark:text-stone-400 truncate">
-                    {% for nombre in especie.nombres_comunes.all %}{{ nombre.nombre }}{% if not forloop.last %}, {% endif %}{% empty %}{% translate "Sin nombre común registrado" %}{% endfor %}
-                </p>
-            </a>
-            {% endfor %}
+            {% include "catalogo/_resultados_especies.html" with especies=especies_recientes %}
         </div>
     </div>
     {% endif %}

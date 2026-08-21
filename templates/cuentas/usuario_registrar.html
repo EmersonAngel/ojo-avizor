@@ -4,17 +4,22 @@
 {% block titulo %}{% translate "Crear cuenta" %} — Ojo Avizor{% endblock %}
 
 {% block contenido %}
-<div class="page-narrow">
-    <div class="card p-6 sm:p-8">
-        <div class="text-center mb-6">
-            <img src="{% static 'marca/logo-apilado.png' %}" alt="Ojo Avizor" class="logo-claro h-16 w-auto mx-auto">
-            <img src="{% static 'marca/logo-apilado-modo-oscuro.png' %}" alt="Ojo Avizor" class="logo-oscuro h-16 w-auto mx-auto">
-            <h1 class="titulo-pagina mt-3">{% translate "Crear cuenta" %}</h1>
-            <p class="text-sm text-stone-500 dark:text-stone-400 mt-1">
-                {% translate "Tu nombre real nunca se muestra en público — solo tu seudónimo." %}
-            </p>
-        </div>
+<div class="hero !py-10 sm:!py-12">
+    <div class="hero-blobs">
+        <div class="absolute -top-16 -left-10 w-56 h-56 bg-[var(--cian)] opacity-20 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-20 -right-10 w-56 h-56 bg-[var(--azul-medio)] opacity-20 rounded-full blur-3xl"></div>
+    </div>
+    <div class="page-narrow relative !py-0 text-center">
+        <img src="{% static 'marca/logo-apilado-modo-oscuro.png' %}" alt="Ojo Avizor" class="h-14 w-auto mx-auto">
+        <h1 class="font-display text-2xl sm:text-3xl font-bold text-white mt-3">{% translate "Crear cuenta" %}</h1>
+        <p class="text-[var(--texto-en-barra)] opacity-90 mt-1 text-sm">
+            {% translate "Tu nombre real nunca se muestra en público — solo tu seudónimo." %}
+        </p>
+    </div>
+</div>
 
+<div class="page-narrow -mt-8 relative">
+    <div class="card p-6 sm:p-8">
         <form method="post" class="space-y-4">
             {% csrf_token %}
             {% for field in form %}
