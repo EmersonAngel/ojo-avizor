@@ -109,8 +109,13 @@
     }
     .dropdown-item:hover { background-color: var(--superficie-alt); }
 
-    .card { @apply bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-sm transition-colors; }
-    .card-interactive { @apply card hover:-translate-y-0.5 hover:shadow-lg hover:shadow-stone-900/5 dark:hover:shadow-black/20 hover:border-[var(--azul-medio)] transition-all duration-200; }
+    /* Sombra propia de la marca (--sombra-tarjeta/--sombra-elevada), no el gris
+       genérico de Tailwind: el mismo lenguaje de profundidad que ya usan los
+       botones, para que toda superficie elevada del sitio se perciba como
+       parte de un mismo sistema físico en vez de dos estilos de sombra distintos. */
+    .card { @apply bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 transition-colors; box-shadow: var(--sombra-tarjeta); }
+    .card-interactive { @apply card hover:-translate-y-0.5 hover:border-[var(--azul-medio)] transition-all duration-200; }
+    .card-interactive:hover { box-shadow: var(--sombra-elevada); }
 
     .badge { @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold; }
     /* Estados de un registro (identidad-visual.md, apartado 5):
@@ -143,3 +148,12 @@
     .animate-fade-up { animation: fade-in-up 0.5s ease-out both; }
 }
 [x-cloak] { display: none !important; }
+
+/* Quien pidió menos movimiento en su sistema operativo lo pidió para todo:
+   sin esto, las tarjetas seguían entrando en cascada y elevándose al pasar
+   el mouse pese a la preferencia. */
+@media (prefers-reduced-motion: reduce) {
+    .animate-fade-up { animation: none; opacity: 1; }
+    .card-interactive, .btn-primary { transition: none; }
+    .card-interactive:hover, .btn-primary:hover { transform: none; }
+}
