@@ -31,6 +31,24 @@ def listar_ultimos_publicados(cantidad=6):
     )
 
 
+def listar_avistamientos_publicos():
+    """RF-26: todos los avistamientos aprobados, del más reciente al más antiguo."""
+    return (
+        Registro.publicados.select_related('especie', 'usuario')
+        .order_by('-fecha_avistamiento', '-fecha_envio')
+    )
+
+
+def ranking_observadores():
+    """Seudónimos ordenados por cantidad de avistamientos aprobados — nunca el
+    nombre real ni el correo (RN-02), el catálogo público solo conoce el seudónimo."""
+    return (
+        Registro.publicados.values('usuario__seudonimo')
+        .annotate(total_aportes=Count('id'))
+        .order_by('-total_aportes', 'usuario__seudonimo')
+    )
+
+
 def contar_todos_por_estado():
     """Cuántos registros hay en cada estado, para el panel de administrador."""
     conteos = {estado: 0 for estado, _ in Registro.Estado.choices}

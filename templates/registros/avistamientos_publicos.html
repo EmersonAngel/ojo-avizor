@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load i18n iconos %}
+
+{% block titulo %}{% translate "Avistamientos" %} — Ojo Avizor{% endblock %}
+
+{% block contenido %}
+<div class="page-wide">
+    <div class="mb-6">
+        <h1 class="titulo-pagina inline-flex items-center gap-2">{% icono "ubicacion" clase="w-6 h-6" %} {% translate "Avistamientos" %}</h1>
+        <p class="text-sm text-stone-500 dark:text-stone-400 mt-1">{% translate "Del más reciente al más antiguo." %}</p>
+    </div>
+
+    {% if registros %}
+    <ul class="card divide-y divide-stone-100 dark:divide-stone-800">
+        {% for registro in registros %}
+        <li class="p-4 flex items-start gap-3">
+            <span class="text-stone-400 dark:text-stone-500 mt-0.5">{% icono "ubicacion" clase="w-4 h-4" %}</span>
+            <div class="text-sm min-w-0">
+                <p class="text-stone-700 dark:text-stone-300">
+                    <span class="font-medium text-stone-900 dark:text-stone-100">{{ registro.usuario.seudonimo }}</span>
+                    {% translate "avistó" %}
+                    {% if registro.especie %}
+                    <a href="{% url 'catalogo:especie_detalle' registro.especie.pk %}" class="font-display italic text-[var(--azul-medio)] hover:underline">{{ registro.especie.nombre_cientifico }}</a>
+                    {% else %}
+                    <span class="italic">{% translate "un ave sin identificar" %}</span>
+                    {% endif %}
+                    {% translate "en" %} {{ registro.lugar }}
+                </p>
+                <p class="text-stone-400 dark:text-stone-500 text-xs mt-0.5">{{ registro.fecha_avistamiento }}</p>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+    {% include "_paginacion.html" %}
+    {% else %}
+    {% translate "Todavía no hay avistamientos publicados." as mensaje %}
+    {% include "_estado_vacio.html" with icono="ubicacion" mensaje=mensaje %}
+    {% endif %}
+</div>
+{% endblock %}

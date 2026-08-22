@@ -5,6 +5,10 @@ from . import views
 app_name = 'registros'
 
 urlpatterns = [
+    # Público — sin autenticación
+    path('', views.avistamientos_publicos, name='avistamientos_publicos'),
+    path('ranking/', views.ranking_observadores, name='ranking_observadores'),
+
     path('nuevo/', views.registro_crear, name='crear'),
     path('nuevo/enviado/', views.registro_enviado, name='enviado'),
     path('mios/', views.registro_mis, name='mis_registros'),

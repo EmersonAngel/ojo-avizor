@@ -14,6 +14,19 @@ from .models import Registro
 _ROLES_APORTAR = (Usuario.Rol.OBSERVADOR, Usuario.Rol.REVISOR, Usuario.Rol.ADMINISTRADOR)
 
 
+def avistamientos_publicos(request):
+    """RF-26: todos los avistamientos aprobados, del más reciente al más antiguo. Público."""
+    registros = repositories.listar_avistamientos_publicos()
+    pagina = Paginator(registros, 20).get_page(request.GET.get('pagina'))
+    return render(request, 'registros/avistamientos_publicos.html', {'registros': pagina, 'pagina': pagina})
+
+
+def ranking_observadores(request):
+    """Ranking público de observadores por cantidad de avistamientos aprobados."""
+    ranking = repositories.ranking_observadores()
+    return render(request, 'registros/ranking_observadores.html', {'ranking': ranking})
+
+
 @requiere_rol(*_ROLES_APORTAR)
 def registro_crear(request):
     if request.method == 'POST':

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load i18n iconos %}
+
+{% block titulo %}{% translate "Ranking de observadores" %} — Ojo Avizor{% endblock %}
+
+{% block contenido %}
+<div class="page">
+    <div class="mb-6">
+        <h1 class="titulo-pagina inline-flex items-center gap-2">{% icono "usuarios" clase="w-6 h-6" %} {% translate "Ranking de observadores" %}</h1>
+        <p class="text-sm text-stone-500 dark:text-stone-400 mt-1">{% translate "Por avistamientos aprobados y publicados." %}</p>
+    </div>
+
+    {% if ranking %}
+    <ol class="card divide-y divide-stone-100 dark:divide-stone-800">
+        {% for fila in ranking %}
+        <li class="p-4 flex items-center gap-4">
+            <span class="font-display font-bold text-lg w-8 text-center flex-shrink-0 text-[var(--azul-medio)]">{{ forloop.counter }}</span>
+            <span class="flex-1 font-medium text-stone-900 dark:text-stone-100 truncate">{{ fila.usuario__seudonimo }}</span>
+            <span class="text-sm text-stone-500 dark:text-stone-400 flex-shrink-0">
+                {% blocktranslate count contador=fila.total_aportes %}{{ contador }} aporte{% plural %}{{ contador }} aportes{% endblocktranslate %}
+            </span>
+        </li>
+        {% endfor %}
+    </ol>
+    {% else %}
+    {% translate "Todavía no hay avistamientos publicados para armar un ranking." as mensaje %}
+    {% include "_estado_vacio.html" with icono="usuarios" mensaje=mensaje %}
+    {% endif %}
+</div>
+{% endblock %}
