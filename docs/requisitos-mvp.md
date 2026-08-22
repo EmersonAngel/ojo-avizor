@@ -16,7 +16,9 @@ cada RF correspondiente más abajo: historial de aportes propios (roza
 RF-12, ver «Mi cuenta»), panel de estadísticas (roza RF-25, ver panel de
 administrador), ubicación sobre mapa (RF-22, ver la excepción explícita),
 ayuda de la comunidad para identificar un avistamiento (RF-19 y RF-29, ver
-la excepción explícita) e interfaz en inglés (RNF-13, ver la excepción
+la excepción explícita), interfaz en inglés (RNF-13, ver la excepción
+explícita), nombres comunes propuestos desde el registro (RF-18, ver la
+excepción explícita) y aviso resumido al revisor (RF-24, ver la excepción
 explícita). El resto de la lista de «Fuera del alcance» sigue exactamente
 fuera: no se empezó ninguno.
 
@@ -164,3 +166,9 @@ Total de especies, total de avistamientos y número de observadores participante
 **Excepción sobre RF-19 y RF-29:** se construyeron por pedido explícito del 22/08/2026. Cualquier aportante (Observador, Revisor o Administrador) puede comentar en un registro `sin_identificar` para ayudar a determinar la especie — "Ayudar a identificar" en el menú. Cada comentario admite voto de Me gusta / No me gusta, pero **solo de Revisor o Administrador** (un voto por persona y comentario, cambiable): es la señal de credibilidad que el revisor usa antes de decidir la especie, no una votación abierta. La vista nunca expone coordenadas, nombre real ni correo del autor del registro (RN-02, RN-06), igual que el resto del catálogo.
 
 **Excepción sobre RNF-13:** la interfaz en inglés se construyó por pedido explícito del 21/08/2026, pese a quedar fuera del MVP original. Se apoya en la estructura de `gettext` que sí se dejó preparada desde el inicio (ver la excepción documentada abajo).
+
+**Excepción sobre RF-21:** se construyó por pedido explícito del 22/08/2026. La ficha pública de cada especie muestra una galería con las fotos de todos sus avistamientos aprobados — la Capa 2 alimentando a la Capa 1 (CLAUDE.md, apartado 2). Solo fotos de registros `APROBADO`; se oculta por completo si la especie aún no tiene ninguna.
+
+**Excepción sobre RF-18:** se construyó por pedido explícito del 22/08/2026. Al registrar un avistamiento, el observador puede sugerir un nombre local para la especie (campo `nombre_comun_propuesto` en `Registro`). No se agrega solo a la ficha: el Revisor lo ve al curar ese registro y decide si lo agrega con un botón dedicado — nunca automático, respeta RN-03 (el revisor no corrige contenido, pero esta es una acción explícita suya, no una corrección).
+
+**Excepción sobre RF-24:** se construyó por pedido explícito del 22/08/2026. Un aviso resumido, no uno por cada registro nuevo: `python manage.py enviar_resumen_revisores` manda un correo con el total de pendientes a cada Revisor y Administrador con las notificaciones activadas. Sin cola de tareas (Celery ni similares, por RNF-08): el comando se programa externamente (cron), ver README.md.

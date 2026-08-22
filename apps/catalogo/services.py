@@ -30,6 +30,21 @@ def retirar_especie(especie):
     especie.delete()
 
 
+def agregar_nombre_comun_propuesto(*, especie, nombre):
+    """RF-18: agrega a la ficha un nombre local sugerido por la comunidad al
+    registrar un avistamiento. Lo decide un Revisor al curar ese registro
+    (RN-03) — nunca se agrega solo. es_local=True: es la voz de la gente
+    del territorio, la razón de ser del proyecto (CLAUDE.md, apartado 1)."""
+    nombre = (nombre or '').strip()
+    if not nombre:
+        raise ValueError('El nombre propuesto no puede estar vacío.')
+    nombre_comun, _creado = NombreComun.objects.get_or_create(
+        especie=especie, nombre=nombre,
+        defaults={'es_local': True, 'estado': NombreComun.Estado.APROBADO},
+    )
+    return nombre_comun
+
+
 @transaction.atomic
 def importar_especies_desde_csv(archivo_csv, *, creado_por):
     """RF-14: crea fichas de especie a partir de un CSV.

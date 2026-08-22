@@ -216,6 +216,22 @@ Para restaurar un respaldo:
 python manage.py loaddata respaldos/ojo_avizor_AAAAMMDD_HHMMSS.json
 ```
 
+### Aviso resumido a los revisores (RF-24)
+
+Fuera del MVP original, construido por pedido explícito del 22/08/2026.
+
+```bash
+python manage.py enviar_resumen_revisores
+```
+
+Manda un solo correo con el total de registros pendientes a cada Revisor y Administrador con las notificaciones por correo activadas — no uno por cada registro nuevo. Si no hay nada pendiente, o nadie tiene el correo activado, no manda nada.
+
+Este proyecto no usa Celery ni ninguna otra cola de tareas (RNF-08: costos sostenibles), así que el comando no se ejecuta solo: hay que programarlo, por ejemplo con `cron` una vez al día:
+
+```cron
+0 7 * * * cd /ruta/al/proyecto && venv/bin/python manage.py enviar_resumen_revisores
+```
+
 ---
 
 ## Roles y permisos

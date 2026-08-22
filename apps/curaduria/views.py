@@ -43,6 +43,24 @@ def aprobar(request, pk):
 
 
 @requiere_rol(*_ROLES_REVISION)
+def agregar_nombre_propuesto(request, pk):
+    try:
+        registro = repositories.obtener_pendiente(pk)
+    except Registro.DoesNotExist:
+        raise Http404
+    if request.method == 'POST':
+        try:
+            services.agregar_nombre_propuesto(registro)
+            messages.success(
+                request,
+                f'"{registro.nombre_comun_propuesto}" se agregó a la ficha de {registro.especie}.',
+            )
+        except services.TransicionInvalida as error:
+            messages.error(request, str(error))
+    return redirect('curaduria:detalle', pk=pk)
+
+
+@requiere_rol(*_ROLES_REVISION)
 def devolver(request, pk):
     try:
         registro = repositories.obtener_pendiente(pk)

@@ -419,6 +419,15 @@ msgstr "Your sighting was returned"
 msgid "Tu avistamiento en %(lugar)s (%(fecha)s) fue devuelto para que lo corrijas. Motivo: %(motivo)s"
 msgstr "Your sighting in %(lugar)s (%(fecha)s) was returned for correction. Reason: %(motivo)s"
 
+#: ./apps/curaduria/services.py
+msgid "Tienes avistamientos esperando revisión"
+msgstr "You have sightings waiting for review"
+
+#: ./apps/curaduria/services.py
+#, python-format
+msgid "Hay %(total)s avistamiento(s) pendientes de revisión en la bandeja de Ojo Avizor."
+msgstr "There are %(total)s sighting(s) waiting for review in the Ojo Avizor queue."
+
 #: ./apps/registros/forms.py:26
 msgid "Especie (si la identificas)"
 msgstr "Species (if you identified it)"
@@ -434,6 +443,14 @@ msgstr "Latitude (optional, never published)"
 #: ./apps/registros/forms.py:29
 msgid "Longitud (opcional, no se publica)"
 msgstr "Longitude (optional, never published)"
+
+#: ./apps/registros/forms.py
+msgid "¿Conoces un nombre local para esta ave? (opcional)"
+msgstr "Do you know a local name for this bird? (optional)"
+
+#: ./apps/registros/forms.py
+msgid "Por ejemplo: como le dicen en tu vereda…"
+msgstr "For example: what people call it in your area…"
 
 # | msgid "No tienes avistamientos con este estado."
 #: ./apps/registros/models.py:16
@@ -1200,6 +1217,29 @@ msgstr "Additional information"
 #: ./templates/curaduria/detalle.html:76 ./templates/registros/registro_crear.html:84
 msgid "Fotografías"
 msgstr "Photos"
+
+#: ./templates/curaduria/detalle.html:97
+msgid "Nombre local propuesto"
+msgstr "Suggested local name"
+
+#: ./templates/curaduria/detalle.html:101
+#, python-format
+msgid "\"%(nombre)s\" ya se agregó a la ficha."
+msgstr "\"%(nombre)s\" was already added to the record."
+
+#: ./templates/curaduria/detalle.html:106
+#, python-format
+msgid "El observador sugiere: <strong>\"%(nombre)s\"</strong>"
+msgstr "The observer suggests: <strong>\"%(nombre)s\"</strong>"
+
+#: ./templates/curaduria/detalle.html:110
+msgid "Agregar a la ficha"
+msgstr "Add to the record"
+
+#: ./templates/curaduria/detalle.html:114
+#, python-format
+msgid "El observador sugiere \"%(nombre)s\", pero no se puede agregar sin identificar primero la especie."
+msgstr "The observer suggests \"%(nombre)s\", but it can't be added without first identifying the species."
 
 #: ./templates/curaduria/devolver.html:4 ./templates/curaduria/devolver.html:11
 msgid "Devolver registro"

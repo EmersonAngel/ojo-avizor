@@ -48,7 +48,8 @@ def enviar_registro(registro):
 
 @transaction.atomic
 def crear_registro(*, usuario, especie, lugar, fecha_avistamiento, latitud=None, longitud=None,
-                    comportamiento='', sustrato='', info_adicional='', sin_identificar=False, fotos=()):
+                    comportamiento='', sustrato='', info_adicional='', sin_identificar=False,
+                    nombre_comun_propuesto='', fotos=()):
     """Crea un avistamiento y lo envía a revisión de inmediato (RF-01, RF-11)."""
     registro = Registro(
         usuario=usuario,
@@ -61,6 +62,7 @@ def crear_registro(*, usuario, especie, lugar, fecha_avistamiento, latitud=None,
         sustrato=sustrato,
         info_adicional=info_adicional,
         sin_identificar=sin_identificar,
+        nombre_comun_propuesto=nombre_comun_propuesto,
     )
     registro.full_clean()
     registro.save()
@@ -72,7 +74,8 @@ def crear_registro(*, usuario, especie, lugar, fecha_avistamiento, latitud=None,
 
 @transaction.atomic
 def corregir_registro(registro, *, especie, lugar, fecha_avistamiento, latitud=None, longitud=None,
-                       comportamiento='', sustrato='', info_adicional='', sin_identificar=False, fotos=()):
+                       comportamiento='', sustrato='', info_adicional='', sin_identificar=False,
+                       nombre_comun_propuesto='', fotos=()):
     """DEVUELTO → PENDIENTE tras la corrección de su autor (RF-08)."""
     if registro.estado != Registro.Estado.DEVUELTO:
         raise TransicionInvalida('Solo se puede corregir un registro DEVUELTO.')
@@ -85,6 +88,7 @@ def corregir_registro(registro, *, especie, lugar, fecha_avistamiento, latitud=N
     registro.sustrato = sustrato
     registro.info_adicional = info_adicional
     registro.sin_identificar = sin_identificar
+    registro.nombre_comun_propuesto = nombre_comun_propuesto
     registro.full_clean()
     registro.estado = Registro.Estado.PENDIENTE
     registro.save()

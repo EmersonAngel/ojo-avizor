@@ -11,6 +11,7 @@ class RegistroForm(forms.ModelForm):
         fields = [
             'especie', 'sin_identificar', 'lugar', 'fecha_avistamiento',
             'latitud', 'longitud', 'comportamiento', 'sustrato', 'info_adicional',
+            'nombre_comun_propuesto',
         ]
         widgets = {
             'fecha_avistamiento': forms.DateInput(attrs={'type': 'date'}, format='%Y-%m-%d'),
@@ -21,12 +22,16 @@ class RegistroForm(forms.ModelForm):
             # un número mueve el punto (ver registro_crear.html).
             'latitud': forms.NumberInput(attrs={'step': 'any', 'x-model': 'lat', '@change': 'actualizarDesdeCampos()'}),
             'longitud': forms.NumberInput(attrs={'step': 'any', 'x-model': 'lng', '@change': 'actualizarDesdeCampos()'}),
+            'nombre_comun_propuesto': forms.TextInput(attrs={
+                'placeholder': _('Por ejemplo: como le dicen en tu vereda…'),
+            }),
         }
         labels = {
             'especie': _('Especie (si la identificas)'),
             'sin_identificar': _('Pido ayuda para identificarla'),
             'latitud': _('Latitud (opcional, no se publica)'),
             'longitud': _('Longitud (opcional, no se publica)'),
+            'nombre_comun_propuesto': _('¿Conoces un nombre local para esta ave? (opcional)'),
         }
 
 

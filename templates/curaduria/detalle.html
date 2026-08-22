@@ -70,6 +70,34 @@
         </div>
         {% endif %}
 
+        {% if registro.nombre_comun_propuesto %}
+        <div class="mt-5 pt-5 border-t border-stone-100 dark:border-stone-800">
+            <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400 mb-2">
+                {% translate "Nombre local propuesto" %}
+            </h2>
+            {% if registro.nombre_comun_agregado %}
+            <p class="text-sm inline-flex items-center gap-1.5" style="color: var(--exito);">
+                {% icono "check-circulo" clase="w-4 h-4" %}
+                {% blocktranslate with nombre=registro.nombre_comun_propuesto %}"{{ nombre }}" ya se agregó a la ficha.{% endblocktranslate %}
+            </p>
+            {% elif registro.especie %}
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-xl p-3" style="background-color: var(--superficie-alt);">
+                <p class="text-sm text-stone-700 dark:text-stone-300">
+                    {% blocktranslate with nombre=registro.nombre_comun_propuesto %}El observador sugiere: <strong>"{{ nombre }}"</strong>{% endblocktranslate %}
+                </p>
+                <form method="post" action="{% url 'curaduria:agregar_nombre_propuesto' registro.pk %}" class="flex-shrink-0">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-secondary !px-3 !py-1.5 text-xs">{% translate "Agregar a la ficha" %}</button>
+                </form>
+            </div>
+            {% else %}
+            <p class="text-sm text-stone-500 dark:text-stone-400">
+                {% blocktranslate with nombre=registro.nombre_comun_propuesto %}El observador sugiere "{{ nombre }}", pero no se puede agregar sin identificar primero la especie.{% endblocktranslate %}
+            </p>
+            {% endif %}
+        </div>
+        {% endif %}
+
         {% if registro.fotografias.all %}
         <div class="mt-5 pt-5 border-t border-stone-100 dark:border-stone-800">
             <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400 mb-3">

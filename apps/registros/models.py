@@ -54,6 +54,11 @@ class Registro(models.Model):
     sustrato = models.CharField(max_length=150, blank=True)
     info_adicional = models.TextField(blank=True)
     sin_identificar = models.BooleanField(default=False)
+    # RF-18 (fuera del MVP original, construido por pedido explícito del 22/08/2026):
+    # nombre local que el observador propone al registrar. No se agrega solo a la
+    # ficha de la especie — un Revisor lo decide al curar el registro (RN-03).
+    nombre_comun_propuesto = models.CharField(max_length=100, blank=True)
+    nombre_comun_agregado = models.BooleanField(default=False)
 
     objects = models.Manager()
     publicados = RegistroPublicadoManager()

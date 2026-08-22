@@ -44,6 +44,7 @@
             <label class="flex items-center gap-2 text-sm text-stone-700 dark:text-stone-300">
                 {{ form.sin_identificar }} {{ form.sin_identificar.label }}
             </label>
+            {% include "_campo.html" with field=form.nombre_comun_propuesto %}
         </div>
 
         <div class="card p-5 sm:p-6 space-y-4">
