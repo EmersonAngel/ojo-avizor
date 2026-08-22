@@ -669,8 +669,8 @@ msgstr "A project by the Pijao community"
 msgid "Cada ave que ves, cuenta una historia del territorio"
 msgstr "Every bird you see tells a story about this land"
 
-#: ./templates/catalogo/portada.html:20
-msgid "Ojo Avizor reúne lo que la gente de Pijao observa, día a día, en un solo inventario abierto para todos."
+#: ./templates/catalogo/portada.html:19
+msgid "Ojo Avizor junta lo que la gente de Pijao observa, día a día, en un solo inventario abierto para todos."
 msgstr "Ojo Avizor gathers what the people of Pijao observe, day by day, into one inventory open to everyone."
 
 #: ./templates/catalogo/portada.html:26
@@ -685,7 +685,43 @@ msgstr "Explore the catalog"
 msgid "Registrar un avistamiento"
 msgstr "Report a sighting"
 
-#: ./templates/catalogo/portada.html:59
+#: ./templates/catalogo/portada.html:53
+msgid "Última ficha agregada"
+msgstr "Latest record added"
+
+#: ./templates/catalogo/portada.html:84
+msgid "¿Qué es Ojo Avizor?"
+msgstr "What is Ojo Avizor?"
+
+#: ./templates/catalogo/portada.html:86
+msgid "En Pijao hay años de observadores anotando qué aves ven, dónde y cuándo — en cuadernos, en la memoria, en grupos de mensajes. Ojo Avizor junta ese conocimiento disperso en un solo inventario abierto, con los nombres que la gente de acá realmente usa."
+msgstr "In Pijao, observers have spent years noting which birds they see, where, and when — in notebooks, from memory, in message groups. Ojo Avizor gathers that scattered knowledge into one open inventory, with the names people here actually use."
+
+#: ./templates/catalogo/portada.html:93
+msgid "Registras lo que ves"
+msgstr "You log what you see"
+
+#: ./templates/catalogo/portada.html:94
+msgid "Especie, lugar y fecha. Con foto si tienes, sin ella si no."
+msgstr "Species, place, and date. With a photo if you have one, without if you don't."
+
+#: ./templates/catalogo/portada.html:100
+msgid "La comunidad lo revisa"
+msgstr "The community reviews it"
+
+#: ./templates/catalogo/portada.html:101
+msgid "Un revisor confirma la especie antes de que se publique."
+msgstr "A reviewer confirms the species before it gets published."
+
+#: ./templates/catalogo/portada.html:107
+msgid "La ficha de la especie crece"
+msgstr "The species record grows"
+
+#: ./templates/catalogo/portada.html:108
+msgid "Cada avistamiento aprobado suma una foto, un lugar, un dato más."
+msgstr "Each approved sighting adds a photo, a place, one more detail."
+
+#: ./templates/catalogo/portada.html:116
 msgid "Explora por familia"
 msgstr "Explore by family"
 
@@ -1160,6 +1196,37 @@ msgstr "A reason is required, and the author will see it to correct their record
 #: ./templates/curaduria/devolver.html:25
 msgid "Devolver con este motivo"
 msgstr "Return with this reason"
+
+#: ./templates/registros/avistamientos_publicos.html:9
+msgid "Avistamientos"
+msgstr "Sightings"
+
+#: ./templates/registros/avistamientos_publicos.html:10
+msgid "Del más reciente al más antiguo."
+msgstr "From most recent to oldest."
+
+#: ./templates/registros/avistamientos_publicos.html:29
+msgid "Todavía no hay avistamientos publicados."
+msgstr "There are no published sightings yet."
+
+#: ./templates/registros/ranking_observadores.html:9
+msgid "Ranking de observadores"
+msgstr "Observer ranking"
+
+#: ./templates/registros/ranking_observadores.html:10
+msgid "Por avistamientos aprobados y publicados."
+msgstr "By approved, published sightings."
+
+#: ./templates/registros/ranking_observadores.html:19
+#, python-format
+msgid "%(contador)s aporte"
+msgid_plural "%(contador)s aportes"
+msgstr[0] "%(contador)s contribution"
+msgstr[1] "%(contador)s contributions"
+
+#: ./templates/registros/ranking_observadores.html:24
+msgid "Todavía no hay avistamientos publicados para armar un ranking."
+msgstr "There are no published sightings yet to build a ranking."
 
 #: ./templates/registros/registro_crear.html:4 ./templates/registros/registro_crear.html:21
 msgid "Corregir avistamiento"
