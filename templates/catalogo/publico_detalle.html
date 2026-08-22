@@ -82,6 +82,28 @@
         {% endif %}
     </div>
 
+    {% if fotos %}
+    <div class="mt-8">
+        <h2 class="titulo-pagina !text-xl mb-1">{% translate "Álbum de fotos" %}</h2>
+        <p class="text-sm text-stone-500 dark:text-stone-400 mb-3">
+            {% translate "Aportadas por la comunidad en sus avistamientos aprobados." %}
+        </p>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+            {% for foto in fotos %}
+            <a href="{{ foto.archivo.url }}" target="_blank" rel="noopener" class="group block">
+                <div class="aspect-square rounded-xl overflow-hidden border border-stone-200 dark:border-stone-800">
+                    <img src="{{ foto.archivo.url }}" alt="{{ especie.nombre_cientifico }}" loading="lazy"
+                         class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.04]">
+                </div>
+                <p class="text-xs text-stone-500 dark:text-stone-400 mt-1 truncate">
+                    {{ foto.registro.usuario.seudonimo }} · {{ foto.registro.fecha_avistamiento }}
+                </p>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
     <h2 class="titulo-pagina !text-xl mt-8 mb-3">{% translate "Avistamientos registrados en Pijao" %}</h2>
     {% if avistamientos %}
     <ul class="card divide-y divide-stone-100 dark:divide-stone-800">

@@ -1,7 +1,7 @@
 """Consultas de la app registros: inventario consolidado (RF-26), avistamientos por especie."""
 from django.db.models import Count
 
-from .models import Registro
+from .models import Fotografia, Registro
 
 
 def listar_de_usuario(usuario, estado=None):
@@ -21,6 +21,16 @@ def contar_observadores_participantes():
 
 def contar_avistamientos_publicados():
     return Registro.publicados.count()
+
+
+def listar_fotos_de_especie(especie):
+    """Fotos de los avistamientos aprobados de una especie: la Capa 2 alimentando la
+    Capa 1 (RF-21), tal como lo describe CLAUDE.md, apartado 2."""
+    return (
+        Fotografia.objects.filter(registro__in=Registro.publicados.filter(especie=especie))
+        .select_related('registro__usuario')
+        .order_by('-fecha_subida')
+    )
 
 
 def listar_ultimos_publicados(cantidad=6):

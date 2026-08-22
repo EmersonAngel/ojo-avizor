@@ -59,7 +59,10 @@ def especie_detalle(request, pk):
         .select_related('usuario')
         .order_by('-fecha_avistamiento')
     )
-    return render(request, 'catalogo/publico_detalle.html', {'especie': especie, 'avistamientos': avistamientos})
+    fotos = registros_repositories.listar_fotos_de_especie(especie)
+    return render(request, 'catalogo/publico_detalle.html', {
+        'especie': especie, 'avistamientos': avistamientos, 'fotos': fotos,
+    })
 
 
 def inventario(request):

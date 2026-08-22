@@ -8,7 +8,7 @@ from apps.catalogo.models import Especie
 from apps.cuentas.models import Usuario
 from apps.curaduria import services as servicios_curaduria
 from apps.registros import services as servicios_registros
-from apps.registros.models import Registro
+from apps.registros.models import Fotografia, Registro
 
 
 class VistaPublicaEspecieTests(TestCase):
@@ -56,3 +56,12 @@ class VistaPublicaEspecieTests(TestCase):
         contenido = respuesta.content.decode()
         self.assertNotIn('4.351234', contenido)
         self.assertNotIn('-75.701234', contenido)
+
+    def test_album_de_fotos_solo_muestra_las_de_avistamientos_aprobados(self):
+        Fotografia.objects.create(registro=self.registro_pendiente, archivo='registros/2026/08/pendiente.jpg')
+        Fotografia.objects.create(registro=self.registro_aprobado, archivo='registros/2026/08/aprobada.jpg')
+
+        respuesta = self.client.get(reverse('catalogo:especie_detalle', args=[self.especie.pk]))
+        contenido = respuesta.content.decode()
+        self.assertIn('aprobada.jpg', contenido)
+        self.assertNotIn('pendiente.jpg', contenido)

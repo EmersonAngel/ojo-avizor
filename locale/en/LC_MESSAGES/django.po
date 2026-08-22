@@ -763,6 +763,14 @@ msgstr "Distribution map"
 msgid "¿Sabías que…?"
 msgstr "Did you know…?"
 
+#: ./templates/catalogo/publico_detalle.html:87
+msgid "Álbum de fotos"
+msgstr "Photo album"
+
+#: ./templates/catalogo/publico_detalle.html:88
+msgid "Aportadas por la comunidad en sus avistamientos aprobados."
+msgstr "Contributed by the community in their approved sightings."
+
 #: ./templates/catalogo/publico_detalle.html:85
 msgid "Avistamientos registrados en Pijao"
 msgstr "Sightings recorded in Pijao"
