@@ -72,6 +72,16 @@ def registro_crear(request):
 @csrf_exempt
 @requiere_token
 @require_http_methods(['GET'])
+def racha(request):
+    """Días seguidos registrando (fuera del MVP original, pedido explícito
+    del 22/08/2026) — mismo cálculo que la versión web, ver
+    apps.registros.repositories.calcular_racha_de_usuario."""
+    return JsonResponse({'racha': registros_repositories.calcular_racha_de_usuario(request.user)})
+
+
+@csrf_exempt
+@requiere_token
+@require_http_methods(['GET'])
 def registros_mios(request):
     registros = registros_repositories.listar_de_usuario(request.user)[:50]
     datos = [

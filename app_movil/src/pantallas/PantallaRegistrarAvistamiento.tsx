@@ -24,6 +24,7 @@ import { eliminarFotoPersistente } from '../almacenamiento/fotos';
 import { ErrorApi } from '../api/cliente';
 import { enviarRegistro } from '../api/registros';
 import { useConectividad } from '../contexto/ConectividadContexto';
+import { useSesion } from '../contexto/SesionContexto';
 import SelectorEspecie from '../componentes/SelectorEspecie';
 import SelectorFecha from '../componentes/SelectorFecha';
 import SelectorFotos from '../componentes/SelectorFotos';
@@ -40,6 +41,7 @@ const DATOS_VACIOS: DatosRegistro = {
   comportamiento: '',
   sustrato: '',
   infoAdicional: '',
+  nombreComunPropuesto: '',
   fotos: [],
 };
 
@@ -48,6 +50,7 @@ export default function PantallaRegistrarAvistamiento() {
   const ruta = useRoute<any>();
   const idBorrador: number | undefined = ruta.params?.idBorrador;
   const { conectado } = useConectividad();
+  const { actualizarRacha } = useSesion();
 
   const [especies, setEspecies] = useState<EspecieCacheGuardada[]>([]);
   const [datos, setDatos] = useState<DatosRegistro>(DATOS_VACIOS);
@@ -113,6 +116,7 @@ export default function PantallaRegistrarAvistamiento() {
         if (idBorrador) await eliminar(idBorrador);
         Alert.alert('Enviado', `Tu avistamiento quedó ${respuesta.estado.toLowerCase()} de revisión.`);
         limpiarFormulario();
+        actualizarRacha();
         navigation.navigate('Borradores');
         return;
       }
@@ -163,6 +167,12 @@ export default function PantallaRegistrarAvistamiento() {
             sinIdentificar: especie === null,
           }))
         }
+      />
+      <TextInput
+        style={estilos.campo}
+        placeholder="¿Conoces un nombre local para esta ave? (opcional)"
+        value={datos.nombreComunPropuesto}
+        onChangeText={(v) => actualizar('nombreComunPropuesto', v)}
       />
 
       <View style={estilos.filaSeccion}>

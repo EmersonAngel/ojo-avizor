@@ -16,7 +16,7 @@ import TarjetaRegistroLocal from '../componentes/TarjetaRegistroLocal';
 
 export default function PantallaBorradores() {
   const navigation = useNavigation<any>();
-  const { sincronizarCatalogo } = useSesion();
+  const { sincronizarCatalogo, actualizarRacha } = useSesion();
   const [borradores, setBorradores] = useState<RegistroLocal[]>([]);
   const [pendientes, setPendientes] = useState<RegistroLocal[]>([]);
   const [refrescando, setRefrescando] = useState(false);
@@ -37,7 +37,7 @@ export default function PantallaBorradores() {
   async function refrescar() {
     setRefrescando(true);
     await Promise.all([sincronizarPendientes(), sincronizarCatalogo()]);
-    await cargar();
+    await Promise.all([cargar(), actualizarRacha()]);
     setRefrescando(false);
   }
 

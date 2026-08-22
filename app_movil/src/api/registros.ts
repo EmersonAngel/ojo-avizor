@@ -18,12 +18,19 @@ export async function enviarRegistro(registro: RegistroLocal): Promise<Respuesta
   // importar el valor — por eso NO se agrega la clave cuando es falso.
   if (registro.sinIdentificar) formData.append('sin_identificar', 'on');
   formData.append('lugar', registro.lugar);
+  // La app es de Pijao, Quindío — sin selector propio en el celular para no
+  // sumarle un campo más al formulario. Si algún día se necesita registrar
+  // desde otro municipio, aquí es donde hay que agregar la UI (ver el
+  // formulario web, que sí lo pide, para observadores fuera de Pijao).
+  formData.append('departamento', 'Quindío');
+  formData.append('municipio', 'Pijao');
   formData.append('fecha_avistamiento', registro.fechaAvistamiento);
   if (registro.latitud) formData.append('latitud', registro.latitud);
   if (registro.longitud) formData.append('longitud', registro.longitud);
   formData.append('comportamiento', registro.comportamiento);
   formData.append('sustrato', registro.sustrato);
   formData.append('info_adicional', registro.infoAdicional);
+  formData.append('nombre_comun_propuesto', registro.nombreComunPropuesto);
   registro.fotos.forEach((uri, indice) => {
     // Forma esperada por el FormData/fetch de React Native para adjuntar
     // un archivo local por su uri — no un objeto File/Blob como en la web.
@@ -50,4 +57,11 @@ export async function enviarRegistro(registro: RegistroLocal): Promise<Respuesta
 export async function obtenerMisRegistros(): Promise<any[]> {
   const cuerpo = await peticion('registros/mios/');
   return cuerpo.registros;
+}
+
+// Días seguidos registrando (fuera del MVP original, pedido explícito del
+// 22/08/2026) — mismo cálculo que la versión web.
+export async function obtenerRacha(): Promise<number> {
+  const cuerpo = await peticion('racha/');
+  return cuerpo.racha;
 }

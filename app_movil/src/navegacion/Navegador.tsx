@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
-import { Pressable, Text } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 
 import { useSesion } from '../contexto/SesionContexto';
 import PantallaBorradores from '../pantallas/PantallaBorradores';
@@ -10,8 +10,27 @@ import PantallaRegistrarAvistamiento from '../pantallas/PantallaRegistrarAvistam
 
 const Tab = createBottomTabNavigator();
 
+// Racha de días seguidos registrando (fuera del MVP original, pedido
+// explícito del 22/08/2026) — mismos dos estados que la web: apagada en
+// gris cuando es 0, encendida en el color cálido de marca cuando hay
+// racha activa. Sin el pulso animado de la web: aquí es solo un ícono de
+// cabecera, no vale la pena una animación por eso.
+function TituloConRacha({ seudonimo, racha }: { seudonimo: string; racha: number | null }) {
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+      <Text style={{ fontSize: 17, fontWeight: '600' }}>Hola, {seudonimo}</Text>
+      {racha !== null && racha > 0 && (
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 2 }}>
+          <Ionicons name="flame" size={16} color="#E8460F" />
+          <Text style={{ fontSize: 14, fontWeight: '700', color: '#E8460F' }}>{racha}</Text>
+        </View>
+      )}
+    </View>
+  );
+}
+
 export default function Navegador() {
-  const { sesion, cerrarSesion } = useSesion();
+  const { sesion, racha, cerrarSesion } = useSesion();
 
   return (
     <NavigationContainer>
@@ -24,7 +43,8 @@ export default function Navegador() {
               <Ionicons name="log-out-outline" size={22} color="#B3261E" />
             </Pressable>
           ),
-          headerTitle: sesion ? `Hola, ${sesion.seudonimo}` : 'Ojo Avizor',
+          headerTitle: () =>
+            sesion ? <TituloConRacha seudonimo={sesion.seudonimo} racha={racha} /> : <Text>Ojo Avizor</Text>,
         }}
       >
         <Tab.Screen

@@ -23,6 +23,7 @@ export interface DatosRegistro {
   comportamiento: string;
   sustrato: string;
   infoAdicional: string;
+  nombreComunPropuesto: string;
   fotos: string[]; // rutas locales persistentes (ver almacenamiento/fotos.ts)
 }
 
@@ -47,6 +48,7 @@ interface FilaSQLite {
   comportamiento: string | null;
   sustrato: string | null;
   info_adicional: string | null;
+  nombre_comun_propuesto: string | null;
   fotos_json: string;
   error_detalle: string | null;
   fecha_creacion: string;
@@ -67,6 +69,7 @@ function filaARegistro(fila: FilaSQLite): RegistroLocal {
     comportamiento: fila.comportamiento ?? '',
     sustrato: fila.sustrato ?? '',
     infoAdicional: fila.info_adicional ?? '',
+    nombreComunPropuesto: fila.nombre_comun_propuesto ?? '',
     fotos: JSON.parse(fila.fotos_json),
     errorDetalle: fila.error_detalle,
     fechaCreacion: fila.fecha_creacion,
@@ -86,7 +89,7 @@ async function guardarConEstado(
       `UPDATE registros_locales SET
         estado_local = ?, especie_id = ?, nombre_especie = ?, sin_identificar = ?,
         lugar = ?, fecha_avistamiento = ?, latitud = ?, longitud = ?,
-        comportamiento = ?, sustrato = ?, info_adicional = ?, fotos_json = ?,
+        comportamiento = ?, sustrato = ?, info_adicional = ?, nombre_comun_propuesto = ?, fotos_json = ?,
         error_detalle = NULL, fecha_actualizacion = ?
        WHERE id = ?`,
       estadoLocal,
@@ -100,6 +103,7 @@ async function guardarConEstado(
       datos.comportamiento,
       datos.sustrato,
       datos.infoAdicional,
+      datos.nombreComunPropuesto,
       JSON.stringify(datos.fotos),
       ahora,
       idExistente,
@@ -109,9 +113,9 @@ async function guardarConEstado(
   const resultado = await bd.runAsync(
     `INSERT INTO registros_locales
       (estado_local, especie_id, nombre_especie, sin_identificar, lugar, fecha_avistamiento,
-       latitud, longitud, comportamiento, sustrato, info_adicional, fotos_json,
+       latitud, longitud, comportamiento, sustrato, info_adicional, nombre_comun_propuesto, fotos_json,
        fecha_creacion, fecha_actualizacion)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     estadoLocal,
     datos.especieId,
     datos.nombreEspecie,
@@ -123,6 +127,7 @@ async function guardarConEstado(
     datos.comportamiento,
     datos.sustrato,
     datos.infoAdicional,
+    datos.nombreComunPropuesto,
     JSON.stringify(datos.fotos),
     ahora,
     ahora,
