@@ -1,5 +1,9 @@
 """Consultas de la app registros: inventario consolidado (RF-26), avistamientos por especie."""
+from datetime import timedelta
+
 from django.db.models import Count
+from django.db.models.functions import TruncDate
+from django.utils import timezone
 
 from .models import Fotografia, Registro
 
@@ -51,12 +55,53 @@ def listar_avistamientos_publicos():
 
 def ranking_observadores():
     """Seudónimos ordenados por cantidad de avistamientos aprobados — nunca el
-    nombre real ni el correo (RN-02), el catálogo público solo conoce el seudónimo."""
-    return (
-        Registro.publicados.values('usuario__seudonimo')
+    nombre real ni el correo (RN-02), el catálogo público solo conoce el seudónimo.
+    Cada fila trae también la racha de días seguidos registrando de ese usuario."""
+    filas = list(
+        Registro.publicados.values('usuario_id', 'usuario__seudonimo')
         .annotate(total_aportes=Count('id'))
         .order_by('-total_aportes', 'usuario__seudonimo')
     )
+    rachas = calcular_rachas_por_usuario()
+    for fila in filas:
+        fila['racha'] = rachas.get(fila['usuario_id'], 0)
+    return filas
+
+
+def _racha_desde_fechas(fechas):
+    """Días consecutivos hasta hoy — o hasta ayer si hoy todavía no hay actividad:
+    la racha sigue viva mientras no pase un día entero sin registrar."""
+    if not fechas:
+        return 0
+    hoy = timezone.localdate()
+    cursor = hoy if hoy in fechas else hoy - timedelta(days=1)
+    racha = 0
+    while cursor in fechas:
+        racha += 1
+        cursor -= timedelta(days=1)
+    return racha
+
+
+def calcular_racha_de_usuario(usuario):
+    """Días seguidos que un usuario ha registrado avistamientos (cualquier estado:
+    lo que cuenta para la racha es el hábito de registrar, no si ya se aprobó)."""
+    fechas = set(
+        Registro.objects.filter(usuario=usuario)
+        .annotate(dia=TruncDate('fecha_envio'))
+        .values_list('dia', flat=True)
+        .distinct()
+    )
+    return _racha_desde_fechas(fechas)
+
+
+def calcular_rachas_por_usuario():
+    """La racha de cada usuario con al menos un registro, en una sola consulta —
+    para no golpear la base de datos una vez por fila del ranking."""
+    fechas_por_usuario = {}
+    filas = Registro.objects.annotate(dia=TruncDate('fecha_envio')).values_list('usuario_id', 'dia').distinct()
+    for usuario_id, dia in filas:
+        fechas_por_usuario.setdefault(usuario_id, set()).add(dia)
+    return {usuario_id: _racha_desde_fechas(fechas) for usuario_id, fechas in fechas_por_usuario.items()}
 
 
 def contar_todos_por_estado():

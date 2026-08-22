@@ -14,10 +14,18 @@
             <span class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[var(--superficie-alt)] text-[var(--azul-medio)] flex-shrink-0">
                 {% icono "usuario" clase="w-7 h-7" %}
             </span>
-            <div class="min-w-0">
+            <div class="min-w-0 flex-1">
                 <p class="font-display text-xl font-bold text-stone-900 dark:text-stone-100 truncate">{{ user.seudonimo }}</p>
                 <p class="text-sm text-stone-500 dark:text-stone-400">{{ user.get_rol_display }}</p>
             </div>
+            {% if racha > 0 %}
+            <div class="text-center flex-shrink-0" title="{% translate 'Días seguidos registrando' %}">
+                <p class="font-display text-xl font-bold inline-flex items-center gap-1" style="color: var(--alerta);">
+                    {% icono "llama" clase="w-5 h-5" %} {{ racha }}
+                </p>
+                <p class="text-xs text-stone-500 dark:text-stone-400">{% translate "días seguidos" %}</p>
+            </div>
+            {% endif %}
         </div>
         <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 text-sm">
             <div>

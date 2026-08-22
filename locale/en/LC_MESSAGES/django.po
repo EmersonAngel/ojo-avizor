@@ -964,6 +964,14 @@ msgstr "Member since"
 msgid "Tu nombre real y tu correo nunca se muestran en público — solo tu seudónimo."
 msgstr "Your real name and email are never shown in public — only your nickname."
 
+#: ./templates/cuentas/mi_cuenta.html:24 ./templates/registros/ranking_observadores.html:19
+msgid "Días seguidos registrando"
+msgstr "Consecutive days logging sightings"
+
+#: ./templates/cuentas/mi_cuenta.html:26
+msgid "días seguidos"
+msgstr "day streak"
+
 #: ./templates/cuentas/mi_cuenta.html:39
 msgid "Notificaciones por correo"
 msgstr "Email notifications"

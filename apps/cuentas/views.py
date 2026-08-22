@@ -46,6 +46,7 @@ def mi_cuenta(request):
         'conteos': conteos,
         'total_aportes': total,
         'especies_distintas': especies_distintas,
+        'racha': registros_repositories.calcular_racha_de_usuario(request.user),
         'solicitud_revisor_pendiente': repositories.obtener_solicitud_revisor_pendiente(request.user),
     })
 
