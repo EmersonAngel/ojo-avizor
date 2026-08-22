@@ -180,6 +180,17 @@
 }
 .con-scroll-reveal [data-reveal].en-vista { opacity: 1; transform: translateY(0); }
 
+/* Racha de días seguidos (templates/_racha.html): única excepción a la paleta
+   de marca del proyecto — el fuego necesita leerse como fuego (naranja y
+   dorado), esos dos tonos literales no se usan en ningún otro lado. Apagada
+   (racha=0) sí respeta la paleta: un solo tono en --texto-suave. El pulso
+   solo corre en la llama encendida, nunca en la apagada. */
+@keyframes pulso-racha {
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(232, 70, 15, 0)); }
+    50% { transform: scale(1.12); filter: drop-shadow(0 0 8px rgba(232, 70, 15, .55)); }
+}
+.racha-viva svg { animation: pulso-racha 1.8s ease-in-out infinite; transform-origin: 50% 60%; }
+
 /* Quien pidió menos movimiento en su sistema operativo lo pidió para todo:
    sin esto, las tarjetas seguían entrando en cascada y elevándose al pasar
    el mouse pese a la preferencia. */
@@ -187,4 +198,5 @@
     .animate-fade-up { animation: none; opacity: 1; }
     .card-interactive, .btn-primary { transition: none; }
     .card-interactive:hover, .btn-primary:hover { transform: none; }
+    .racha-viva svg { animation: none; }
 }

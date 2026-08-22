@@ -16,8 +16,8 @@
         <li class="p-4 flex items-center gap-4">
             <span class="font-display font-bold text-lg w-8 text-center flex-shrink-0 text-[var(--azul-medio)]">{{ forloop.counter }}</span>
             <span class="flex-1 font-medium text-stone-900 dark:text-stone-100 truncate">{{ fila.usuario__seudonimo }}</span>
-            <span class="inline-flex items-center gap-1 text-sm font-semibold flex-shrink-0" style="color: {% if fila.racha > 0 %}var(--alerta){% else %}var(--texto-suave){% endif %};" title="{% translate 'Días seguidos registrando' %}">
-                {% icono "llama" clase="w-4 h-4" %} {{ fila.racha }}
+            <span class="flex-shrink-0">
+                {% include "_racha.html" with racha=fila.racha clase_icono="w-7 h-7" clase_texto="text-base" %}
             </span>
             <span class="text-sm text-stone-500 dark:text-stone-400 flex-shrink-0">
                 {% blocktranslate count contador=fila.total_aportes %}{{ contador }} aporte{% plural %}{{ contador }} aportes{% endblocktranslate %}

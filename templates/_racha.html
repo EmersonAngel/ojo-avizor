@@ -1,0 +1,12 @@
+{% load i18n %}
+<span class="inline-flex items-center gap-1.5 {% if racha > 0 %}racha-viva{% endif %}" title="{% translate 'Días seguidos registrando' %}">
+    <svg viewBox="0 0 24 24" class="{{ clase_icono|default:'w-6 h-6' }}" aria-hidden="true">
+        {% if racha > 0 %}
+        <path fill="#E8460F" d="M12.6 2.2c.9 2.7-.4 4.5-1.8 6.3-1.2 1.5-2.3 3.1-2.3 5a3.5 3.5 0 007 0c0-1.4-.6-2.3-1.2-3.2-.4-.6-.8-1.2-.9-2 2.3 1.6 4.6 4.5 4.6 7.8a5.5 5.5 0 01-11 0c0-4.9 3.8-8.4 5.6-13.9z"/>
+        <ellipse cx="12.2" cy="15.6" rx="2.7" ry="4.1" fill="#FFC93C"/>
+        {% else %}
+        <path fill="var(--texto-suave)" d="M12.6 2.2c.9 2.7-.4 4.5-1.8 6.3-1.2 1.5-2.3 3.1-2.3 5a3.5 3.5 0 007 0c0-1.4-.6-2.3-1.2-3.2-.4-.6-.8-1.2-.9-2 2.3 1.6 4.6 4.5 4.6 7.8a5.5 5.5 0 01-11 0c0-4.9 3.8-8.4 5.6-13.9z"/>
+        {% endif %}
+    </svg>
+    <span class="font-display font-bold {{ clase_texto|default:'text-xl' }}" style="color: {% if racha > 0 %}#E8460F{% else %}var(--texto-suave){% endif %};">{{ racha }}</span>
+</span>
