@@ -1,6 +1,6 @@
 # Identidad visual de Ojo Avizor
 
-> **Paquete de contexto v1.4** · Complementa `CLAUDE.md` y `docs/arquitectura.md`.
+> **Paquete de contexto v1.5** · Complementa `CLAUDE.md` y `docs/arquitectura.md`.
 > Los archivos de marca están en `static/marca/`.
 
 ---
@@ -134,21 +134,32 @@ encima. La restricción del apartado anterior aplica únicamente al tema claro.
 
 ## 3. Tipografía
 
-Fuentes del sistema, sin descargas externas: ahorran ancho de banda, que es un requisito real de este proyecto.
+El cuerpo y la interfaz usan fuentes del sistema, sin descargas externas: ahorran ancho de banda,
+que es un requisito real de este proyecto.
 
 ```css
 --fuente: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 ```
 
-| Uso | Tamaño | Peso | Color |
-| --- | --- | --- | --- |
-| Título de página | 28 px | 700 | `--azul-profundo` |
-| Título de sección | 20 px | 700 | `--azul-profundo` |
-| Subtítulo | 16 px | 600 | `--azul-profundo` |
-| Cuerpo | 16 px | 400 | `--texto` |
-| Metadato o ayuda | 14 px | 400 | `--texto-suave` |
-| Cifra destacada | 40 px | 700 | `--cian` |
-| Nombre científico | 15 px | 400 *cursiva* | `--texto-suave` |
+Los títulos, las cifras destacadas y el nombre científico usan una serif de display —
+**Lora**, autoalojada en `static/fonts/` (dos archivos variables, uno recto y uno cursivo,
+~40 KB cada uno, subconjunto latino) — nunca desde un CDN en vivo, por la misma razón que
+Leaflet se sirve local: en campo, con conectividad irregular, la tipografía no puede depender
+de una red externa.
+
+```css
+--fuente-display: 'Lora', ui-serif, Georgia, serif;
+```
+
+| Uso | Tamaño | Peso | Color | Fuente |
+| --- | --- | --- | --- | --- |
+| Título de página | 28 px | 700 | `--azul-profundo` | `--fuente-display` |
+| Título de sección | 20 px | 700 | `--azul-profundo` | `--fuente-display` |
+| Subtítulo | 16 px | 600 | `--azul-profundo` | `--fuente` |
+| Cuerpo | 16 px | 400 | `--texto` | `--fuente` |
+| Metadato o ayuda | 14 px | 400 | `--texto-suave` | `--fuente` |
+| Cifra destacada | 40 px | 700 | `--cian` | `--fuente-display` |
+| Nombre científico | 15 px | 700 *cursiva* | `--texto-suave` | `--fuente-display`, itálica |
 
 **Nunca bajes de 14 px.** La población objetivo incluye menores y adultos mayores leyendo al sol.
 
@@ -240,7 +251,9 @@ En el **pie de página** van los logos de la Corporación Universitaria Empresar
 - Cian como color de texto o de fondo de botón (ver la advertencia del apartado 2).
 - Emojis como iconos de interfaz.
 - Colores literales en el código: impiden que el modo oscuro funcione.
-- Tipografías descargadas de terceros: encarecen la carga y este proyecto opera con conectividad irregular.
+- Tipografías servidas desde un CDN en vivo (Google Fonts y similares): dependen de una red
+  externa que puede no estar disponible en campo. La única serif de display del proyecto
+  (Lora) está autoalojada — ver apartado 3 — precisamente para evitar esto.
 
 ---
 

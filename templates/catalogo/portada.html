@@ -79,7 +79,7 @@
         </a>
     </div>
 
-    <div class="mb-12">
+    <div class="mb-12" data-reveal>
         <div class="max-w-2xl">
             <h2 class="titulo-pagina !text-xl mb-2">{% translate "¿Qué es Ojo Avizor?" %}</h2>
             <p class="text-stone-600 dark:text-stone-400">
@@ -87,21 +87,21 @@
             </p>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-5 mt-7">
-            <div class="flex gap-3">
+            <div class="flex gap-3" data-reveal style="transition-delay: 0ms">
                 <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--superficie-alt)] text-[var(--azul-medio)] flex items-center justify-center font-display font-bold text-sm">1</span>
                 <div>
                     <p class="font-semibold text-stone-900 dark:text-stone-100">{% translate "Registras lo que ves" %}</p>
                     <p class="text-sm text-stone-500 dark:text-stone-400 mt-0.5">{% translate "Especie, lugar y fecha. Con foto si tienes, sin ella si no." %}</p>
                 </div>
             </div>
-            <div class="flex gap-3">
+            <div class="flex gap-3" data-reveal style="transition-delay: 120ms">
                 <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--superficie-alt)] text-[var(--azul-medio)] flex items-center justify-center font-display font-bold text-sm">2</span>
                 <div>
                     <p class="font-semibold text-stone-900 dark:text-stone-100">{% translate "La comunidad lo revisa" %}</p>
                     <p class="text-sm text-stone-500 dark:text-stone-400 mt-0.5">{% translate "Un revisor confirma la especie antes de que se publique." %}</p>
                 </div>
             </div>
-            <div class="flex gap-3">
+            <div class="flex gap-3" data-reveal style="transition-delay: 240ms">
                 <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--superficie-alt)] text-[var(--azul-medio)] flex items-center justify-center font-display font-bold text-sm">3</span>
                 <div>
                     <p class="font-semibold text-stone-900 dark:text-stone-100">{% translate "La ficha de la especie crece" %}</p>
@@ -112,7 +112,7 @@
     </div>
 
     {% if familias %}
-    <div class="mb-12">
+    <div class="mb-12" data-reveal>
         <h2 class="titulo-pagina !text-xl mb-3">{% translate "Explora por familia" %}</h2>
         <div class="flex flex-wrap gap-2">
             {% for familia in familias %}
@@ -126,7 +126,7 @@
     {% endif %}
 
     {% if especies_recientes %}
-    <div class="mb-12">
+    <div class="mb-12" data-reveal>
         <div class="flex justify-between items-center mb-3">
             <h2 class="titulo-pagina !text-xl">{% translate "Últimas fichas agregadas" %}</h2>
             <a href="{% url 'catalogo:publico_listado' %}" class="btn-link !text-sm">{% translate "Ver todo el catálogo" %}</a>
@@ -136,7 +136,7 @@
     {% endif %}
 
     {% if ultimos_avistamientos %}
-    <div class="mb-4">
+    <div class="mb-4" data-reveal>
         <h2 class="titulo-pagina !text-xl mb-3">{% translate "Actividad reciente" %}</h2>
         <ul class="card divide-y divide-stone-100 dark:divide-stone-800">
             {% for avistamiento in ultimos_avistamientos %}

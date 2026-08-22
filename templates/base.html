@@ -41,6 +41,13 @@
             }
             document.documentElement.setAttribute('data-tema', t);
             document.documentElement.classList.toggle('dark', t === 'oscuro');
+
+            // Habilita las animaciones de aparición al hacer scroll (ver
+            // scroll-reveal.js) solo si el navegador las soporta y nadie pidió
+            // "menos movimiento" — así el contenido nunca queda oculto sin JS.
+            if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.documentElement.classList.add('con-scroll-reveal');
+            }
         })();
     </script>
 
@@ -53,6 +60,7 @@
     <link rel="stylesheet" href="{% static 'css/tailwind.css' %}">
     <script src="https://unpkg.com/htmx.org@2.0.4" defer></script>
     <script src="{% static 'js/mapa-distribucion.js' %}" defer></script>
+    <script src="{% static 'js/scroll-reveal.js' %}" defer></script>
     {% block scripts_antes_de_alpine %}{% endblock %}
     <script src="https://unpkg.com/alpinejs@3.x.x" defer></script>
 
@@ -60,6 +68,8 @@
         /* === Identidad visual (docs/identidad-visual.md) === */
         :root {
             --fuente: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            /* Autoalojada — ver @font-face en static/css/entrada.css y docs/identidad-visual.md, apartado 3. */
+            --fuente-display: 'Lora', ui-serif, Georgia, serif;
 
             /* Marca */
             --azul-profundo:  #1B2D55;

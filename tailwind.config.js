@@ -7,11 +7,10 @@ module.exports = {
   ],
   theme: {
     extend: {
-      // Serif de sistema, no descargada (docs/identidad-visual.md, apartado 8:
-      // "tipografías descargadas de terceros encarecen la carga"). No hay
-      // @font-face ni <link> a ninguna fuente externa en ningún lado.
+      // Lora, autoalojada en static/fonts/ (ver @font-face en entrada.css) —
+      // nunca desde un CDN en vivo (docs/identidad-visual.md, apartados 3 y 8).
       fontFamily: {
-        display: ['ui-serif', 'Georgia', 'serif'],
+        display: ['Lora', 'ui-serif', 'Georgia', 'serif'],
       },
     },
   },
