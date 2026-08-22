@@ -57,7 +57,9 @@ _ICONOS = {
     'comentario': '<path d="M4 5.5A1.5 1.5 0 015.5 4h13A1.5 1.5 0 0120 5.5v9a1.5 1.5 0 01-1.5 1.5H10l-4.5 4v-4H5.5A1.5 1.5 0 014 14.5v-9z"/>',
     'pulgar-arriba': '<path d="M7 20h9.3a2 2 0 001.98-1.72l1-7A2 2 0 0017.3 9H13V5a2 2 0 00-2-2l-1 1-3 6.5"/><path d="M7 20V10H4v10h3z"/>',
     'pulgar-abajo': '<path d="M7 4h9.3a2 2 0 011.98 1.72l1 7A2 2 0 0117.3 15H13v4a2 2 0 01-2 2l-1-1-3-6.5"/><path d="M7 4v10H4V4h3z"/>',
-    'llama': '<path d="M12 3c2 3-2 5-2 8a2 2 0 004 0c0-1-.7-1.6-1-2.5 1.8 1 3 3 3 5.5a4 4 0 01-8 0c0-4.5 3-6 4-11z"/>',
+    # Rellena (excepción deliberada, como "ave"): un trazo delgado se pierde a los
+    # tamaños pequeños en que aparece la racha (junto al seudónimo, en el ranking).
+    'llama': '<path fill="currentColor" stroke="none" d="M12.6 2.2c.9 2.7-.4 4.5-1.8 6.3-1.2 1.5-2.3 3.1-2.3 5a3.5 3.5 0 007 0c0-1.4-.6-2.3-1.2-3.2-.4-.6-.8-1.2-.9-2 2.3 1.6 4.6 4.5 4.6 7.8a5.5 5.5 0 01-11 0c0-4.9 3.8-8.4 5.6-13.9z"/>',
 }
 
 
