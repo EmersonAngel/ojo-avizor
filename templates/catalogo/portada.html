@@ -9,28 +9,56 @@
         <div class="absolute -top-24 -right-16 w-72 h-72 bg-[var(--cian)] opacity-20 rounded-full blur-3xl"></div>
         <div class="absolute -bottom-32 -left-16 w-72 h-72 bg-[var(--azul-medio)] opacity-20 rounded-full blur-3xl"></div>
     </div>
-    <div class="page-wide relative !pt-16 sm:!pt-24 !pb-24 text-center">
-        <h1 class="font-display text-4xl sm:text-6xl font-bold text-white leading-tight">
-            {% translate "Cada ave que ves, cuenta una historia del territorio" %}
-        </h1>
-        <p class="text-[var(--texto-en-barra)] opacity-90 mt-4 max-w-xl mx-auto">
-            {% translate "Ojo Avizor reúne lo que la gente de Pijao observa, día a día, en un solo inventario abierto para todos." %}
-        </p>
+    <div class="page-wide relative !pt-16 sm:!pt-20 !pb-24">
+        <div class="flex flex-col lg:flex-row lg:items-center gap-10 lg:gap-8">
+            <div class="flex-1 text-center lg:text-left">
+                <h1 class="font-display text-4xl sm:text-6xl font-bold text-white leading-[1.05] tracking-tight max-w-2xl mx-auto lg:mx-0">
+                    {% translate "Cada ave que ves, cuenta una historia del territorio" %}
+                </h1>
+                <p class="text-[var(--texto-en-barra)] opacity-90 mt-4 max-w-md mx-auto lg:mx-0">
+                    {% translate "Ojo Avizor junta lo que la gente de Pijao observa, día a día, en un solo inventario abierto para todos." %}
+                </p>
 
-        <form action="{% url 'catalogo:publico_listado' %}" method="get" class="mt-8 max-w-lg mx-auto relative">
-            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400">{% icono "busqueda" clase="w-5 h-5" %}</span>
-            <input type="search" name="q"
-                   placeholder="{% translate 'Busca una especie por nombre…' %}"
-                   class="!pl-10 !py-3 !rounded-xl shadow-lg border-0 focus:!ring-2 focus:!ring-white/50">
-        </form>
+                <form action="{% url 'catalogo:publico_listado' %}" method="get" class="mt-8 max-w-lg mx-auto lg:mx-0 relative">
+                    <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400">{% icono "busqueda" clase="w-5 h-5" %}</span>
+                    <input type="search" name="q"
+                           placeholder="{% translate 'Busca una especie por nombre…' %}"
+                           class="!pl-10 !py-3 !rounded-xl shadow-lg border-0 focus:!ring-2 focus:!ring-white/50">
+                </form>
 
-        <div class="flex flex-wrap items-center justify-center gap-3 mt-6">
-            <a href="{% url 'catalogo:publico_listado' %}" class="btn-secondary !bg-white !border-white !text-stone-900">
-                {% icono "libro" clase="w-4 h-4" %} {% translate "Explorar el catálogo" %}
+                <div class="flex flex-wrap items-center justify-center lg:justify-start gap-3 mt-6">
+                    <a href="{% url 'catalogo:publico_listado' %}" class="btn-secondary !bg-white !border-white !text-stone-900">
+                        {% icono "libro" clase="w-4 h-4" %} {% translate "Explorar el catálogo" %}
+                    </a>
+                    <a href="{% if user.is_authenticated %}{% url 'registros:crear' %}{% else %}{% url 'cuentas:registrar' %}{% endif %}" class="btn-primary">
+                        {% icono "mas" clase="w-4 h-4" %} {% translate "Registrar un avistamiento" %}
+                    </a>
+                </div>
+            </div>
+
+            {% with especie_destacada=especies_recientes.0 %}
+            {% if especie_destacada %}
+            <a href="{% url 'catalogo:especie_detalle' especie_destacada.pk %}"
+               class="hidden lg:block flex-shrink-0 w-64 bg-white rounded-2xl overflow-hidden shadow-2xl -rotate-1 hover:rotate-0 transition-transform duration-300">
+                {% if especie_destacada.foto_referencia %}
+                <div class="aspect-[4/3] overflow-hidden bg-[var(--superficie-alt)]">
+                    <img src="{{ especie_destacada.foto_referencia.url }}" alt="{{ especie_destacada.nombre_cientifico }}" class="w-full h-full object-cover">
+                </div>
+                {% else %}
+                <div class="aspect-[4/3] flex items-center justify-center bg-[var(--superficie-alt)] text-[var(--azul-medio)]">
+                    {% icono "ave" clase="w-14 h-14" %}
+                </div>
+                {% endif %}
+                <div class="p-4">
+                    <p class="text-[0.7rem] font-semibold uppercase tracking-wide text-[var(--azul-medio)]">{% translate "Última ficha agregada" %}</p>
+                    <p class="font-display italic font-bold text-stone-900 mt-1 truncate">{{ especie_destacada.nombre_cientifico }}</p>
+                    <p class="text-sm text-stone-500 truncate">
+                        {% for nombre in especie_destacada.nombres_comunes.all %}{{ nombre.nombre }}{% if not forloop.last %}, {% endif %}{% empty %}{% translate "Sin nombre común registrado" %}{% endfor %}
+                    </p>
+                </div>
             </a>
-            <a href="{% if user.is_authenticated %}{% url 'registros:crear' %}{% else %}{% url 'cuentas:registrar' %}{% endif %}" class="btn-primary">
-                {% icono "mas" clase="w-4 h-4" %} {% translate "Registrar un avistamiento" %}
-            </a>
+            {% endif %}
+            {% endwith %}
         </div>
     </div>
 </div>
@@ -49,6 +77,38 @@
             <p class="font-display text-2xl sm:text-3xl font-bold text-[var(--azul-medio)]">{{ total_observadores }}</p>
             <p class="text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-0.5">{% translate "observadores" %}</p>
         </a>
+    </div>
+
+    <div class="mb-12">
+        <div class="max-w-2xl">
+            <h2 class="titulo-pagina !text-xl mb-2">{% translate "¿Qué es Ojo Avizor?" %}</h2>
+            <p class="text-stone-600 dark:text-stone-400">
+                {% blocktranslate %}En Pijao hay años de observadores anotando qué aves ven, dónde y cuándo — en cuadernos, en la memoria, en grupos de mensajes. Ojo Avizor junta ese conocimiento disperso en un solo inventario abierto, con los nombres que la gente de acá realmente usa.{% endblocktranslate %}
+            </p>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-5 mt-7">
+            <div class="flex gap-3">
+                <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--superficie-alt)] text-[var(--azul-medio)] flex items-center justify-center font-display font-bold text-sm">1</span>
+                <div>
+                    <p class="font-semibold text-stone-900 dark:text-stone-100">{% translate "Registras lo que ves" %}</p>
+                    <p class="text-sm text-stone-500 dark:text-stone-400 mt-0.5">{% translate "Especie, lugar y fecha. Con foto si tienes, sin ella si no." %}</p>
+                </div>
+            </div>
+            <div class="flex gap-3">
+                <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--superficie-alt)] text-[var(--azul-medio)] flex items-center justify-center font-display font-bold text-sm">2</span>
+                <div>
+                    <p class="font-semibold text-stone-900 dark:text-stone-100">{% translate "La comunidad lo revisa" %}</p>
+                    <p class="text-sm text-stone-500 dark:text-stone-400 mt-0.5">{% translate "Un revisor confirma la especie antes de que se publique." %}</p>
+                </div>
+            </div>
+            <div class="flex gap-3">
+                <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--superficie-alt)] text-[var(--azul-medio)] flex items-center justify-center font-display font-bold text-sm">3</span>
+                <div>
+                    <p class="font-semibold text-stone-900 dark:text-stone-100">{% translate "La ficha de la especie crece" %}</p>
+                    <p class="text-sm text-stone-500 dark:text-stone-400 mt-0.5">{% translate "Cada avistamiento aprobado suma una foto, un lugar, un dato más." %}</p>
+                </div>
+            </div>
+        </div>
     </div>
 
     {% if familias %}
