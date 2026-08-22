@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load i18n iconos %}
+
+{% block titulo %}{% translate "Ayudar a identificar" %} — Ojo Avizor{% endblock %}
+
+{% block contenido %}
+<div class="page-wide">
+    <div class="mb-6">
+        <h1 class="titulo-pagina inline-flex items-center gap-2">{% icono "ayuda" clase="w-6 h-6" %} {% translate "Ayudar a identificar" %}</h1>
+        <p class="text-sm text-stone-500 dark:text-stone-400 mt-1">
+            {% translate "Avistamientos que su autor no supo identificar. Comenta si reconoces el ave — un revisor decide con lo que aporte la comunidad." %}
+        </p>
+    </div>
+
+    {% if registros %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {% for registro in registros %}
+        <a href="{% url 'registros:identificar_detalle' registro.pk %}" class="card-interactive overflow-hidden">
+            {% with foto=registro.fotografias.all.0 %}
+            {% if foto %}
+            <div class="aspect-[4/3] overflow-hidden bg-[var(--superficie-alt)]">
+                <img src="{{ foto.archivo.url }}" alt="" class="w-full h-full object-cover">
+            </div>
+            {% else %}
+            <div class="aspect-[4/3] flex items-center justify-center bg-[var(--superficie-alt)] text-[var(--azul-medio)]">
+                {% icono "ave" clase="w-14 h-14" %}
+            </div>
+            {% endif %}
+            {% endwith %}
+            <div class="p-4">
+                <p class="text-sm text-stone-700 dark:text-stone-300">
+                    <span class="font-medium text-stone-900 dark:text-stone-100">{{ registro.usuario.seudonimo }}</span>
+                    {% translate "en" %} {{ registro.lugar }}
+                </p>
+                <p class="text-stone-400 dark:text-stone-500 text-xs mt-0.5">{{ registro.fecha_avistamiento }}</p>
+                <p class="text-xs text-[var(--azul-medio)] inline-flex items-center gap-1 mt-2">
+                    {% icono "comentario" clase="w-3.5 h-3.5" %}
+                    {% blocktranslate count contador=registro.total_comentarios %}{{ contador }} comentario{% plural %}{{ contador }} comentarios{% endblocktranslate %}
+                </p>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    {% include "_paginacion.html" %}
+    {% else %}
+    {% translate "No hay avistamientos esperando ayuda para identificarse en este momento." as mensaje %}
+    {% include "_estado_vacio.html" with icono="ayuda" mensaje=mensaje %}
+    {% endif %}
+</div>
+{% endblock %}

@@ -13,7 +13,7 @@ from django.core.files.base import ContentFile
 from django.db import transaction
 from PIL import Image
 
-from .models import Fotografia, Registro
+from .models import ComentarioIdentificacion, Fotografia, Registro, VotoComentario
 
 TAMANO_MAXIMO_PX = 1600
 CALIDAD_JPEG = 80
@@ -91,3 +91,25 @@ def corregir_registro(registro, *, especie, lugar, fecha_avistamiento, latitud=N
     for archivo in fotos:
         agregar_fotografia(registro, archivo)
     return registro
+
+
+def crear_comentario_identificacion(*, registro, usuario, texto):
+    """Un aportante ayuda a identificar un registro `sin_identificar` (RF-19, RF-29)."""
+    texto = (texto or '').strip()
+    if not texto:
+        raise ValueError('El comentario no puede estar vacío.')
+    return ComentarioIdentificacion.objects.create(registro=registro, usuario=usuario, texto=texto)
+
+
+@transaction.atomic
+def votar_comentario(*, comentario, usuario, valor):
+    """Un Revisor o Administrador vota un comentario de identificación. Repetir el mismo
+    voto lo retira; votar lo contrario lo cambia — un voto por usuario y comentario."""
+    voto = VotoComentario.objects.filter(comentario=comentario, usuario=usuario).first()
+    if voto is None:
+        VotoComentario.objects.create(comentario=comentario, usuario=usuario, valor=valor)
+    elif voto.valor == valor:
+        voto.delete()
+    else:
+        voto.valor = valor
+        voto.save(update_fields=['valor'])

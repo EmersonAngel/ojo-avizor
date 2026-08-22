@@ -1228,6 +1228,45 @@ msgstr[1] "%(contador)s contributions"
 msgid "Todavía no hay avistamientos publicados para armar un ranking."
 msgstr "There are no published sightings yet to build a ranking."
 
+#: ./templates/_nav_enlaces.html:10 ./templates/registros/identificar_listar.html:9 ./templates/registros/identificar_detalle.html:4
+msgid "Ayudar a identificar"
+msgstr "Help identify"
+
+#: ./templates/registros/identificar_listar.html:10
+msgid "Avistamientos que su autor no supo identificar. Comenta si reconoces el ave — un revisor decide con lo que aporte la comunidad."
+msgstr "Sightings their author couldn't identify. Comment if you recognize the bird — a reviewer decides with the community's input."
+
+#: ./templates/registros/identificar_listar.html:34 ./templates/registros/identificar_detalle.html:47
+#, python-format
+msgid "%(contador)s comentario"
+msgid_plural "%(contador)s comentarios"
+msgstr[0] "%(contador)s comment"
+msgstr[1] "%(contador)s comments"
+
+#: ./templates/registros/identificar_listar.html:41
+msgid "No hay avistamientos esperando ayuda para identificarse en este momento."
+msgstr "No sightings are waiting for identification help right now."
+
+#: ./templates/registros/identificar_detalle.html:74
+msgid "Todavía no hay comentarios — sé el primero en ayudar a identificarla."
+msgstr "No comments yet — be the first to help identify it."
+
+#: ./templates/registros/identificar_detalle.html:78 ./apps/registros/forms.py
+msgid "Deja tu comentario"
+msgstr "Leave your comment"
+
+#: ./apps/registros/forms.py
+msgid "Tu comentario"
+msgstr "Your comment"
+
+#: ./apps/registros/forms.py
+msgid "¿Reconoces esta ave? Cuéntanos qué especie crees que es y por qué…"
+msgstr "Do you recognize this bird? Tell us which species you think it is and why…"
+
+#: ./templates/registros/identificar_detalle.html:80
+msgid "Comentar"
+msgstr "Comment"
+
 #: ./templates/registros/registro_crear.html:4 ./templates/registros/registro_crear.html:21
 msgid "Corregir avistamiento"
 msgstr "Correct sighting"

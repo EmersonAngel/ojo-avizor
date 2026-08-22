@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% load i18n iconos comentarios %}
+
+{% block titulo %}{% translate "Ayudar a identificar" %} — Ojo Avizor{% endblock %}
+
+{% block contenido %}
+<div class="page">
+    <a class="btn-link" href="{% url 'registros:identificar_listar' %}">{% icono "flecha-izquierda" clase="w-4 h-4" %} {% translate "Ayudar a identificar" %}</a>
+
+    <div class="card p-5 sm:p-6 mt-4">
+        <div class="flex justify-between items-start gap-3">
+            <div class="min-w-0">
+                <span class="badge" style="background-color: var(--alerta-fondo); color: var(--alerta);">
+                    {% icono "ayuda" clase="w-3.5 h-3.5" %} {% translate "Pide ayuda para identificarla" %}
+                </span>
+                <p class="text-stone-700 dark:text-stone-300 mt-2">
+                    {% translate "Aportado por" %} <span class="font-medium text-stone-900 dark:text-stone-100">{{ registro.usuario.seudonimo }}</span> {% translate "en" %} {{ registro.lugar }}
+                </p>
+            </div>
+            <span class="text-xs text-stone-400 dark:text-stone-500 flex-shrink-0 whitespace-nowrap">{{ registro.fecha_avistamiento }}</span>
+        </div>
+
+        {% if registro.comportamiento or registro.sustrato or registro.info_adicional %}
+        <div class="mt-4 pt-4 border-t border-stone-100 dark:border-stone-800 space-y-3 text-sm">
+            {% if registro.comportamiento %}
+            <div><dt class="text-stone-400 dark:text-stone-500">{% translate "Comportamiento" %}</dt><dd class="text-stone-700 dark:text-stone-300 mt-0.5">{{ registro.comportamiento }}</dd></div>
+            {% endif %}
+            {% if registro.sustrato %}
+            <div><dt class="text-stone-400 dark:text-stone-500">{% translate "Sustrato" %}</dt><dd class="text-stone-700 dark:text-stone-300 mt-0.5">{{ registro.sustrato }}</dd></div>
+            {% endif %}
+            {% if registro.info_adicional %}
+            <div><dt class="text-stone-400 dark:text-stone-500">{% translate "Información adicional" %}</dt><dd class="text-stone-700 dark:text-stone-300 mt-0.5">{{ registro.info_adicional }}</dd></div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% if registro.fotografias.all %}
+        <div class="mt-4 pt-4 border-t border-stone-100 dark:border-stone-800">
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {% for foto in registro.fotografias.all %}
+                <a href="{{ foto.archivo.url }}" target="_blank" rel="noopener" class="block aspect-square rounded-xl overflow-hidden border border-stone-200 dark:border-stone-800">
+                    <img src="{{ foto.archivo.url }}" alt="" class="w-full h-full object-cover">
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <h2 class="titulo-pagina !text-xl mt-8 mb-3 inline-flex items-center gap-2">
+        {% icono "comentario" clase="w-5 h-5" %}
+        {% blocktranslate count contador=registro.comentarios_identificacion.all|length %}{{ contador }} comentario{% plural %}{{ contador }} comentarios{% endblocktranslate %}
+    </h2>
+
+    {% if registro.comentarios_identificacion.all %}
+    <ul class="card divide-y divide-stone-100 dark:divide-stone-800 mb-6">
+        {% for comentario in registro.comentarios_identificacion.all %}
+        <li class="p-4">
+            <div class="flex justify-between items-start gap-3">
+                <span class="font-medium text-sm text-stone-900 dark:text-stone-100">{{ comentario.usuario.seudonimo }}</span>
+                <span class="text-xs text-stone-400 dark:text-stone-500 flex-shrink-0 whitespace-nowrap">{{ comentario.fecha_creacion }}</span>
+            </div>
+            <p class="text-sm text-stone-700 dark:text-stone-300 mt-1">{{ comentario.texto }}</p>
+
+            <div class="flex items-center gap-3 mt-3">
+                {% with mi_voto=comentario|voto_de:request.user %}
+                {% if puede_votar %}
+                <form method="post" action="{% url 'registros:identificar_votar_comentario' comentario.pk %}" class="inline-flex">
+                    {% csrf_token %}
+                    <input type="hidden" name="valor" value="ME_GUSTA">
+                    <button type="submit" class="inline-flex items-center gap-1 text-xs font-medium rounded-full px-2.5 py-1 transition-colors {% if mi_voto == 'ME_GUSTA' %}bg-[var(--exito-fondo)] text-[var(--exito)]{% else %}text-stone-500 dark:text-stone-400 hover:bg-[var(--superficie-alt)]{% endif %}">
+                        {% icono "pulgar-arriba" clase="w-3.5 h-3.5" %} {{ comentario.total_me_gusta }}
+                    </button>
+                </form>
+                <form method="post" action="{% url 'registros:identificar_votar_comentario' comentario.pk %}" class="inline-flex">
+                    {% csrf_token %}
+                    <input type="hidden" name="valor" value="NO_ME_GUSTA">
+                    <button type="submit" class="inline-flex items-center gap-1 text-xs font-medium rounded-full px-2.5 py-1 transition-colors {% if mi_voto == 'NO_ME_GUSTA' %}bg-[var(--error-fondo)] text-[var(--error)]{% else %}text-stone-500 dark:text-stone-400 hover:bg-[var(--superficie-alt)]{% endif %}">
+                        {% icono "pulgar-abajo" clase="w-3.5 h-3.5" %} {{ comentario.total_no_me_gusta }}
+                    </button>
+                </form>
+                {% else %}
+                <span class="inline-flex items-center gap-1 text-xs text-stone-500 dark:text-stone-400">{% icono "pulgar-arriba" clase="w-3.5 h-3.5" %} {{ comentario.total_me_gusta }}</span>
+                <span class="inline-flex items-center gap-1 text-xs text-stone-500 dark:text-stone-400">{% icono "pulgar-abajo" clase="w-3.5 h-3.5" %} {{ comentario.total_no_me_gusta }}</span>
+                {% endif %}
+                {% endwith %}
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    {% translate "Todavía no hay comentarios — sé el primero en ayudar a identificarla." as mensaje %}
+    {% include "_estado_vacio.html" with icono="comentario" mensaje=mensaje %}
+    {% endif %}
+
+    <div class="card p-5 sm:p-6">
+        <h3 class="text-sm font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400 mb-3">{% translate "Deja tu comentario" %}</h3>
+        <form method="post">
+            {% csrf_token %}
+            {% include "_campo.html" with field=form.texto %}
+            <button type="submit" class="btn-primary mt-3">{% icono "comentario" clase="w-4 h-4" %} {% translate "Comentar" %}</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

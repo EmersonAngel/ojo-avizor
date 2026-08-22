@@ -28,3 +28,14 @@ class RegistroForm(forms.ModelForm):
             'latitud': _('Latitud (opcional, no se publica)'),
             'longitud': _('Longitud (opcional, no se publica)'),
         }
+
+
+class ComentarioIdentificacionForm(forms.Form):
+    texto = forms.CharField(
+        label=_('Tu comentario'),
+        max_length=1000,
+        widget=forms.Textarea(attrs={
+            'rows': 3,
+            'placeholder': _('¿Reconoces esta ave? Cuéntanos qué especie crees que es y por qué…'),
+        }),
+    )

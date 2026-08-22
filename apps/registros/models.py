@@ -82,3 +82,56 @@ class Fotografia(models.Model):
 
     def __str__(self):
         return f'Foto de registro #{self.registro_id}'
+
+
+class ComentarioIdentificacion(models.Model):
+    """Comentario de la comunidad para ayudar a identificar un registro `sin_identificar`
+    (RF-19, RF-29 — fuera del MVP original, construido por pedido explícito posterior)."""
+
+    registro = models.ForeignKey(Registro, on_delete=models.CASCADE, related_name='comentarios_identificacion')
+    usuario = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name='comentarios_identificacion',
+    )
+    texto = models.TextField(max_length=1000)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'comentario de identificación'
+        verbose_name_plural = 'comentarios de identificación'
+        ordering = ['fecha_creacion']
+
+    def __str__(self):
+        return f'Comentario de {self.usuario} en registro #{self.registro_id}'
+
+    @property
+    def total_me_gusta(self):
+        """No dispara una consulta nueva si `votos` ya viene precargado (prefetch_related)."""
+        return sum(1 for voto in self.votos.all() if voto.valor == VotoComentario.Valor.ME_GUSTA)
+
+    @property
+    def total_no_me_gusta(self):
+        return sum(1 for voto in self.votos.all() if voto.valor == VotoComentario.Valor.NO_ME_GUSTA)
+
+
+class VotoComentario(models.Model):
+    """Voto de un Revisor o Administrador sobre un comentario de identificación: sirve
+    para señalar qué sugerencias son creíbles antes de que el revisor decida la especie."""
+
+    class Valor(models.TextChoices):
+        ME_GUSTA = 'ME_GUSTA', _('Me gusta')
+        NO_ME_GUSTA = 'NO_ME_GUSTA', _('No me gusta')
+
+    comentario = models.ForeignKey(ComentarioIdentificacion, on_delete=models.CASCADE, related_name='votos')
+    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='votos_comentarios')
+    valor = models.CharField(max_length=15, choices=Valor.choices)
+    fecha = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'voto de comentario'
+        verbose_name_plural = 'votos de comentario'
+        constraints = [
+            models.UniqueConstraint(fields=['comentario', 'usuario'], name='un_voto_por_usuario_y_comentario'),
+        ]
+
+    def __str__(self):
+        return f'{self.usuario} — {self.get_valor_display()} en comentario #{self.comentario_id}'

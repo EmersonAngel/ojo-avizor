@@ -5,18 +5,20 @@
 
 ---
 
-## Estado actual — 15 de agosto de 2026
+## Estado actual — 22 de agosto de 2026
 
 **Los 20 requisitos funcionales y los 11 no funcionales de este documento
 están implementados y probados.** Detalle día a día en `docs/bitacora.md`.
 
-Además, tres funciones que este documento marca como fuera de alcance se
+Además, varias funciones que este documento marca como fuera de alcance se
 construyeron por pedido explícito del usuario, con la excepción anotada en
 cada RF correspondiente más abajo: historial de aportes propios (roza
 RF-12, ver «Mi cuenta»), panel de estadísticas (roza RF-25, ver panel de
-administrador) y ubicación sobre mapa (RF-22, ver la excepción explícita).
-El resto de la lista de «Fuera del alcance» sigue exactamente fuera: no se
-empezó ninguno.
+administrador), ubicación sobre mapa (RF-22, ver la excepción explícita),
+ayuda de la comunidad para identificar un avistamiento (RF-19 y RF-29, ver
+la excepción explícita) e interfaz en inglés (RNF-13, ver la excepción
+explícita). El resto de la lista de «Fuera del alcance» sigue exactamente
+fuera: no se empezó ninguno.
 
 ---
 
@@ -159,4 +161,6 @@ Total de especies, total de avistamientos y número de observadores participante
 
 **Excepción sobre RF-22:** se construyó por pedido explícito del 15/08/2026, pese a estar fuera del MVP original. Implementación deliberadamente liviana para no romper RNF-01/RNF-02: mapa SVG estático (sin librería de mapas ni tiles), coloreado por país vía `paises_distribucion` (ver `docs/modelo-datos.md`). RF-12 y RF-25 se construyeron por la misma vía (ver "Mi cuenta" y el panel de administración).
 
-**Sobre RF-19:** el campo `especie` del modelo Registro admite `NULL` y existe el campo `sin_identificar` precisamente para habilitarlo más adelante. Deja la estructura, no la funcionalidad.
+**Excepción sobre RF-19 y RF-29:** se construyeron por pedido explícito del 22/08/2026. Cualquier aportante (Observador, Revisor o Administrador) puede comentar en un registro `sin_identificar` para ayudar a determinar la especie — "Ayudar a identificar" en el menú. Cada comentario admite voto de Me gusta / No me gusta, pero **solo de Revisor o Administrador** (un voto por persona y comentario, cambiable): es la señal de credibilidad que el revisor usa antes de decidir la especie, no una votación abierta. La vista nunca expone coordenadas, nombre real ni correo del autor del registro (RN-02, RN-06), igual que el resto del catálogo.
+
+**Excepción sobre RNF-13:** la interfaz en inglés se construyó por pedido explícito del 21/08/2026, pese a quedar fuera del MVP original. Se apoya en la estructura de `gettext` que sí se dejó preparada desde el inicio (ver la excepción documentada abajo).

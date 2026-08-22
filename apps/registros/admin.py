@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Fotografia, Registro
+from .models import ComentarioIdentificacion, Fotografia, Registro, VotoComentario
 
 
 class FotografiaInline(admin.TabularInline):
@@ -22,3 +22,17 @@ class RegistroAdmin(admin.ModelAdmin):
 class FotografiaAdmin(admin.ModelAdmin):
     list_display = ('id', 'registro', 'fecha_subida')
     readonly_fields = ('fecha_subida',)
+
+
+@admin.register(ComentarioIdentificacion)
+class ComentarioIdentificacionAdmin(admin.ModelAdmin):
+    list_display = ('id', 'registro', 'usuario', 'fecha_creacion')
+    readonly_fields = ('fecha_creacion',)
+    search_fields = ('texto', 'usuario__seudonimo')
+
+
+@admin.register(VotoComentario)
+class VotoComentarioAdmin(admin.ModelAdmin):
+    list_display = ('id', 'comentario', 'usuario', 'valor', 'fecha')
+    list_filter = ('valor',)
+    readonly_fields = ('fecha',)

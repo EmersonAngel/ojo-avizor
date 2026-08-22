@@ -72,3 +72,24 @@ def contar_especies_distintas_de_usuario(usuario):
         Registro.publicados.filter(usuario=usuario, especie__isnull=False)
         .values('especie').distinct().count()
     )
+
+
+def listar_para_identificar():
+    """Registros que piden ayuda de la comunidad para identificar la especie (RF-19, RF-29)."""
+    return (
+        Registro.objects.filter(sin_identificar=True)
+        .select_related('usuario')
+        .prefetch_related('fotografias')
+        .annotate(total_comentarios=Count('comentarios_identificacion'))
+        .order_by('-fecha_envio')
+    )
+
+
+def obtener_para_identificar(pk):
+    """Un registro sin identificar con su hilo de comentarios y votos ya cargados."""
+    return (
+        Registro.objects.filter(sin_identificar=True)
+        .select_related('usuario')
+        .prefetch_related('fotografias', 'comentarios_identificacion__usuario', 'comentarios_identificacion__votos')
+        .get(pk=pk)
+    )

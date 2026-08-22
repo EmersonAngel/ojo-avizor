@@ -2,16 +2,17 @@
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.http import Http404
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 
 from apps.cuentas.models import Usuario
 from apps.cuentas.services import requiere_rol
 
 from . import repositories, services
-from .forms import RegistroForm
-from .models import Registro
+from .forms import ComentarioIdentificacionForm, RegistroForm
+from .models import ComentarioIdentificacion, Registro, VotoComentario
 
 _ROLES_APORTAR = (Usuario.Rol.OBSERVADOR, Usuario.Rol.REVISOR, Usuario.Rol.ADMINISTRADOR)
+_ROLES_VOTAR = (Usuario.Rol.REVISOR, Usuario.Rol.ADMINISTRADOR)
 
 
 def avistamientos_publicos(request):
@@ -87,3 +88,43 @@ def registro_corregir(request, pk):
     return render(request, 'registros/registro_crear.html', {
         'form': form, 'corrigiendo': True, 'ultima_revision': ultima_revision,
     })
+
+
+@requiere_rol(*_ROLES_APORTAR)
+def identificar_listar(request):
+    """RF-19, RF-29: registros que piden ayuda de la comunidad para identificar la especie."""
+    registros = repositories.listar_para_identificar()
+    pagina = Paginator(registros, 12).get_page(request.GET.get('pagina'))
+    return render(request, 'registros/identificar_listar.html', {'registros': pagina, 'pagina': pagina})
+
+
+@requiere_rol(*_ROLES_APORTAR)
+def identificar_detalle(request, pk):
+    try:
+        registro = repositories.obtener_para_identificar(pk)
+    except Registro.DoesNotExist:
+        raise Http404
+
+    if request.method == 'POST':
+        form = ComentarioIdentificacionForm(request.POST)
+        if form.is_valid():
+            services.crear_comentario_identificacion(
+                registro=registro, usuario=request.user, texto=form.cleaned_data['texto'],
+            )
+            return redirect('registros:identificar_detalle', pk=pk)
+    else:
+        form = ComentarioIdentificacionForm()
+
+    return render(request, 'registros/identificar_detalle.html', {
+        'registro': registro, 'form': form, 'puede_votar': request.user.rol in _ROLES_VOTAR,
+    })
+
+
+@requiere_rol(*_ROLES_VOTAR)
+def identificar_votar_comentario(request, pk):
+    comentario = get_object_or_404(ComentarioIdentificacion, pk=pk)
+    if request.method == 'POST':
+        valor = request.POST.get('valor')
+        if valor in dict(VotoComentario.Valor.choices):
+            services.votar_comentario(comentario=comentario, usuario=request.user, valor=valor)
+    return redirect('registros:identificar_detalle', pk=comentario.registro_id)

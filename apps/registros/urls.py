@@ -13,4 +13,9 @@ urlpatterns = [
     path('nuevo/enviado/', views.registro_enviado, name='enviado'),
     path('mios/', views.registro_mis, name='mis_registros'),
     path('<int:pk>/corregir/', views.registro_corregir, name='corregir'),
+
+    # Ayuda de la comunidad para identificar (RF-19, RF-29)
+    path('identificar/', views.identificar_listar, name='identificar_listar'),
+    path('identificar/<int:pk>/', views.identificar_detalle, name='identificar_detalle'),
+    path('identificar/comentario/<int:pk>/votar/', views.identificar_votar_comentario, name='identificar_votar_comentario'),
 ]

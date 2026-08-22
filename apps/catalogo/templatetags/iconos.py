@@ -54,6 +54,9 @@ _ICONOS = {
     'mas': '<path d="M12 4.5v15M4.5 12h15"/>',
     'flecha-izquierda': '<path d="M19 12H5M11 18l-6-6 6-6"/>',
     'flecha-abajo': '<path d="M6 9l6 6 6-6"/>',
+    'comentario': '<path d="M4 5.5A1.5 1.5 0 015.5 4h13A1.5 1.5 0 0120 5.5v9a1.5 1.5 0 01-1.5 1.5H10l-4.5 4v-4H5.5A1.5 1.5 0 014 14.5v-9z"/>',
+    'pulgar-arriba': '<path d="M7 20h9.3a2 2 0 001.98-1.72l1-7A2 2 0 0017.3 9H13V5a2 2 0 00-2-2l-1 1-3 6.5"/><path d="M7 20V10H4v10h3z"/>',
+    'pulgar-abajo': '<path d="M7 4h9.3a2 2 0 011.98 1.72l1 7A2 2 0 0117.3 15H13v4a2 2 0 01-2 2l-1-1-3-6.5"/><path d="M7 4v10H4V4h3z"/>',
 }
 
 
