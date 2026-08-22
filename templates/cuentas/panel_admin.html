@@ -37,13 +37,14 @@
     </div>
 
     {% if registros_por_estado.PENDIENTE %}
-    <a href="{% url 'curaduria:bandeja' %}" class="card-interactive p-4 mb-8 flex items-center gap-3 text-sm">
+    <a href="{% url 'curaduria:bandeja' %}" class="card-interactive p-4 mb-8 flex items-center gap-3 text-sm" data-reveal>
         {% icono "check-circulo" clase="w-5 h-5 text-[var(--azul-medio)]" %}
         {% blocktranslate count contador=registros_por_estado.PENDIENTE %}Hay {{ contador }} avistamiento esperando revisión — ir a la bandeja.{% plural %}Hay {{ contador }} avistamientos esperando revisión — ir a la bandeja.{% endblocktranslate %}
     </a>
     {% endif %}
 
     {% if solicitudes_revisor %}
+    <div data-reveal>
     <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400 mb-3">
         {% translate "Solicitudes para ser revisor" %} ({{ solicitudes_revisor|length }})
     </h2>
@@ -70,8 +71,10 @@
         </div>
         {% endfor %}
     </div>
+    </div>
     {% endif %}
 
+    <div data-reveal>
     <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400 mb-3">
         {% translate "Usuarios" %} ({{ usuarios.count }})
     </h2>
@@ -113,6 +116,7 @@
                 {% endfor %}
             </tbody>
         </table>
+    </div>
     </div>
 </div>
 {% endblock %}
