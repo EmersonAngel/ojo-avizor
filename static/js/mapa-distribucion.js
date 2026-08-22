@@ -38,6 +38,15 @@ function mapaDistribucion(codigosIniciales) {
                     if (id !== codigo) el.style.opacity = '1';
                     el.setAttribute('data-pais-coloreado', '1');
                 });
+                // Un país puede tener piezas de tierra sueltas (islas, exclaves —
+                // Alaska y Hawái en Estados Unidos, por ejemplo) que el mapa marca
+                // con su propia clase "landxx <código>" en vez de heredar el color
+                // del contenedor: sin esto, esas piezas quedaban grises aunque el
+                // resto del país sí se coloreara.
+                svg.querySelectorAll(`.landxx[class~="${CSS.escape(codigo)}"]`).forEach((pieza) => {
+                    pieza.style.fill = 'var(--azul-medio)';
+                    pieza.setAttribute('data-pais-coloreado', '1');
+                });
             });
         },
 
