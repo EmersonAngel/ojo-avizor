@@ -36,6 +36,11 @@
             <p class="text-sm text-stone-500 dark:text-stone-400 mt-1">{% translate "observadores" %}</p>
         </div>
     </div>
+    <div class="text-center mt-6">
+        <a href="{% url 'registros:exportar_csv' %}" class="btn-link !text-sm">
+            {% icono "flecha-abajo" clase="w-4 h-4" %} {% translate "Descargar el inventario en CSV" %}
+        </a>
+    </div>
 </div>
 
 <script>

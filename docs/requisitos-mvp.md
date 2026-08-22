@@ -172,3 +172,15 @@ Total de especies, total de avistamientos y número de observadores participante
 **Excepción sobre RF-18:** se construyó por pedido explícito del 22/08/2026. Al registrar un avistamiento, el observador puede sugerir un nombre local para la especie (campo `nombre_comun_propuesto` en `Registro`). No se agrega solo a la ficha: el Revisor lo ve al curar ese registro y decide si lo agrega con un botón dedicado — nunca automático, respeta RN-03 (el revisor no corrige contenido, pero esta es una acción explícita suya, no una corrección).
 
 **Excepción sobre RF-24:** se construyó por pedido explícito del 22/08/2026. Un aviso resumido, no uno por cada registro nuevo: `python manage.py enviar_resumen_revisores` manda un correo con el total de pendientes a cada Revisor y Administrador con las notificaciones activadas. Sin cola de tareas (Celery ni similares, por RNF-08): el comando se programa externamente (cron), ver README.md.
+
+---
+
+## Funcionalidad añadida después del MVP, sin requisito original
+
+Estas dos no rozan ningún RF de este documento — no estaban contempladas de ninguna forma. Se construyeron por pedido explícito del usuario el 22/08/2026, tras la entrega.
+
+**Racha de días seguidos registrando.** Cuenta cualquier registro, sin importar su estado — lo que mide es el hábito de registrar, no si el revisor ya lo aprobó. Visible en "Mi cuenta" y en el ranking de observadores, con un ícono de llama que se ve apagado en cero y encendido (con pulso) cuando hay racha activa.
+
+**Insignias por hitos.** Ocho insignias (primer aporte, primera especie, 10 y 25 avistamientos aprobados, 5 y 10 especies distintas, racha de 7 y de 30 días) en "Mi cuenta". No se guardan en la base de datos: se recalculan en cada visita a partir de cifras que ya existen (`apps/cuentas/services.py: evaluar_hitos`), así que nunca quedan desincronizadas de la realidad.
+
+**Exportar el inventario en CSV.** Botón "Descargar CSV" en la lista pública de avistamientos y en el inventario consolidado — para que la Fundación o el semillero usen los datos en informes fuera de la plataforma. Mismas columnas que ya son públicas (especie, nombre común, lugar, fecha, seudónimo del observador); nunca coordenadas, nombre real ni correo (RN-02, RN-06). Sin cuenta: no hay ahí nada que no esté ya público.

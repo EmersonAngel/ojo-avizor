@@ -120,6 +120,37 @@ def resolver_solicitud_revisor(solicitud, *, aprobar, quien_resuelve):
     return solicitud
 
 
+# Insignias por hitos (fuera del MVP original, pedido explícito del 22/08/2026):
+# no se guardan en la base de datos, se recalculan a partir de cifras que ya
+# existen (aportes aprobados, especies distintas, racha) — nada que migrar
+# ni sincronizar, y nunca se desincronizan de la realidad.
+HITOS = [
+    {'clave': 'primer_aporte', 'nombre': _('Primer aporte'), 'campo': 'aportes', 'umbral': 1},
+    {'clave': 'primera_especie', 'nombre': _('Primera especie'), 'campo': 'especies', 'umbral': 1},
+    {'clave': 'diez_aportes', 'nombre': _('10 avistamientos'), 'campo': 'aportes', 'umbral': 10},
+    {'clave': 'cinco_especies', 'nombre': _('5 especies distintas'), 'campo': 'especies', 'umbral': 5},
+    {'clave': 'veinticinco_aportes', 'nombre': _('25 avistamientos'), 'campo': 'aportes', 'umbral': 25},
+    {'clave': 'diez_especies', 'nombre': _('10 especies distintas'), 'campo': 'especies', 'umbral': 10},
+    {'clave': 'racha_semana', 'nombre': _('Racha de 7 días'), 'campo': 'racha', 'umbral': 7},
+    {'clave': 'racha_mes', 'nombre': _('Racha de 30 días'), 'campo': 'racha', 'umbral': 30},
+]
+
+
+def evaluar_hitos(*, aportes_aprobados, especies_distintas, racha):
+    """Cuenta solo aportes ya aprobados: la insignia reconoce lo que quedó
+    confirmado en el inventario, no lo que todavía espera revisión."""
+    valores = {'aportes': aportes_aprobados, 'especies': especies_distintas, 'racha': racha}
+    insignias = []
+    for hito in HITOS:
+        valor_actual = valores[hito['campo']]
+        insignias.append({
+            **hito,
+            'conseguida': valor_actual >= hito['umbral'],
+            'faltan': max(hito['umbral'] - valor_actual, 0),
+        })
+    return insignias
+
+
 def requiere_rol(*roles):
     """Decorador de vista: exige sesión iniciada y uno de los roles dados (RF-10).
 

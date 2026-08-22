@@ -1021,6 +1021,49 @@ msgstr "pending"
 msgid "especies distintas"
 msgstr "distinct species"
 
+#: ./templates/cuentas/mi_cuenta.html
+msgid "Insignias"
+msgstr "Badges"
+
+#: ./templates/cuentas/mi_cuenta.html
+#, python-format
+msgid "Falta %(contador)s"
+msgid_plural "Faltan %(contador)s"
+msgstr[0] "%(contador)s to go"
+msgstr[1] "%(contador)s to go"
+
+#: ./apps/cuentas/services.py
+msgid "Primer aporte"
+msgstr "First contribution"
+
+#: ./apps/cuentas/services.py
+msgid "Primera especie"
+msgstr "First species"
+
+#: ./apps/cuentas/services.py
+msgid "10 avistamientos"
+msgstr "10 sightings"
+
+#: ./apps/cuentas/services.py
+msgid "5 especies distintas"
+msgstr "5 distinct species"
+
+#: ./apps/cuentas/services.py
+msgid "25 avistamientos"
+msgstr "25 sightings"
+
+#: ./apps/cuentas/services.py
+msgid "10 especies distintas"
+msgstr "10 distinct species"
+
+#: ./apps/cuentas/services.py
+msgid "Racha de 7 días"
+msgstr "7-day streak"
+
+#: ./apps/cuentas/services.py
+msgid "Racha de 30 días"
+msgstr "30-day streak"
+
 #: ./templates/cuentas/mi_cuenta.html:77
 #, python-format
 msgid "Tienes %(contador)s registro devuelto esperando una corrección."
@@ -1260,6 +1303,14 @@ msgstr "Sightings"
 #: ./templates/registros/avistamientos_publicos.html:10
 msgid "Del más reciente al más antiguo."
 msgstr "From most recent to oldest."
+
+#: ./templates/registros/avistamientos_publicos.html
+msgid "Descargar CSV"
+msgstr "Download CSV"
+
+#: ./templates/catalogo/inventario.html
+msgid "Descargar el inventario en CSV"
+msgstr "Download the inventory as CSV"
 
 #: ./templates/registros/avistamientos_publicos.html:29
 msgid "Todavía no hay avistamientos publicados."

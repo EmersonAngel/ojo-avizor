@@ -1,7 +1,7 @@
 """Vistas de la app registros."""
 from django.contrib import messages
 from django.core.paginator import Paginator
-from django.http import Http404
+from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404, redirect, render
 
 from apps.cuentas.models import Usuario
@@ -26,6 +26,16 @@ def ranking_observadores(request):
     """Ranking público de observadores por cantidad de avistamientos aprobados."""
     ranking = repositories.ranking_observadores()
     return render(request, 'registros/ranking_observadores.html', {'ranking': ranking})
+
+
+def exportar_avistamientos_csv(request):
+    """Exportación pública del inventario consolidado (fuera del MVP original,
+    pedido explícito del 22/08/2026). Los mismos datos que avistamientos_publicos,
+    en CSV — sin cuenta, porque no hay nada ahí que no esté ya público."""
+    contenido = services.generar_csv_avistamientos()
+    respuesta = HttpResponse(contenido, content_type='text/csv; charset=utf-8')
+    respuesta['Content-Disposition'] = 'attachment; filename="ojo-avizor-avistamientos.csv"'
+    return respuesta
 
 
 @requiere_rol(*_ROLES_APORTAR)

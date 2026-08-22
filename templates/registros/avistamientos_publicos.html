@@ -5,9 +5,14 @@
 
 {% block contenido %}
 <div class="page-wide">
-    <div class="mb-6">
-        <h1 class="titulo-pagina inline-flex items-center gap-2">{% icono "ubicacion" clase="w-6 h-6" %} {% translate "Avistamientos" %}</h1>
-        <p class="text-sm text-stone-500 dark:text-stone-400 mt-1">{% translate "Del más reciente al más antiguo." %}</p>
+    <div class="mb-6 flex items-start justify-between gap-3 flex-wrap">
+        <div>
+            <h1 class="titulo-pagina inline-flex items-center gap-2">{% icono "ubicacion" clase="w-6 h-6" %} {% translate "Avistamientos" %}</h1>
+            <p class="text-sm text-stone-500 dark:text-stone-400 mt-1">{% translate "Del más reciente al más antiguo." %}</p>
+        </div>
+        <a href="{% url 'registros:exportar_csv' %}" class="btn-secondary !px-3 !py-1.5 text-sm flex-shrink-0">
+            {% icono "flecha-abajo" clase="w-4 h-4" %} {% translate "Descargar CSV" %}
+        </a>
     </div>
 
     {% if registros %}

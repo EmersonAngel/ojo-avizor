@@ -7,6 +7,7 @@ RF-08). Las transiciones PENDIENTE → APROBADO/DEVUELTO viven en
 apps.curaduria.services, junto con la Revision. Ninguna vista asigna
 `estado` directamente (RN-01, RN-03).
 """
+import csv
 import io
 
 from django.core.files.base import ContentFile
@@ -103,6 +104,33 @@ def crear_comentario_identificacion(*, registro, usuario, texto):
     if not texto:
         raise ValueError('El comentario no puede estar vacío.')
     return ComentarioIdentificacion.objects.create(registro=registro, usuario=usuario, texto=texto)
+
+
+def generar_csv_avistamientos():
+    """Exportación del inventario consolidado (fuera del MVP original, pedido
+    explícito del 22/08/2026), para que la Fundación o el semillero lo usen
+    en informes fuera de la plataforma. Solo columnas ya públicas — nunca
+    coordenadas, nombre real ni correo (RN-02, RN-06)."""
+    buffer = io.StringIO()
+    escritor = csv.writer(buffer)
+    escritor.writerow(['nombre_cientifico', 'nombre_comun', 'lugar', 'fecha_avistamiento', 'observador'])
+
+    registros = (
+        Registro.publicados.select_related('especie', 'usuario')
+        .prefetch_related('especie__nombres_comunes')
+        .order_by('-fecha_avistamiento')
+    )
+    for registro in registros:
+        especie = registro.especie
+        nombres_comunes = list(especie.nombres_comunes.all()) if especie else []
+        escritor.writerow([
+            especie.nombre_cientifico if especie else '',
+            nombres_comunes[0].nombre if nombres_comunes else '',
+            registro.lugar,
+            registro.fecha_avistamiento.isoformat(),
+            registro.usuario.seudonimo,
+        ])
+    return buffer.getvalue()
 
 
 @transaction.atomic
