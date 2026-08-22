@@ -49,6 +49,10 @@
 
         <div class="card p-5 sm:p-6 space-y-4">
             <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400">{% translate "¿Dónde y cuándo?" %}</h2>
+            <div class="grid grid-cols-2 gap-4">
+                {% include "_campo.html" with field=form.departamento %}
+                {% include "_campo.html" with field=form.municipio %}
+            </div>
             {% include "_campo.html" with field=form.lugar %}
             {% include "_campo.html" with field=form.fecha_avistamiento %}
 

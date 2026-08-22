@@ -10,6 +10,8 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+from .colombia import DEPARTAMENTO_POR_DEFECTO, DEPARTAMENTOS, MUNICIPIO_POR_DEFECTO
+
 
 def validar_fecha_no_futura(valor):
     if valor > timezone.localdate():
@@ -45,6 +47,13 @@ class Registro(models.Model):
         related_name='registros',
     )
     lugar = models.CharField(max_length=200)
+    # Región del avistamiento (fuera del MVP original, pedido explícito del
+    # 22/08/2026): permite agrupar la actividad del inventario por
+    # departamento y municipio, no solo por el texto libre de `lugar`. Por
+    # ahora casi todo cae en Quindío/Pijao — el proyecto es de un solo
+    # municipio —, pero queda listo si algún día se suman otros lugares.
+    departamento = models.CharField(max_length=40, choices=DEPARTAMENTOS, default=DEPARTAMENTO_POR_DEFECTO)
+    municipio = models.CharField(max_length=100, default=MUNICIPIO_POR_DEFECTO)
     latitud = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     longitud = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     fecha_avistamiento = models.DateField(validators=[validar_fecha_no_futura])

@@ -1479,6 +1479,158 @@ msgstr "You haven't recorded a sighting yet — when you spot a bird, this is th
 msgid "Registrar mi primer avistamiento"
 msgstr "Report my first sighting"
 
+#: ./apps/registros/forms.py
+msgid "Departamento"
+msgstr "Department"
+
+#: ./apps/registros/forms.py
+msgid "Municipio"
+msgstr "Municipality"
+
+#: ./apps/registros/forms.py
+msgid "Por ejemplo: Pijao"
+msgstr "For example: Pijao"
+
+#: ./templates/catalogo/inventario.html
+msgid "Dónde se concentra la actividad"
+msgstr "Where the activity is concentrated"
+
+#: ./templates/catalogo/inventario.html
+msgid "Por departamento y municipio de Colombia."
+msgstr "By department and municipality of Colombia."
+
+#: ./apps/registros/colombia.py
+msgid "Amazonas"
+msgstr "Amazonas"
+
+#: ./apps/registros/colombia.py
+msgid "Antioquia"
+msgstr "Antioquia"
+
+#: ./apps/registros/colombia.py
+msgid "Arauca"
+msgstr "Arauca"
+
+#: ./apps/registros/colombia.py
+msgid "Atlántico"
+msgstr "Atlántico"
+
+#: ./apps/registros/colombia.py
+msgid "Bogotá D.C."
+msgstr "Bogotá D.C."
+
+#: ./apps/registros/colombia.py
+msgid "Bolívar"
+msgstr "Bolívar"
+
+#: ./apps/registros/colombia.py
+msgid "Boyacá"
+msgstr "Boyacá"
+
+#: ./apps/registros/colombia.py
+msgid "Caldas"
+msgstr "Caldas"
+
+#: ./apps/registros/colombia.py
+msgid "Caquetá"
+msgstr "Caquetá"
+
+#: ./apps/registros/colombia.py
+msgid "Casanare"
+msgstr "Casanare"
+
+#: ./apps/registros/colombia.py
+msgid "Cauca"
+msgstr "Cauca"
+
+#: ./apps/registros/colombia.py
+msgid "Cesar"
+msgstr "Cesar"
+
+#: ./apps/registros/colombia.py
+msgid "Chocó"
+msgstr "Chocó"
+
+#: ./apps/registros/colombia.py
+msgid "Córdoba"
+msgstr "Córdoba"
+
+#: ./apps/registros/colombia.py
+msgid "Cundinamarca"
+msgstr "Cundinamarca"
+
+#: ./apps/registros/colombia.py
+msgid "Guainía"
+msgstr "Guainía"
+
+#: ./apps/registros/colombia.py
+msgid "Guaviare"
+msgstr "Guaviare"
+
+#: ./apps/registros/colombia.py
+msgid "Huila"
+msgstr "Huila"
+
+#: ./apps/registros/colombia.py
+msgid "La Guajira"
+msgstr "La Guajira"
+
+#: ./apps/registros/colombia.py
+msgid "Magdalena"
+msgstr "Magdalena"
+
+#: ./apps/registros/colombia.py
+msgid "Meta"
+msgstr "Meta"
+
+#: ./apps/registros/colombia.py
+msgid "Nariño"
+msgstr "Nariño"
+
+#: ./apps/registros/colombia.py
+msgid "Norte de Santander"
+msgstr "Norte de Santander"
+
+#: ./apps/registros/colombia.py
+msgid "Putumayo"
+msgstr "Putumayo"
+
+#: ./apps/registros/colombia.py
+msgid "Quindío"
+msgstr "Quindío"
+
+#: ./apps/registros/colombia.py
+msgid "Risaralda"
+msgstr "Risaralda"
+
+#: ./apps/registros/colombia.py
+msgid "San Andrés y Providencia"
+msgstr "San Andrés y Providencia"
+
+#: ./apps/registros/colombia.py
+msgid "Santander"
+msgstr "Santander"
+
+#: ./apps/registros/colombia.py
+msgid "Sucre"
+msgstr "Sucre"
+
+#: ./apps/registros/colombia.py
+msgid "Tolima"
+msgstr "Tolima"
+
+#: ./apps/registros/colombia.py
+msgid "Valle del Cauca"
+msgstr "Valle del Cauca"
+
+#: ./apps/registros/colombia.py
+msgid "Vaupés"
+msgstr "Vaupés"
+
+#: ./apps/registros/colombia.py
+msgid "Vichada"
+msgstr "Vichada"
+
 #~ msgid "Sin conexión no se pueden adjuntar fotos; se pueden agregar más tarde desde la bandeja de revisión."
 #~ msgstr "Photos can't be attached while offline; they can be added later from the review queue."
 

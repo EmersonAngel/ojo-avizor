@@ -8,6 +8,27 @@ from django.utils import timezone
 from .models import Fotografia, Registro
 
 
+def contar_actividad_por_departamento():
+    """Actividad del inventario agrupada por departamento y municipio (fuera
+    del MVP original, pedido explícito del 22/08/2026) — solo avistamientos
+    publicados, igual que el resto de cifras del inventario consolidado
+    (RF-26). Nunca coordenadas: departamento/municipio son tan públicos
+    como `lugar`, no rozan la reserva de RN-06."""
+    filas = (
+        Registro.publicados.values('departamento', 'municipio')
+        .annotate(total=Count('id'))
+        .order_by('-total', 'departamento', 'municipio')
+    )
+    por_departamento = {}
+    for fila in filas:
+        depto = por_departamento.setdefault(
+            fila['departamento'], {'nombre': fila['departamento'], 'total': 0, 'municipios': []},
+        )
+        depto['total'] += fila['total']
+        depto['municipios'].append({'nombre': fila['municipio'], 'total': fila['total']})
+    return sorted(por_departamento.values(), key=lambda depto: -depto['total'])
+
+
 def listar_de_usuario(usuario, estado=None):
     registros = Registro.objects.filter(usuario=usuario).select_related('especie').order_by('-fecha_envio')
     if estado:

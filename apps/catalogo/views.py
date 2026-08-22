@@ -71,6 +71,7 @@ def inventario(request):
         'total_especies': repositories.contar_especies(),
         'total_avistamientos': registros_repositories.contar_avistamientos_publicados(),
         'total_observadores': registros_repositories.contar_observadores_participantes(),
+        'actividad_por_departamento': registros_repositories.contar_actividad_por_departamento(),
     }
     return render(request, 'catalogo/inventario.html', contexto)
 

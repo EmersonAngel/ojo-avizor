@@ -177,10 +177,14 @@ Total de especies, total de avistamientos y número de observadores participante
 
 ## Funcionalidad añadida después del MVP, sin requisito original
 
-Estas dos no rozan ningún RF de este documento — no estaban contempladas de ninguna forma. Se construyeron por pedido explícito del usuario el 22/08/2026, tras la entrega.
+Ninguna de estas roza un RF de este documento — no estaban contempladas de ninguna forma. Se construyeron por pedido explícito del usuario el 22/08/2026, tras la entrega.
 
 **Racha de días seguidos registrando.** Cuenta cualquier registro, sin importar su estado — lo que mide es el hábito de registrar, no si el revisor ya lo aprobó. Visible en "Mi cuenta" y en el ranking de observadores, con un ícono de llama que se ve apagado en cero y encendido (con pulso) cuando hay racha activa.
 
 **Insignias por hitos.** Ocho insignias (primer aporte, primera especie, 10 y 25 avistamientos aprobados, 5 y 10 especies distintas, racha de 7 y de 30 días) en "Mi cuenta". No se guardan en la base de datos: se recalculan en cada visita a partir de cifras que ya existen (`apps/cuentas/services.py: evaluar_hitos`), así que nunca quedan desincronizadas de la realidad.
 
 **Exportar el inventario en CSV.** Botón "Descargar CSV" en la lista pública de avistamientos y en el inventario consolidado — para que la Fundación o el semillero usen los datos en informes fuera de la plataforma. Mismas columnas que ya son públicas (especie, nombre común, lugar, fecha, seudónimo del observador); nunca coordenadas, nombre real ni correo (RN-02, RN-06). Sin cuenta: no hay ahí nada que no esté ya público.
+
+**Actividad por departamento y municipio.** `Registro` suma dos campos: `departamento` (lista cerrada de los 33 departamentos de Colombia, ver `apps/registros/colombia.py`) y `municipio` (texto libre — Colombia tiene más de mil municipios, una lista incompleta sería peor que no tenerla). El formulario los preselecciona en Quindío/Pijao, así que un observador de Pijao no tiene que tocarlos. El inventario consolidado (`catalogo:inventario`) muestra "Dónde se concentra la actividad" agrupado por esos dos campos, solo con avistamientos aprobados.
+
+Se descartó a propósito un mapa de veredas de Pijao: no hay datos confiables de esos límites y el campo `lugar` es texto libre, así que un mapa así habría sido una aproximación inventada del territorio real. El desglose por departamento/municipio usa división administrativa oficial y estable — hoy casi todo cae en "Quindío · Pijao" porque el proyecto es de un solo municipio, pero queda listo si algún día se suman observadores de otros lugares. Un mapa coloreado de Colombia (como el de distribución de especies, pero a nivel de país) queda pendiente como posible siguiente paso: requeriría conseguir un SVG de los departamentos, que este proyecto no tiene.

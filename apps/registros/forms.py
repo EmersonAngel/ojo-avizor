@@ -9,7 +9,7 @@ class RegistroForm(forms.ModelForm):
     class Meta:
         model = Registro
         fields = [
-            'especie', 'sin_identificar', 'lugar', 'fecha_avistamiento',
+            'especie', 'sin_identificar', 'departamento', 'municipio', 'lugar', 'fecha_avistamiento',
             'latitud', 'longitud', 'comportamiento', 'sustrato', 'info_adicional',
             'nombre_comun_propuesto',
         ]
@@ -17,6 +17,7 @@ class RegistroForm(forms.ModelForm):
             'fecha_avistamiento': forms.DateInput(attrs={'type': 'date'}, format='%Y-%m-%d'),
             'comportamiento': forms.Textarea(attrs={'rows': 2}),
             'info_adicional': forms.Textarea(attrs={'rows': 2}),
+            'municipio': forms.TextInput(attrs={'placeholder': _('Por ejemplo: Pijao')}),
             # x-model conecta estos campos con el mapa de mapa-ubicacion.js:
             # marcar el punto en el mapa actualiza estos números, y escribir
             # un número mueve el punto (ver registro_crear.html).
@@ -29,6 +30,8 @@ class RegistroForm(forms.ModelForm):
         labels = {
             'especie': _('Especie (si la identificas)'),
             'sin_identificar': _('Pido ayuda para identificarla'),
+            'departamento': _('Departamento'),
+            'municipio': _('Municipio'),
             'latitud': _('Latitud (opcional, no se publica)'),
             'longitud': _('Longitud (opcional, no se publica)'),
             'nombre_comun_propuesto': _('¿Conoces un nombre local para esta ave? (opcional)'),

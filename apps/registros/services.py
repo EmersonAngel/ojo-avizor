@@ -14,6 +14,7 @@ from django.core.files.base import ContentFile
 from django.db import transaction
 from PIL import Image
 
+from .colombia import DEPARTAMENTO_POR_DEFECTO, MUNICIPIO_POR_DEFECTO
 from .models import ComentarioIdentificacion, Fotografia, Registro, VotoComentario
 
 TAMANO_MAXIMO_PX = 1600
@@ -50,12 +51,15 @@ def enviar_registro(registro):
 @transaction.atomic
 def crear_registro(*, usuario, especie, lugar, fecha_avistamiento, latitud=None, longitud=None,
                     comportamiento='', sustrato='', info_adicional='', sin_identificar=False,
-                    nombre_comun_propuesto='', fotos=()):
+                    nombre_comun_propuesto='', departamento=DEPARTAMENTO_POR_DEFECTO,
+                    municipio=MUNICIPIO_POR_DEFECTO, fotos=()):
     """Crea un avistamiento y lo envía a revisión de inmediato (RF-01, RF-11)."""
     registro = Registro(
         usuario=usuario,
         especie=especie,
         lugar=lugar,
+        departamento=departamento,
+        municipio=municipio,
         fecha_avistamiento=fecha_avistamiento,
         latitud=latitud,
         longitud=longitud,
@@ -76,12 +80,15 @@ def crear_registro(*, usuario, especie, lugar, fecha_avistamiento, latitud=None,
 @transaction.atomic
 def corregir_registro(registro, *, especie, lugar, fecha_avistamiento, latitud=None, longitud=None,
                        comportamiento='', sustrato='', info_adicional='', sin_identificar=False,
-                       nombre_comun_propuesto='', fotos=()):
+                       nombre_comun_propuesto='', departamento=DEPARTAMENTO_POR_DEFECTO,
+                       municipio=MUNICIPIO_POR_DEFECTO, fotos=()):
     """DEVUELTO → PENDIENTE tras la corrección de su autor (RF-08)."""
     if registro.estado != Registro.Estado.DEVUELTO:
         raise TransicionInvalida('Solo se puede corregir un registro DEVUELTO.')
     registro.especie = especie
     registro.lugar = lugar
+    registro.departamento = departamento
+    registro.municipio = municipio
     registro.fecha_avistamiento = fecha_avistamiento
     registro.latitud = latitud
     registro.longitud = longitud

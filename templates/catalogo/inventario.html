@@ -36,11 +36,37 @@
             <p class="text-sm text-stone-500 dark:text-stone-400 mt-1">{% translate "observadores" %}</p>
         </div>
     </div>
-    <div class="text-center mt-6">
+    <div class="text-center mt-6 mb-4">
         <a href="{% url 'registros:exportar_csv' %}" class="btn-link !text-sm">
             {% icono "flecha-abajo" clase="w-4 h-4" %} {% translate "Descargar el inventario en CSV" %}
         </a>
     </div>
+
+    {% if actividad_por_departamento %}
+    <div class="mt-6" data-reveal>
+        <h2 class="titulo-pagina !text-xl mb-1">{% translate "Dónde se concentra la actividad" %}</h2>
+        <p class="text-sm text-stone-500 dark:text-stone-400 mb-3">
+            {% translate "Por departamento y municipio de Colombia." %}
+        </p>
+        <div class="card divide-y divide-stone-100 dark:divide-stone-800">
+            {% for departamento in actividad_por_departamento %}
+            <div class="p-4">
+                <div class="flex items-center justify-between gap-3">
+                    <p class="font-display font-bold text-stone-900 dark:text-stone-100">{{ departamento.nombre }}</p>
+                    <p class="font-display font-bold text-[var(--azul-medio)] flex-shrink-0">{{ departamento.total }}</p>
+                </div>
+                <div class="flex flex-wrap gap-1.5 mt-2">
+                    {% for municipio in departamento.municipios %}
+                    <span class="badge bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300">
+                        {{ municipio.nombre }} · {{ municipio.total }}
+                    </span>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
 </div>
 
 <script>
