@@ -4,7 +4,7 @@
 // incluido en la Expo Go de la tienda. Igual que en la web, las teselas
 // del mapa necesitan conexión; sin ella se avisa y los campos de
 // latitud/longitud siguen funcionando a mano.
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 
@@ -57,6 +57,19 @@ function generarHtml(latInicial: string, lngInicial: string): string {
     }
     ${hayPunto ? `colocar(${centro.lat}, ${centro.lng});` : ''}
     mapa.on('click', (e) => colocar(e.latlng.lat, e.latlng.lng));
+
+    // Sincroniza desde fuera (el observador escribió la latitud/longitud a
+    // mano en los campos de texto) sin recrear el mapa — ver SelectorMapa.tsx.
+    window.colocarDesdeFuera = function (lat, lng) {
+      colocar(lat, lng);
+      mapa.setView([lat, lng], mapa.getZoom());
+    };
+    window.quitarDesdeFuera = function () {
+      if (marcador) {
+        mapa.removeLayer(marcador);
+        marcador = null;
+      }
+    };
   </script>
 </body>
 </html>`;
@@ -65,15 +78,43 @@ function generarHtml(latInicial: string, lngInicial: string): string {
 export default function SelectorMapa({ latitud, longitud, onCambiar }: Props) {
   const { conectado } = useConectividad();
   const webViewRef = useRef<WebView>(null);
+  // El centro inicial se congela en el primer render: generarHtml() ya no
+  // depende de latitud/longitud en vivo, así que el mapa deja de recrearse
+  // (y perder cualquier gesto en curso) cada vez que se toca o arrastra el
+  // marcador — antes `key={lat-lng}` montaba un WebView nuevo en cada
+  // interacción, lo que hacía sentir el mapa "imposible" de mover.
+  const centroInicial = useRef({ latitud, longitud }).current;
+  const cambioPropio = useRef(false);
+  const primerRender = useRef(true);
 
   function alRecibirMensaje(datos: string) {
     try {
       const { lat, lng } = JSON.parse(datos);
+      cambioPropio.current = true;
       onCambiar(Number(lat).toFixed(6), Number(lng).toFixed(6));
     } catch {
       // mensaje inesperado del WebView, se ignora
     }
   }
+
+  useEffect(() => {
+    if (primerRender.current) {
+      primerRender.current = false;
+      return;
+    }
+    // Si el cambio vino del propio mapa (tocar o arrastrar el marcador), ya
+    // está al día — solo hace falta reinyectar cuando el observador escribió
+    // la latitud/longitud a mano en los campos de texto.
+    if (cambioPropio.current) {
+      cambioPropio.current = false;
+      return;
+    }
+    if (latitud === '' || longitud === '') {
+      webViewRef.current?.injectJavaScript('quitarDesdeFuera(); true;');
+      return;
+    }
+    webViewRef.current?.injectJavaScript(`colocarDesdeFuera(${Number(latitud)}, ${Number(longitud)}); true;`);
+  }, [latitud, longitud]);
 
   if (!conectado) {
     return (
@@ -90,10 +131,14 @@ export default function SelectorMapa({ latitud, longitud, onCambiar }: Props) {
     <View style={estilos.contenedor}>
       <WebView
         ref={webViewRef}
-        key={`${latitud}-${longitud}`}
         originWhitelist={['*']}
-        source={{ html: generarHtml(latitud, longitud) }}
+        source={{ html: generarHtml(centroInicial.latitud, centroInicial.longitud) }}
         onMessage={(evento) => alRecibirMensaje(evento.nativeEvent.data)}
+        // En Android, un WebView dentro del ScrollView de la pantalla pierde
+        // el gesto de arrastre del mapa: el ScrollView exterior se lo queda
+        // antes de que llegue a Leaflet. Este prop deja que el toque se
+        // resuelva primero adentro del WebView.
+        nestedScrollEnabled
         startInLoadingState
         renderLoading={() => (
           <View style={estilos.cargando}>

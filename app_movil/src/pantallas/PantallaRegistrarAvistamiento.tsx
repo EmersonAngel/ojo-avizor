@@ -45,6 +45,15 @@ const DATOS_VACIOS: DatosRegistro = {
   fotos: [],
 };
 
+// El backend devuelve los errores con la misma forma que form.errors de
+// Django ({ campo: ["mensaje"], __all__: ["mensaje"] } — ver
+// apps/api_movil/views.py). Se aplana a texto simple para el Alert nativo.
+function formatearErroresFormulario(errores: unknown): string {
+  if (!errores || typeof errores !== 'object') return 'No se pudo enviar el registro.';
+  const mensajes = Object.values(errores as Record<string, string[]>).flat();
+  return mensajes.length > 0 ? mensajes.join('\n') : 'No se pudo enviar el registro.';
+}
+
 export default function PantallaRegistrarAvistamiento() {
   const navigation = useNavigation<any>();
   const ruta = useRoute<any>();
@@ -131,7 +140,7 @@ export default function PantallaRegistrarAvistamiento() {
       throw new Error('sin-conexion');
     } catch (error) {
       if (error instanceof ErrorApi && error.status === 400) {
-        Alert.alert('Revisa el formulario', JSON.stringify(error.cuerpo?.errores ?? error.cuerpo));
+        Alert.alert('Revisa el formulario', formatearErroresFormulario(error.cuerpo?.errores));
         return;
       }
       // Sin conexión, o falló la red: se guarda como pendiente y se
