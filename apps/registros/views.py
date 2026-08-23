@@ -1,5 +1,6 @@
 """Vistas de la app registros."""
 from django.contrib import messages
+from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404, redirect, render
@@ -43,12 +44,15 @@ def registro_crear(request):
     if request.method == 'POST':
         form = RegistroForm(request.POST)
         if form.is_valid():
-            services.crear_registro(
-                usuario=request.user,
-                fotos=request.FILES.getlist('fotos'),
-                **form.cleaned_data,
-            )
-            return redirect('registros:enviado')
+            try:
+                services.crear_registro(
+                    usuario=request.user,
+                    fotos=request.FILES.getlist('fotos'),
+                    **form.cleaned_data,
+                )
+                return redirect('registros:enviado')
+            except ValidationError as error:
+                form.add_error(None, error)
     else:
         form = RegistroForm()
     return render(request, 'registros/registro_crear.html', {'form': form})
@@ -84,13 +88,16 @@ def registro_corregir(request, pk):
     if request.method == 'POST':
         form = RegistroForm(request.POST, instance=registro)
         if form.is_valid():
-            services.corregir_registro(
-                registro,
-                fotos=request.FILES.getlist('fotos'),
-                **form.cleaned_data,
-            )
-            messages.success(request, 'Registro corregido y reenviado a revisión.')
-            return redirect('registros:mis_registros')
+            try:
+                services.corregir_registro(
+                    registro,
+                    fotos=request.FILES.getlist('fotos'),
+                    **form.cleaned_data,
+                )
+                messages.success(request, 'Registro corregido y reenviado a revisión.')
+                return redirect('registros:mis_registros')
+            except ValidationError as error:
+                form.add_error(None, error)
     else:
         form = RegistroForm(instance=registro)
 

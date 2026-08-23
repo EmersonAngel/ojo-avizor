@@ -22,6 +22,7 @@ class VotarComentarioTests(TestCase):
         self.registro = services.crear_registro(
             usuario=self.observador, especie=None, lugar='Vereda X',
             fecha_avistamiento=date.today(), sin_identificar=True,
+            comportamiento='Se posaba en una rama baja cerca del agua.',
         )
         self.comentario = services.crear_comentario_identificacion(
             registro=self.registro, usuario=self.observador, texto='¿Será un azulejo?',
@@ -58,6 +59,7 @@ class VistaVotarComentarioTests(TestCase):
         self.registro = services.crear_registro(
             usuario=self.observador, especie=None, lugar='Vereda X',
             fecha_avistamiento=date.today(), sin_identificar=True,
+            comportamiento='Se posaba en una rama baja cerca del agua.',
         )
         self.comentario = services.crear_comentario_identificacion(
             registro=self.registro, usuario=self.observador, texto='¿Será un azulejo?',

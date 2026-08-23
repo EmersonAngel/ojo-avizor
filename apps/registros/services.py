@@ -10,8 +10,10 @@ apps.curaduria.services, junto con la Revision. Ninguna vista asigna
 import csv
 import io
 
+from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile
 from django.db import transaction
+from django.utils.translation import gettext_lazy as _
 from PIL import Image
 
 from .colombia import DEPARTAMENTO_POR_DEFECTO, MUNICIPIO_POR_DEFECTO
@@ -23,6 +25,22 @@ CALIDAD_JPEG = 80
 
 class TransicionInvalida(Exception):
     pass
+
+
+def _validar_pedido_de_ayuda(*, sin_identificar, comportamiento, sustrato, info_adicional, cantidad_fotos):
+    """Pedir ayuda a la comunidad sin ningún dato es irresoluble para quien comenta
+    (regla pedida el 23/08/2026, tras un aporte real sin descripción ni foto): como
+    mínimo hace falta contar algo de lo que se vio o adjuntar una foto, o ambos."""
+    if not sin_identificar:
+        return
+    hay_descripcion = (
+        (comportamiento or '').strip() or (sustrato or '').strip() or (info_adicional or '').strip()
+    )
+    if not hay_descripcion and not cantidad_fotos:
+        raise ValidationError(_(
+            'Para pedir ayuda a identificarla hace falta contar algo de lo que viste '
+            '(comportamiento, dónde estaba…) o agregar una foto — o ambos.'
+        ))
 
 
 def comprimir_imagen(archivo):
@@ -54,6 +72,10 @@ def crear_registro(*, usuario, especie, lugar, fecha_avistamiento, latitud=None,
                     nombre_comun_propuesto='', departamento=DEPARTAMENTO_POR_DEFECTO,
                     municipio=MUNICIPIO_POR_DEFECTO, fotos=()):
     """Crea un avistamiento y lo envía a revisión de inmediato (RF-01, RF-11)."""
+    _validar_pedido_de_ayuda(
+        sin_identificar=sin_identificar, comportamiento=comportamiento, sustrato=sustrato,
+        info_adicional=info_adicional, cantidad_fotos=len(fotos),
+    )
     registro = Registro(
         usuario=usuario,
         especie=especie,
@@ -85,6 +107,12 @@ def corregir_registro(registro, *, especie, lugar, fecha_avistamiento, latitud=N
     """DEVUELTO → PENDIENTE tras la corrección de su autor (RF-08)."""
     if registro.estado != Registro.Estado.DEVUELTO:
         raise TransicionInvalida('Solo se puede corregir un registro DEVUELTO.')
+    # Cuenta también las fotos que ya tenía el registro devuelto: corregir no
+    # obliga a volver a subirlas si ya alcanzan para sustentar el pedido de ayuda.
+    _validar_pedido_de_ayuda(
+        sin_identificar=sin_identificar, comportamiento=comportamiento, sustrato=sustrato,
+        info_adicional=info_adicional, cantidad_fotos=len(fotos) + registro.fotografias.count(),
+    )
     registro.especie = especie
     registro.lugar = lugar
     registro.departamento = departamento

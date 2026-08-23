@@ -8,6 +8,7 @@ completo por esto sería una dependencia pesada sin necesidad real.
 import json
 
 from django.contrib.auth import authenticate
+from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
@@ -63,9 +64,12 @@ def registro_crear(request):
     form = RegistroForm(request.POST)
     if not form.is_valid():
         return JsonResponse({'errores': form.errors}, status=400)
-    registro = registros_services.crear_registro(
-        usuario=request.user, fotos=request.FILES.getlist('fotos'), **form.cleaned_data,
-    )
+    try:
+        registro = registros_services.crear_registro(
+            usuario=request.user, fotos=request.FILES.getlist('fotos'), **form.cleaned_data,
+        )
+    except ValidationError as error:
+        return JsonResponse({'errores': {'__all__': error.messages}}, status=400)
     return JsonResponse({'id': registro.pk, 'estado': registro.estado}, status=201)
 
 

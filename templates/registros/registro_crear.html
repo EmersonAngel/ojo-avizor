@@ -28,6 +28,13 @@
     </div>
     {% endif %}
 
+    {% if form.non_field_errors %}
+    <div class="card p-4 mb-6 text-sm flex items-start gap-2" style="background-color: var(--error-fondo); border-color: var(--error); color: var(--error);">
+        <span class="inline-flex mt-0.5">{% icono "ayuda" clase="w-4 h-4 flex-shrink-0" %}</span>
+        <span>{{ form.non_field_errors|join:" " }}</span>
+    </div>
+    {% endif %}
+
     {% if not corrigiendo %}
     <div id="mensaje-offline" class="hidden card p-4 mb-6 text-sm flex items-start gap-2" style="background-color: var(--alerta-fondo); border-color: var(--alerta); color: var(--alerta);">
         <span class="inline-flex mt-0.5">{% icono "wifi-off" clase="w-4 h-4" %}</span>
@@ -41,9 +48,12 @@
         <div class="card p-5 sm:p-6 space-y-4">
             <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400">{% translate "¿Qué viste?" %}</h2>
             {% include "_campo.html" with field=form.especie %}
-            <label class="flex items-center gap-2 text-sm text-stone-700 dark:text-stone-300">
-                {{ form.sin_identificar }} {{ form.sin_identificar.label }}
-            </label>
+            <div>
+                <label class="flex items-center gap-2 text-sm text-stone-700 dark:text-stone-300">
+                    {{ form.sin_identificar }} {{ form.sin_identificar.label }}
+                </label>
+                <p class="field-hint">{{ form.sin_identificar.help_text }}</p>
+            </div>
             {% include "_campo.html" with field=form.nombre_comun_propuesto %}
         </div>
 

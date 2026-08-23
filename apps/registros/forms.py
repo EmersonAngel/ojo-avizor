@@ -27,6 +27,12 @@ class RegistroForm(forms.ModelForm):
                 'placeholder': _('Por ejemplo: como le dicen en tu vereda…'),
             }),
         }
+        help_texts = {
+            'sin_identificar': _(
+                'Para que la comunidad pueda ayudarte, cuenta algo de lo que viste '
+                '(más abajo) o agrega una foto — o ambos.'
+            ),
+        }
         labels = {
             'especie': _('Especie (si la identificas)'),
             'sin_identificar': _('Pido ayuda para identificarla'),
