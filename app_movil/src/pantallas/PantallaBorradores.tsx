@@ -46,10 +46,13 @@ export default function PantallaBorradores() {
     const exito = await sincronizarCatalogo();
     setActualizandoCatalogo(false);
     Alert.alert(
-      exito ? 'Catálogo actualizado' : 'Sin conexión',
+      exito ? 'Catálogo actualizado' : 'No se pudo actualizar',
       exito
         ? 'Las fichas de especies del sitio quedaron guardadas en el celular.'
-        : 'No se pudo descargar el catálogo ahora. Se reintenta la próxima vez que haya conexión.',
+        // No siempre es falta de señal: revisa también que el celular esté en
+        // la misma red que el servidor y que la URL en config.ts sea la
+        // correcta (ver el mensaje detallado en la consola de Metro).
+        : 'No se pudo descargar el catálogo ahora. Puede ser falta de señal, pero también que el celular no alcance el servidor — revisa que estén en la misma red. Se reintenta la próxima vez.',
     );
   }
 

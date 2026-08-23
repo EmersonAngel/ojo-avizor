@@ -52,7 +52,12 @@ export function SesionProveedor({ children }: { children: React.ReactNode }) {
       const especies = await obtenerEspecies();
       await guardarEspeciesEnCache(especies);
       return true;
-    } catch {
+    } catch (error) {
+      // No solo puede fallar por falta de señal: el servidor puede estar
+      // apagado, la URL de config.ts puede estar desactualizada, o puede
+      // fallar el guardado local. Se deja en el log para poder diagnosticar
+      // (ver PantallaBorradores, que ya no da por hecho que es "sin conexión").
+      console.warn('No se pudo sincronizar el catálogo de especies:', error);
       return false;
     }
   }, []);
