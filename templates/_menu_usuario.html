@@ -2,6 +2,15 @@
 <a href="{% url 'cuentas:mi_cuenta' %}" class="dropdown-item">
     {% icono "usuario" clase="w-4 h-4" %} {% translate "Mi cuenta" %}
 </a>
+{% if user.rol == 'REVISOR' or user.rol == 'ADMINISTRADOR' %}
+<div class="border-t border-[var(--borde)] my-1.5"></div>
+<a href="{% url 'catalogo:especie_listar' %}" class="dropdown-item">
+    {% icono "carpeta" clase="w-4 h-4" %} {% translate "Fichas de especie" %}
+</a>
+<a href="{% url 'curaduria:bandeja' %}" class="dropdown-item">
+    {% icono "check-circulo" clase="w-4 h-4" %} {% translate "Bandeja de revisión" %}
+</a>
+{% endif %}
 {% if user.rol == 'ADMINISTRADOR' %}
 <a href="{% url 'cuentas:panel_admin' %}" class="dropdown-item">
     {% icono "usuarios" clase="w-4 h-4" %} {% translate "Panel de administración" %}

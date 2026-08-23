@@ -1,6 +1,6 @@
-import { Ionicons } from '@expo/vector-icons';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -57,9 +57,17 @@ export default function PantallaRegistrarAvistamiento() {
   const [cargando, setCargando] = useState(Boolean(idBorrador));
   const [enviando, setEnviando] = useState(false);
 
-  useEffect(() => {
-    listarEspeciesCache().then(setEspecies);
-  }, []);
+  // La pantalla se queda montada al cambiar de pestaña (el navegador de
+  // pestañas no la destruye), así que un useEffect normal solo carga el
+  // catálogo una vez y nunca refleja una sincronización posterior — ni la
+  // del primer inicio de sesión (que corre en paralelo, después de montar
+  // esta pantalla), ni la del botón "Actualizar catálogo" en Borradores.
+  // useFocusEffect recarga cada vez que se vuelve a esta pestaña.
+  useFocusEffect(
+    useCallback(() => {
+      listarEspeciesCache().then(setEspecies);
+    }, []),
+  );
 
   useEffect(() => {
     if (!idBorrador) return;
@@ -152,7 +160,7 @@ export default function PantallaRegistrarAvistamiento() {
   return (
     <ScrollView style={estilos.contenedor} contentContainerStyle={estilos.contenido}>
       <View style={estilos.filaSeccion}>
-        <Ionicons name="paw-outline" size={16} color="#666" />
+        <MaterialCommunityIcons name="bird" size={17} color="#666" />
         <Text style={estilos.seccion}>¿Qué viste?</Text>
       </View>
       <SelectorEspecie

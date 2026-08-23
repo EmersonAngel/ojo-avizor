@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
@@ -28,7 +28,7 @@ export default function TarjetaRegistroLocal({ registro, onAbrir, onEliminar, on
     <View style={estilos.tarjeta}>
       <Pressable onPress={onAbrir} disabled={!onAbrir} style={estilos.contenido}>
         <View style={estilos.filaTitulo}>
-          <Ionicons name="paw-outline" size={16} color="#1B2D55" />
+          <MaterialCommunityIcons name="bird" size={17} color="#1B2D55" />
           <Text style={estilos.especie}>{registro.nombreEspecie ?? 'Ave sin identificar'}</Text>
         </View>
         <View style={estilos.filaDetalle}>
