@@ -104,8 +104,13 @@
     .btn-danger:hover { filter: brightness(.92); }
     .btn-ghost { @apply btn rounded-lg bg-transparent text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 focus-visible:ring-stone-400; }
 
+    /* Las utilidades condicionales (relleno compacto, ancho automático) cambian
+       en el mismo punto donde la barra pasa de menú hamburguesa a fila
+       horizontal (lg, ver base.html) — no en sm, que ya quedó atrás. Antes de
+       ese punto este mismo componente también se usa dentro del panel
+       desplegable móvil, donde necesita ir a ancho completo y más alto. */
     .nav-link {
-        @apply flex items-center gap-2 rounded-lg px-3 py-2 sm:py-1.5 text-sm font-medium w-full sm:w-auto transition-colors;
+        @apply flex items-center gap-2 rounded-lg px-3 py-2 lg:py-1.5 text-sm font-medium w-full lg:w-auto whitespace-nowrap transition-colors;
         color: var(--texto);
     }
     .nav-link:hover { background-color: var(--superficie-alt); color: var(--azul-medio); }

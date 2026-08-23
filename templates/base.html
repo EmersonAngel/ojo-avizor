@@ -244,7 +244,7 @@
                 <img src="{% static 'marca/logo-apilado-modo-oscuro.png' %}" alt="Ojo Avizor" class="h-14 sm:h-20 w-auto">
             </a>
 
-            <div class="flex items-center gap-1 sm:hidden">
+            <div class="flex items-center gap-1 lg:hidden">
                 {% include "_selector_idioma.html" %}
                 <button type="button" class="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-[var(--barra-hover)]"
                         @click="oscuro = !oscuro; document.documentElement.setAttribute('data-tema', oscuro ? 'oscuro' : 'claro'); document.documentElement.classList.toggle('dark', oscuro); localStorage.setItem('tema', oscuro ? 'oscuro' : 'claro')"
@@ -261,7 +261,7 @@
                 </button>
             </div>
 
-            <nav class="hidden sm:flex text-sm items-center gap-4 barra-superior-nav">
+            <nav class="hidden lg:flex text-sm items-center gap-4 barra-superior-nav">
                 <div class="flex items-center gap-1">
                     {% include "_nav_enlaces.html" with mostrar_invitado=False %}
                 </div>
@@ -303,7 +303,7 @@
                 </div>
             </nav>
         </div>
-        <nav class="sm:hidden border-t border-[var(--borde)] bg-[var(--blanco)] px-4 py-3 flex flex-col items-start gap-1 text-sm"
+        <nav class="lg:hidden border-t border-[var(--borde)] bg-[var(--blanco)] px-4 py-3 flex flex-col items-start gap-1 text-sm"
              x-show="menuAbierto" x-cloak @click="menuAbierto = false">
             {% include "_nav_enlaces.html" %}
             {% if user.is_authenticated %}
