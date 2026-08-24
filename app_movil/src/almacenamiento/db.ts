@@ -41,10 +41,16 @@ export function abrirBD(): Promise<SQLite.SQLiteDatabase> {
       // TABLE IF NOT EXISTS no toca una tabla que ya existe. Si la columna
       // ya está (instalación nueva, recién creada arriba), SQLite lanza un
       // error de columna duplicada — se ignora a propósito.
-      try {
-        await bd.execAsync(`ALTER TABLE registros_locales ADD COLUMN nombre_comun_propuesto TEXT`);
-      } catch {
-        // columna ya existente
+      for (const alter of [
+        `ALTER TABLE registros_locales ADD COLUMN nombre_comun_propuesto TEXT`,
+        `ALTER TABLE especies_cache ADD COLUMN foto_referencia TEXT`,
+        `ALTER TABLE especies_cache ADD COLUMN foto_local TEXT`,
+      ]) {
+        try {
+          await bd.execAsync(alter);
+        } catch {
+          // columna ya existente
+        }
       }
       return bd;
     });
