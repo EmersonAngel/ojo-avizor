@@ -230,10 +230,25 @@
     {% block extra_head %}{% endblock %}
 </head>
 <body class="min-h-screen flex flex-col antialiased transition-colors duration-200"
-      x-data="{ menuAbierto: false, menuUsuario: false, oscuro: document.documentElement.getAttribute('data-tema') === 'oscuro', barraElevada: false }"
-      @scroll.window.throttle="barraElevada = window.scrollY > 8">
+      x-data="{
+          menuAbierto: false, menuUsuario: false,
+          oscuro: document.documentElement.getAttribute('data-tema') === 'oscuro',
+          barraElevada: false, barraOculta: false, ultimoScrollY: 0,
+      }"
+      @scroll.window.throttle="
+          barraElevada = window.scrollY > 8;
+          // Se esconde solo bajando y ya pasado el propio alto de la barra —
+          // así no parpadea justo al llegar arriba de la página — y nunca
+          // mientras algún menú desplegable esté abierto, para no cerrarlo
+          // de golpe debajo del usuario.
+          if (!menuAbierto && !menuUsuario) {
+              barraOculta = window.scrollY > ultimoScrollY && window.scrollY > 112;
+          }
+          ultimoScrollY = window.scrollY;
+      ">
 
-    <header class="sticky top-0 z-20 barra-superior" :class="barraElevada ? 'barra-superior--elevada' : ''">
+    <header class="sticky top-0 z-20 barra-superior barra-superior--deslizable"
+            :class="[barraElevada ? 'barra-superior--elevada' : '', barraOculta ? 'barra-superior--oculta' : '']">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 h-20 sm:h-28 flex justify-between items-center">
             <a href="/" class="flex items-center shrink-0" aria-label="Ojo Avizor">
                 {% comment %}

@@ -159,16 +159,22 @@
 
     h1.titulo-pagina { @apply font-display text-2xl sm:text-3xl font-bold text-stone-900 dark:text-stone-50; }
 
-    /* Fondo sólido, no degradado (identidad-visual.md, apartado 8: "evita
-       degradados"): la misma superficie oscura que la barra superior, para
-       que se perciba como una sola placa de marca. Cuando la página tiene
-       una foto real de la comunidad (portada.html), esta clase solo pone
-       la base — la foto y su capa de contraste se agregan aparte. */
+    /* Degradado de marca (pedido explícito el 27/08/2026: se había quitado
+       por el apartado 8 de identidad-visual.md, pero el usuario prefiere
+       conservarlo — decisión suya, no un descuido). Portada tiene su propia
+       foto de fondo (ver portada.html) y no usa este degradado. */
     .hero {
-        @apply relative overflow-hidden;
-        background-color: var(--azul-profundo);
+        @apply relative overflow-hidden bg-gradient-to-br from-[var(--azul-medio)] to-[var(--azul-profundo)];
         color: var(--texto-en-barra);
     }
+    .hero-blobs { @apply absolute inset-0 pointer-events-none; }
+
+    /* Barra superior que se esconde al bajar y reaparece al subir (pedido
+       explícito el 27/08/2026), controlada desde Alpine en base.html — ver
+       barraOculta. La sombra de elevación se queda intacta, esto solo
+       agrega el desplazamiento. */
+    .barra-superior--deslizable { transition: transform .3s ease; }
+    .barra-superior--oculta { transform: translateY(-100%); }
 }
 @layer utilities {
     @keyframes fade-in-up {
@@ -209,4 +215,5 @@
     .card-interactive, .btn-primary { transition: none; }
     .card-interactive:hover, .btn-primary:hover { transform: none; }
     .racha-viva svg { animation: none; }
+    .barra-superior--deslizable { transition: none; }
 }

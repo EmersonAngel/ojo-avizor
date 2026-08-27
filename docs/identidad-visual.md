@@ -245,7 +245,11 @@ En el **pie de página** van los logos de la Corporación Universitaria Empresar
 
 ## 8. Qué evitar
 
-- Degradados, sombras marcadas, animaciones llamativas.
+- Degradados, sombras marcadas, animaciones llamativas. **Excepción confirmada el 27/08/2026:**
+  la clase `.hero` (portada, inventario, iniciar sesión, crear cuenta) sí usa un degradado de
+  azul-medio a azul-profundo, con dos óvalos difuminados de acento (`.hero-blobs`) — se probó
+  a quitarlo por esta misma regla y el usuario pidió explícitamente conservarlo. No lo quites
+  de nuevo sin que te lo pidan.
 - Iconos de más de un estilo. Elige un solo conjunto de trazo lineal.
 - Texto sobre imagen sin capa de contraste.
 - Cian como color de texto o de fondo de botón (ver la advertencia del apartado 2).
