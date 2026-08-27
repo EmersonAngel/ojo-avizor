@@ -4,6 +4,36 @@
 {% block titulo %}Ojo Avizor — {% translate "Inventario de avifauna de Pijao" %}{% endblock %}
 
 {% block contenido %}
+{# Intro de marca (pedido explícito del 27/08/2026, inspirado en la
+   animación de bienvenida de iconicoterraza.co): el isotipo aparece y se
+   retira antes de mostrar la portada. Solo la primera vez de la sesión —
+   nadie quiere verla en cada visita — y nunca si el sistema pide menos
+   movimiento; en ambos casos el script la quita antes de que llegue a
+   pintarse, sin parpadeo. #}
+<div id="intro-marca" class="intro-marca" aria-hidden="true">
+    <img src="{% static 'marca/isotipo-modo-oscuro.png' %}" alt="">
+</div>
+<script>
+    (function () {
+        var intro = document.getElementById('intro-marca');
+        var yaVista = sessionStorage.getItem('introVista');
+        var prefiereMenosMovimiento = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (yaVista || prefiereMenosMovimiento) {
+            intro.remove();
+            return;
+        }
+        sessionStorage.setItem('introVista', '1');
+        var quitar = function () { intro.remove(); };
+        intro.addEventListener('animationend', function (evento) {
+            if (evento.animationName === 'intro-marca-salida') quitar();
+        });
+        // Respaldo: la animación completa dura 1.45s (entrada + espera +
+        // salida); si por lo que sea el evento no llega, esto igual la quita
+        // y no se queda bloqueando la página.
+        setTimeout(quitar, 2000);
+    })();
+</script>
+
 <div class="hero relative overflow-hidden">
     <div class="absolute inset-0" aria-hidden="true">
         <img src="{% static 'catalogo/portada-nevado.jpg' %}" alt="" class="w-full h-full object-cover">
