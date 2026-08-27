@@ -25,7 +25,6 @@ def portada(request):
         'familias': repositories.listar_familias(),
         'especies_recientes': repositories.listar_recientes(),
         'ultimos_avistamientos': registros_repositories.listar_ultimos_publicados(),
-        'foto_destacada': registros_repositories.foto_destacada_reciente(),
     }
     return render(request, 'catalogo/portada.html', contexto)
 
