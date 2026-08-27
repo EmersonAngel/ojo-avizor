@@ -1,6 +1,7 @@
 """Filtros avanzados del catálogo público y especies similares (fuera del
 MVP original, pedido explícito del 25/08/2026)."""
 from django.test import TestCase
+from django.urls import reverse
 
 from apps.catalogo.models import Especie
 from apps.catalogo.repositories import buscar_especies, listar_especies_similares
@@ -59,3 +60,17 @@ class FiltrosAvanzadosTests(TestCase):
             nombre_cientifico='Especie sin familia', creado_por=self.revisor,
         )
         self.assertEqual(list(listar_especies_similares(especie_sin_familia)), [])
+
+    def test_filtro_de_tamano_filtra_y_el_campo_queda_valido_para_recargar(self):
+        # Bug real (25/08/2026): Django renderiza un float en español con
+        # coma decimal ("15,0"), que un <input type="number"> no acepta —
+        # el campo se veía vacío/roto al recargar la página con el filtro
+        # puesto. El valor debe volver exactamente como se escribió.
+        respuesta = self.client.get(reverse('catalogo:publico_listado'), {'tamano_min': '15', 'tamano_max': '25'})
+        contenido = respuesta.content.decode()
+        self.assertIn('Patagona gigas', contenido)
+        self.assertNotIn('Colibri coruscans', contenido)
+        self.assertNotIn('Turdus fuscater', contenido)
+        self.assertIn('value="15"', contenido)
+        self.assertIn('value="25"', contenido)
+        self.assertNotIn('value="15,0"', contenido)

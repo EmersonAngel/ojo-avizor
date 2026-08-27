@@ -50,12 +50,12 @@
             <div>
                 <label class="field-label" for="filtro-tamano-min">{% translate "Tamaño mín. (cm)" %}</label>
                 <input type="number" id="filtro-tamano-min" name="tamano_min" min="0" step="0.1"
-                       value="{{ tamano_min|default_if_none:'' }}" class="!text-sm">
+                       value="{{ tamano_min }}" class="!text-sm">
             </div>
             <div>
                 <label class="field-label" for="filtro-tamano-max">{% translate "Tamaño máx. (cm)" %}</label>
                 <input type="number" id="filtro-tamano-max" name="tamano_max" min="0" step="0.1"
-                       value="{{ tamano_max|default_if_none:'' }}" class="!text-sm">
+                       value="{{ tamano_max }}" class="!text-sm">
             </div>
             <div>
                 <label class="field-label" for="filtro-ordenar">{% translate "Ordenar por" %}</label>

@@ -32,7 +32,15 @@ def portada(request):
 def _leer_filtros(request):
     """Filtros del catálogo público (fuera del MVP original, pedido explícito
     del 25/08/2026): comparte la lectura de parámetros entre la página
-    completa y el fragmento HTMX, para no duplicarla."""
+    completa y el fragmento HTMX, para no duplicarla.
+
+    Devuelve el tamaño dos veces a propósito: `tamano_min`/`tamano_max` en
+    texto tal cual llegó, para reponerlo en el campo del formulario, y
+    `tamano_min_num`/`tamano_max_num` ya convertido, para la consulta. Un
+    <input type="number"> exige el punto como separador decimal sin
+    importar el idioma activo — pasarle el número ya formateado en español
+    (con coma, como hace Django con un float en una plantilla) lo deja
+    inválido para el navegador y el campo se ve roto al recargar."""
     def _decimal(nombre):
         valor = request.GET.get(nombre, '').strip()
         try:
@@ -44,8 +52,10 @@ def _leer_filtros(request):
         'texto': request.GET.get('q', '').strip(),
         'familia': request.GET.get('familia', '').strip(),
         'orden': request.GET.get('orden', '').strip(),
-        'tamano_min': _decimal('tamano_min'),
-        'tamano_max': _decimal('tamano_max'),
+        'tamano_min': request.GET.get('tamano_min', '').strip(),
+        'tamano_max': request.GET.get('tamano_max', '').strip(),
+        'tamano_min_num': _decimal('tamano_min'),
+        'tamano_max_num': _decimal('tamano_max'),
         'ordenar': request.GET.get('ordenar', 'nombre').strip(),
     }
 
@@ -58,8 +68,12 @@ def especie_listar_publico(request):
     fragmento con los resultados en vez de la página completa.
     """
     filtros = _leer_filtros(request)
-    especies = repositories.buscar_especies(filtros.pop('texto'), **filtros)
-    query = request.GET.get('q', '').strip()
+    especies = repositories.buscar_especies(
+        filtros['texto'], familia=filtros['familia'], orden=filtros['orden'],
+        tamano_min=filtros['tamano_min_num'], tamano_max=filtros['tamano_max_num'],
+        ordenar=filtros['ordenar'],
+    )
+    query = filtros['texto']
     if request.headers.get('HX-Request') == 'true':
         # Búsqueda en vivo: sin paginar, para no complicar el intercambio parcial.
         return render(request, 'catalogo/_resultados_especies.html', {'especies': especies, 'query': query})
@@ -68,10 +82,14 @@ def especie_listar_publico(request):
         'especies': pagina,
         'pagina': pagina,
         'query': query,
+        'familia': filtros['familia'],
+        'orden': filtros['orden'],
+        'tamano_min': filtros['tamano_min'],
+        'tamano_max': filtros['tamano_max'],
+        'ordenar': filtros['ordenar'],
         'familias': repositories.listar_familias(),
         'ordenes': repositories.listar_ordenes(),
         'total_especies': repositories.contar_especies(),
-        **filtros,
     }
     return render(request, 'catalogo/publico_listado.html', contexto)
 
