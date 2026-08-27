@@ -171,7 +171,14 @@
            sobre el contenido en vez de pegada a él — sin sombras marcadas ni
            animación llamativa, solo una transición de 200ms. */
         .barra-superior {
-            position: relative;
+            /* No "position: relative" acá: el elemento ya trae la utilidad
+               "sticky" de Tailwind en su class del HTML, y esa regla (mismo
+               nivel de especificidad, .sticky vs .barra-superior) perdía
+               contra esta si aparecía antes en la cascada — la barra nunca
+               llegaba a pegarse arriba, se iba con el resto del scroll (bug
+               real encontrado el 27/08/2026, larguísimo de diagnosticar).
+               position: sticky también sirve de referencia para ::before
+               y ::after de acá abajo, así que no hace falta position propia. */
             background-color: var(--fondo-barra);
             background-image: radial-gradient(500px 180px at 10% 0%, color-mix(in srgb, var(--cian) 16%, transparent), transparent 70%);
             box-shadow: var(--sombra-tarjeta);
