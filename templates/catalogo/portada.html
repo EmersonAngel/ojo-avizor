@@ -7,10 +7,9 @@
 {% comment %}
 Intro de marca (pedido explícito del 27/08/2026, inspirado en la animación
 de bienvenida de iconicoterraza.co): el isotipo aparece y se retira antes
-de mostrar la portada. Solo la primera vez de la sesión — nadie quiere
-verla en cada visita — y nunca si el sistema pide menos movimiento; en
-ambos casos el script la quita antes de que llegue a pintarse, sin
-parpadeo.
+de mostrar la portada. Se repite en cada carga (pedido explícito del
+mismo día) — solo se salta si el sistema pide menos movimiento, y en ese
+caso el script la quita antes de que llegue a pintarse, sin parpadeo.
 {% endcomment %}
 <div id="intro-marca" class="intro-marca" aria-hidden="true">
     <img src="{% static 'marca/isotipo-modo-oscuro.png' %}" alt="">
@@ -18,13 +17,11 @@ parpadeo.
 <script>
     (function () {
         var intro = document.getElementById('intro-marca');
-        var yaVista = sessionStorage.getItem('introVista');
         var prefiereMenosMovimiento = matchMedia('(prefers-reduced-motion: reduce)').matches;
-        if (yaVista || prefiereMenosMovimiento) {
+        if (prefiereMenosMovimiento) {
             intro.remove();
             return;
         }
-        sessionStorage.setItem('introVista', '1');
         var quitar = function () { intro.remove(); };
         intro.addEventListener('animationend', function (evento) {
             if (evento.animationName === 'intro-marca-salida') quitar();

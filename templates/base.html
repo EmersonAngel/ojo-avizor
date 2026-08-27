@@ -76,14 +76,16 @@
             --azul-medio:     #0173BC;
             --cian:           #00ACE8;
 
-            /* Superficies — blanco ya no es blanco puro (pedido explícito
-               del 27/08/2026): un azul muy claro, apenas más luminoso que
-               --superficie, para que las tarjetas se sigan viendo
-               "elevadas" sin caer en el blanco plano. */
-            --blanco:         #FBFDFF;
-            --superficie:     #F7FAFC;
-            --superficie-alt: #EEF3F8;
-            --borde:          #C9D6E2;
+            /* Superficies — ninguna es blanco puro (pedido explícito del
+               27/08/2026, reforzado el mismo día porque el primer tono
+               apenas se notaba): un azul claro que sí se percibe a simple
+               vista, en tres pasos — blanco (tarjetas, más luminoso),
+               superficie (fondo de página) y superficie-alt (bloques
+               destacados, el más saturado de los tres). */
+            --blanco:         #F2F8FD;
+            --superficie:     #E6F1FA;
+            --superficie-alt: #D6E9F7;
+            --borde:          #B7D2E8;
 
             /* Texto */
             --texto:          #2E3A45;
@@ -248,16 +250,23 @@
                   barraOculta = false;
               } else if (window.scrollY > ultimoScrollY) {
                   barraOculta = true;
+              } else if (window.scrollY < ultimoScrollY) {
+                  // Subir el scroll también la revela — imprescindible en
+                  // celular, donde no hay cursor que acercar al borde
+                  // (hallazgo del 27/08/2026: sin esto, una vez escondida en
+                  // pantalla táctil no había forma de volver a verla).
+                  barraOculta = false;
               }
-              // Al subir no se revela sola aquí — eso ahora lo decide la
-              // cercanía del cursor al borde superior (ver @mousemove abajo),
-              // en cualquier punto de la página, no solo subiendo.
           }
           ultimoScrollY = window.scrollY;
       "
       @mousemove.window.throttle="
-          if (!menuAbierto && !menuUsuario && window.scrollY > 8) {
-              barraOculta = $event.clientY >= 64;
+          // El cursor cerca del borde superior también la revela, en
+          // cualquier punto de la página — un atajo extra para mouse, no
+          // reemplaza el gesto de subir el scroll. Nunca la esconde: eso
+          // lo decide solo el scroll, arriba.
+          if (!menuAbierto && !menuUsuario && window.scrollY > 8 && $event.clientY < 64) {
+              barraOculta = false;
           }
       ">
 

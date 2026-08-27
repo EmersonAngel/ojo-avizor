@@ -27,11 +27,12 @@ Declara estas variables y **no uses colores fuera de esta lista**. La aplicació
   --azul-medio:     #0173BC;  /* enlaces, botones, foco */
   --cian:           #00ACE8;  /* acentos, iconos, cifras grandes */
 
-  /* Superficies */
-  --blanco:         #FBFDFF;  /* pedido explícito el 27/08/2026: azul muy claro, no blanco puro */
-  --superficie:     #F7FAFC;  /* fondo general de página */
-  --superficie-alt: #EEF3F8;  /* tarjetas destacadas, bloques de datos */
-  --borde:          #C9D6E2;
+  /* Superficies — azul claro perceptible en las tres, no blanco puro
+     (pedido explícito el 27/08/2026) */
+  --blanco:         #F2F8FD;  /* tarjetas, el más luminoso de los tres */
+  --superficie:     #E6F1FA;  /* fondo general de página */
+  --superficie-alt: #D6E9F7;  /* tarjetas destacadas, bloques de datos — el más saturado */
+  --borde:          #B7D2E8;
 
   /* Texto */
   --texto:          #2E3A45;  /* cuerpo */
@@ -92,6 +93,8 @@ Se activa con el atributo `data-tema="oscuro"` en `<html>`.
 modo oscuro no exige una sola regla adicional de estilo: basta con cambiar el atributo.
 
 ### Advertencia de accesibilidad — importante
+
+**Nota del 27/08/2026:** la tabla de abajo se calculó contra blanco puro (`#FFFFFF`); `--blanco` ya no lo es (ver el apartado de Superficies). Los contrastes bajaron un poco — `--azul-medio` sobre `--blanco` ronda ahora 4,6:1, más cerca del mínimo de AA (4,5:1) que antes. Para texto donde el contraste importa de verdad, prefiere `--texto`, que sigue con margen amplio.
 
 Verifiqué el contraste de toda la paleta contra WCAG 2.1. Un resultado obliga a una regla:
 

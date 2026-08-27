@@ -19,7 +19,7 @@
         {% else %}
         <div class="aspect-[16/7] sm:aspect-[21/8] flex items-center justify-center bg-[var(--superficie-alt)] text-[var(--azul-medio)]">{% icono "ave" clase="w-16 h-16" %}</div>
         {% endif %}
-        <div class="bg-white dark:bg-stone-900 p-5 sm:p-6">
+        <div class="dark:bg-stone-900 p-5 sm:p-6" style="background-color: var(--blanco);">
             <h1 class="font-display italic text-3xl sm:text-4xl font-bold text-stone-900 dark:text-stone-50 text-balance">{{ especie.nombre_cientifico }}</h1>
             <p class="text-stone-600 dark:text-stone-400 mt-1.5">
                 {% for nombre in especie.nombres_comunes.all %}{{ nombre.nombre }}{% if nombre.region %} <span class="text-stone-400 dark:text-stone-500">({{ nombre.region }})</span>{% endif %}{% if not forloop.last %}, {% endif %}{% empty %}{% translate "Sin nombre común registrado" %}{% endfor %}
@@ -131,11 +131,11 @@
                         <p class="text-stone-500 dark:text-stone-400 truncate">{{ especie.paises_distribucion|nombres_paises|join:", " }}</p>
                         <div class="flex items-center gap-1 flex-shrink-0">
                             <button type="button" @click="alejar()" aria-label="{% translate 'Alejar' %}"
-                                    class="w-7 h-7 rounded-lg bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 flex items-center justify-center hover:bg-stone-50 dark:hover:bg-stone-700">−</button>
+                                    class="w-7 h-7 rounded-lg dark:bg-stone-800 border border-stone-200 dark:border-stone-700 flex items-center justify-center hover:bg-stone-50 dark:hover:bg-stone-700" style="background-color: var(--blanco);">−</button>
                             <button type="button" @click="restablecer()" aria-label="{% translate 'Restablecer zoom' %}"
-                                    class="w-7 h-7 rounded-lg bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 flex items-center justify-center hover:bg-stone-50 dark:hover:bg-stone-700">{% icono "brujula" clase="w-3.5 h-3.5" %}</button>
+                                    class="w-7 h-7 rounded-lg dark:bg-stone-800 border border-stone-200 dark:border-stone-700 flex items-center justify-center hover:bg-stone-50 dark:hover:bg-stone-700" style="background-color: var(--blanco);">{% icono "brujula" clase="w-3.5 h-3.5" %}</button>
                             <button type="button" @click="acercar()" aria-label="{% translate 'Acercar' %}"
-                                    class="w-7 h-7 rounded-lg bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 flex items-center justify-center hover:bg-stone-50 dark:hover:bg-stone-700">+</button>
+                                    class="w-7 h-7 rounded-lg dark:bg-stone-800 border border-stone-200 dark:border-stone-700 flex items-center justify-center hover:bg-stone-50 dark:hover:bg-stone-700" style="background-color: var(--blanco);">+</button>
                         </div>
                     </div>
                 </div>
