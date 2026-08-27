@@ -159,11 +159,16 @@
 
     h1.titulo-pagina { @apply font-display text-2xl sm:text-3xl font-bold text-stone-900 dark:text-stone-50; }
 
+    /* Fondo sólido, no degradado (identidad-visual.md, apartado 8: "evita
+       degradados"): la misma superficie oscura que la barra superior, para
+       que se perciba como una sola placa de marca. Cuando la página tiene
+       una foto real de la comunidad (portada.html), esta clase solo pone
+       la base — la foto y su capa de contraste se agregan aparte. */
     .hero {
-        @apply relative overflow-hidden bg-gradient-to-br from-[var(--azul-medio)] to-[var(--azul-profundo)];
+        @apply relative overflow-hidden;
+        background-color: var(--azul-profundo);
         color: var(--texto-en-barra);
     }
-    .hero-blobs { @apply absolute inset-0 pointer-events-none; }
 }
 @layer utilities {
     @keyframes fade-in-up {

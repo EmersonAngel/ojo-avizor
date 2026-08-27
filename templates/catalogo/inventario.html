@@ -5,10 +5,6 @@
 
 {% block contenido %}
 <div class="hero">
-    <div class="hero-blobs">
-        <div class="absolute -top-20 left-1/4 w-64 h-64 bg-[var(--cian)] opacity-20 rounded-full blur-3xl"></div>
-        <div class="absolute -bottom-24 right-1/4 w-72 h-72 bg-[var(--azul-medio)] opacity-20 rounded-full blur-3xl"></div>
-    </div>
     <div class="page text-center relative !py-12">
         <a class="inline-flex items-center gap-1 text-sm text-[var(--texto-en-barra)] opacity-80 hover:opacity-100" href="{% url 'catalogo:publico_listado' %}">{% icono "flecha-izquierda" clase="w-4 h-4" %} {% translate "Volver al catálogo" %}</a>
         <h1 class="font-display text-3xl sm:text-4xl font-bold mt-3 text-white">

@@ -92,6 +92,18 @@ def listar_fotos_de_especie(especie):
     )
 
 
+def foto_destacada_reciente():
+    """La foto más reciente de un avistamiento ya aprobado — para el fondo de
+    la portada (rediseño del 26/08/2026): una foto real de la comunidad en
+    vez de una imagen genérica, y crece sola con cada aporte nuevo."""
+    return (
+        Fotografia.objects.filter(registro__in=Registro.publicados.all())
+        .select_related('registro__especie')
+        .order_by('-fecha_subida')
+        .first()
+    )
+
+
 def listar_ultimos_publicados(cantidad=6):
     """Los avistamientos aprobados más recientes, para mostrar actividad de la comunidad."""
     return (
