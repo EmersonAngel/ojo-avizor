@@ -14,13 +14,19 @@ from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile
 from django.db import transaction
 from django.utils.translation import gettext_lazy as _
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
+from PIL.Image import DecompressionBombError
 
 from .colombia import DEPARTAMENTO_POR_DEFECTO, MUNICIPIO_POR_DEFECTO
 from .models import ComentarioIdentificacion, Fotografia, Registro, VotoComentario
 
 TAMANO_MAXIMO_PX = 1600
 CALIDAD_JPEG = 80
+# Nada en el formulario limitaba el tamaño de una foto subida ni validaba que
+# fuera realmente una imagen (hallazgo de la revisión de seguridad del
+# 25/08/2026): un archivo enorme o corrupto llegaba directo a Pillow, sin
+# tope de peso y con un error sin capturar si no lograba abrirlo.
+TAMANO_MAXIMO_ARCHIVO = 10 * 1024 * 1024  # 10 MB — de sobra para una foto de celular
 
 
 class TransicionInvalida(Exception):
@@ -45,8 +51,13 @@ def _validar_pedido_de_ayuda(*, sin_identificar, comportamiento, sustrato, info_
 
 def comprimir_imagen(archivo):
     """Redimensiona y recomprime una imagen subida a JPEG liviano (RNF-04)."""
-    imagen = Image.open(archivo)
-    imagen = imagen.convert('RGB')
+    if archivo.size > TAMANO_MAXIMO_ARCHIVO:
+        raise ValidationError(_('La foto pesa más de 10 MB — elige una más liviana.'))
+    try:
+        imagen = Image.open(archivo)
+        imagen = imagen.convert('RGB')
+    except (UnidentifiedImageError, DecompressionBombError):
+        raise ValidationError(_('Ese archivo no es una imagen válida.'))
     imagen.thumbnail((TAMANO_MAXIMO_PX, TAMANO_MAXIMO_PX))
     buffer = io.BytesIO()
     imagen.save(buffer, format='JPEG', quality=CALIDAD_JPEG, optimize=True)

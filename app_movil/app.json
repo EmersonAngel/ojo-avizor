@@ -10,6 +10,7 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.ojoavizor.appmovil",
       "adaptiveIcon": {
         "backgroundColor": "#1B2D55",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -25,6 +26,12 @@
       "expo-sqlite",
       "expo-secure-store",
       "@react-native-community/datetimepicker"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "36e8d051-7694-42ce-b969-4f457d8e6023"
+      }
+    },
+    "owner": "hyldrin"
   }
 }
