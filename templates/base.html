@@ -282,7 +282,8 @@ Los comentarios de esta lógica viven aquí afuera, no adentro.
       x-init="ultimoScrollY = window.scrollY; window.addEventListener('scroll', () => { const y = window.scrollY; barraElevada = y > 8; if (!menuAbierto && !menuUsuario) { const delta = y - ultimoScrollY; if (delta > 6) { barraOculta = true; ultimoScrollY = y; } else if (delta < -6) { barraOculta = false; ultimoScrollY = y; } } }, { passive: true }); window.addEventListener('mousemove', (evento) => { if (!menuAbierto && !menuUsuario && evento.clientY < 120) { barraOculta = false; } }, { passive: true });">
 
     <header class="sticky top-0 z-20 barra-superior barra-superior--deslizable"
-            :class="[barraElevada ? 'barra-superior--elevada' : '', barraOculta ? 'barra-superior--oculta' : '']">
+            :class="barraElevada ? 'barra-superior--elevada' : ''"
+            :style="barraOculta ? 'transform: translateY(-100%);' : 'transform: translateY(0);'">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 h-20 sm:h-28 flex justify-between items-center">
             <a href="/" class="flex items-center shrink-0" aria-label="Ojo Avizor">
                 {% comment %}
