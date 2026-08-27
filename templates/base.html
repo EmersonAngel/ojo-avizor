@@ -256,6 +256,17 @@ comentario (bug real encontrado ese día). Nada de requestAnimationFrame
 tampoco: un navegador puede dejar de invocarlo mientras la pestaña está en
 segundo plano o sin pintar, y entonces la barra se queda congelada sin
 reaccionar — la comparación es tan barata que no hace falta diferirla.
+
+ultimoScrollY es el punto de referencia de la comparación, y solo se mueve
+cuando la barra realmente se esconde o se muestra (o al llegar arriba del
+todo) — nunca en cada evento. Si se actualizara siempre, cerca del final de
+la página (donde el navegador suele entregar el scroll en pasos chiquitos,
+al frenar el impulso) ningún paso individual llega a superar el margen de
+6px contra el anterior y la barra se queda pegada sin reaccionar (bug real
+encontrado el 27/08/2026). Al comparar siempre contra el mismo punto fijo,
+esos pasos chiquitos se van sumando hasta cruzar el margen, sin importar
+qué tan lento vaya el scroll.
+
 Los comentarios de esta lógica viven aquí afuera, no adentro.
 {% endcomment %}
 <body class="min-h-screen flex flex-col antialiased transition-colors duration-200"
@@ -264,7 +275,7 @@ Los comentarios de esta lógica viven aquí afuera, no adentro.
           oscuro: document.documentElement.getAttribute('data-tema') === 'oscuro',
           barraElevada: false, barraOculta: false, ultimoScrollY: 0,
       }"
-      x-init="ultimoScrollY = window.scrollY; window.addEventListener('scroll', () => { const y = window.scrollY; barraElevada = y > 8; if (!menuAbierto && !menuUsuario) { const delta = y - ultimoScrollY; if (y <= 8) { barraOculta = false; } else if (delta > 6) { barraOculta = true; } else if (delta < -6) { barraOculta = false; } } ultimoScrollY = y; }, { passive: true }); window.addEventListener('mousemove', (evento) => { if (!menuAbierto && !menuUsuario && window.scrollY > 8 && evento.clientY < 120) { barraOculta = false; } }, { passive: true });">
+      x-init="ultimoScrollY = window.scrollY; window.addEventListener('scroll', () => { const y = window.scrollY; barraElevada = y > 8; if (!menuAbierto && !menuUsuario) { if (y <= 8) { barraOculta = false; ultimoScrollY = y; } else { const delta = y - ultimoScrollY; if (delta > 6) { barraOculta = true; ultimoScrollY = y; } else if (delta < -6) { barraOculta = false; ultimoScrollY = y; } } } }, { passive: true }); window.addEventListener('mousemove', (evento) => { if (!menuAbierto && !menuUsuario && window.scrollY > 8 && evento.clientY < 120) { barraOculta = false; } }, { passive: true });">
 
     <header class="sticky top-0 z-20 barra-superior barra-superior--deslizable"
             :class="[barraElevada ? 'barra-superior--elevada' : '', barraOculta ? 'barra-superior--oculta' : '']">
