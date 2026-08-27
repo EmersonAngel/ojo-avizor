@@ -8,6 +8,7 @@ apps.curaduria.services, junto con la Revision. Ninguna vista asigna
 `estado` directamente (RN-01, RN-03).
 """
 import csv
+import hashlib
 import io
 
 from django.core.exceptions import ValidationError
@@ -66,7 +67,20 @@ def comprimir_imagen(archivo):
 
 
 def agregar_fotografia(registro, archivo):
-    return Fotografia.objects.create(registro=registro, archivo=comprimir_imagen(archivo))
+    """Ignora una foto si el mismo archivo ya está en este registro (reportado
+    el 25/08/2026: quedaba repetida en la galería de la especie cuando se
+    subía dos veces, por ejemplo al elegirla dos veces en el selector o al
+    reenviar el formulario). El hash se calcula sobre el archivo tal como se
+    subió, antes de comprimir — dos copias exactas del mismo archivo siempre
+    producen el mismo hash."""
+    contenido = archivo.read()
+    archivo.seek(0)
+    hash_contenido = hashlib.sha256(contenido).hexdigest()
+    if registro.fotografias.filter(hash_contenido=hash_contenido).exists():
+        return None
+    return Fotografia.objects.create(
+        registro=registro, archivo=comprimir_imagen(archivo), hash_contenido=hash_contenido,
+    )
 
 
 def enviar_registro(registro):

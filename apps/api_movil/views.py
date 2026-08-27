@@ -34,8 +34,8 @@ def iniciar_sesion(request):
     usuario = authenticate(request, username=correo, password=password)
     if usuario is None:
         return JsonResponse({'detalle': 'Credenciales inválidas.'}, status=401)
-    token = TokenAcceso.objects.create(usuario=usuario)
-    return JsonResponse({'token': token.token, 'seudonimo': usuario.seudonimo, 'rol': usuario.rol})
+    _, token_en_claro = TokenAcceso.crear(usuario)
+    return JsonResponse({'token': token_en_claro, 'seudonimo': usuario.seudonimo, 'rol': usuario.rol})
 
 
 @csrf_exempt

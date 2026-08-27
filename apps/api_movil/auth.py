@@ -19,7 +19,7 @@ def requiere_token(vista):
             return JsonResponse({'detalle': 'Falta encabezado Authorization.'}, status=401)
         valor = encabezado.removeprefix('Token ').strip()
         try:
-            token = TokenAcceso.objects.select_related('usuario').get(token=valor)
+            token = TokenAcceso.obtener_por_token(valor)
         except TokenAcceso.DoesNotExist:
             return JsonResponse({'detalle': 'Token inválido.'}, status=401)
         request.user = token.usuario

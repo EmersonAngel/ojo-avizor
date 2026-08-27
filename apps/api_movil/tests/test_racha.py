@@ -15,7 +15,7 @@ class RachaMovilTests(TestCase):
             username='obs1', correo='obs1@example.com', nombre_real='Observador de Prueba',
             seudonimo='seudo1', password='clave-segura-123',
         )
-        self.token = TokenAcceso.objects.create(usuario=self.usuario)
+        _, self.token_en_claro = TokenAcceso.crear(self.usuario)
 
     def test_sin_token_responde_401(self):
         respuesta = self.client.get(reverse('api_movil:racha'))
@@ -26,7 +26,7 @@ class RachaMovilTests(TestCase):
             usuario=self.usuario, especie=None, lugar='Vereda X', fecha_avistamiento=date.today(),
         )
         respuesta = self.client.get(
-            reverse('api_movil:racha'), HTTP_AUTHORIZATION=f'Token {self.token.token}',
+            reverse('api_movil:racha'), HTTP_AUTHORIZATION=f'Token {self.token_en_claro}',
         )
         self.assertEqual(respuesta.status_code, 200)
         self.assertEqual(respuesta.json(), {'racha': 1})

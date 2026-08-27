@@ -87,6 +87,12 @@ class Fotografia(models.Model):
 
     registro = models.ForeignKey(Registro, on_delete=models.CASCADE, related_name='fotografias')
     archivo = models.ImageField(upload_to='registros/%Y/%m/')
+    # Hash del archivo tal como se subió (antes de comprimir), para no guardar
+    # la misma foto dos veces en el mismo registro — por ejemplo si el
+    # observador la seleccionó dos veces o el formulario se envió doble
+    # (hallazgo reportado el 25/08/2026: aparecía repetida en la galería de
+    # la especie). Ver apps.registros.services.agregar_fotografia.
+    hash_contenido = models.CharField(max_length=64, blank=True, db_index=True)
     fecha_subida = models.DateTimeField(auto_now_add=True)
 
     class Meta:
