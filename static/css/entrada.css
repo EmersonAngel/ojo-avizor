@@ -174,18 +174,15 @@
     }
     .hero-blobs { @apply absolute inset-0 pointer-events-none; }
 
-    /* Barra superior que se esconde al bajar y reaparece al subir (pedido
-       explícito el 27/08/2026), controlada desde Alpine en base.html — ver
-       barraOculta. La sombra de elevación se queda intacta, esto solo
-       agrega el desplazamiento.
-
-       El desplazamiento en sí va como :style en línea en base.html, no como
-       clase acá (antes era .barra-superior--oculta con transform): en línea
-       gana siempre sobre cualquier regla de hoja de estilos, sin depender
-       de en qué @layer cae la clase ni de que el CSS compilado esté al día
-       en el navegador de quien prueba — un problema real que costó mucho
-       diagnosticar el 27/08/2026. Acá solo queda la transición. */
-    .barra-superior--deslizable { transition: transform .3s ease; }
+    /* La barra superior que se esconde al bajar (controlada desde Alpine en
+       base.html, ver barraOculta) NO se estiliza acá: .barra-superior, en
+       el <style> de base.html, define su propio "transition" con la misma
+       especificidad que cualquier regla de una sola clase como esta, y
+       aparece después en el documento — así que una regla acá para
+       .barra-superior--deslizable nunca llegaba a aplicarse (bug real
+       encontrado el 27/08/2026, dos veces seguidas: primero con "position",
+       después con "transition"). Editar la animación de la barra en
+       templates/base.html, no acá. */
 }
 @layer utilities {
     @keyframes fade-in-up {
@@ -254,5 +251,6 @@
     .card-interactive, .btn-primary { transition: none; }
     .card-interactive:hover, .btn-primary:hover { transform: none; }
     .racha-viva svg { animation: none; }
-    .barra-superior--deslizable { transition: none; }
+    /* La barra superior tiene su propio "prefers-reduced-motion" junto a
+       .barra-superior en templates/base.html — ver el comentario ahí. */
 }

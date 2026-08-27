@@ -183,9 +183,20 @@
             background-image: radial-gradient(500px 180px at 10% 0%, color-mix(in srgb, var(--cian) 16%, transparent), transparent 70%);
             box-shadow: var(--sombra-tarjeta);
             color: var(--texto-en-barra);
-            transition: box-shadow .2s ease;
+            /* El desplazamiento/desvanecido al esconderse (.barra-superior--deslizable
+               en entrada.css) vive acá también, no solo allá: por la misma razón que
+               "position" más arriba — mismo nivel de especificidad, y esta regla
+               aparece después en la cascada, así que la de entrada.css nunca llegaba
+               a aplicarse (bug real encontrado el 27/08/2026, justo después de la de
+               position). Curva "ease-out" pronunciada para que se sienta deliberado,
+               no un "ease" parejo; la opacidad va más rápido que el desplazamiento
+               para que deje de verse antes de terminar de salir. */
+            transition: box-shadow .2s ease, transform .45s cubic-bezier(.16, 1, .3, 1), opacity .25s ease-out;
         }
         .barra-superior--elevada { box-shadow: var(--sombra-elevada); }
+        @media (prefers-reduced-motion: reduce) {
+            .barra-superior { transition: none; }
+        }
 
         /* Línea de brillo superior e hilo cian inferior: dan a la barra una
            sensación de placa con volumen en vez de un bloque de color plano,
@@ -250,12 +261,18 @@
 Comportamiento de la barra superior al hacer scroll (pedido explícito del
 27/08/2026, ajustado varias veces ese día): la barra acompaña la
 navegación sin quedar presente todo el tiempo — se esconde al bajar el
-scroll y reaparece al subirlo (imprescindible en celular, sin cursor) o al
-acercar el cursor a los 120px superiores de la pantalla, desde cualquier
-punto de la página, incluida la parte de arriba (antes había un caso
-especial que la dejaba fija y visible mientras el scroll estuviera cerca
-del tope, y esa excepción era justo lo que hacía que pareciera "siempre
-presente" e impedía que el cursor hiciera algo ahí — se quitó). Un margen
+scroll y reaparece al acercar el cursor a los 120px superiores de la
+pantalla, desde cualquier punto de la página, incluida la parte de arriba
+(antes había un caso especial que la dejaba fija y visible mientras el
+scroll estuviera cerca del tope, y esa excepción era justo lo que hacía
+que pareciera "siempre presente" e impedía que el cursor hiciera algo ahí
+— se quitó). Subir el scroll también la revela, pero SOLO en dispositivos
+táctiles (pedido explícito del 27/08/2026): ahí no hay cursor que acercar
+al borde, así que sin este atajo no habría forma de traerla de vuelta; en
+mouse ese atajo sobra y solo se deja el cursor cerca del borde. Se detecta
+con la media feature "pointer: coarse" (puntero impreciso — dedo, no
+mouse/trackpad), más confiable que un ancho de pantalla porque describe
+la capacidad real del dispositivo, no el tamaño de la ventana. Un margen
 de 6px evita que tiemble con el rebote del scroll por inercia cerca del
 reposo.
 
@@ -284,13 +301,13 @@ Los comentarios de esta lógica viven aquí afuera, no adentro.
       x-data="{
           menuAbierto: false, menuUsuario: false,
           oscuro: document.documentElement.getAttribute('data-tema') === 'oscuro',
-          barraElevada: false, barraOculta: false, ultimoScrollY: 0,
+          barraElevada: false, barraOculta: false, ultimoScrollY: 0, esTactil: matchMedia('(pointer: coarse)').matches,
       }"
-      x-init="ultimoScrollY = window.scrollY; window.addEventListener('scroll', () => { const y = window.scrollY; barraElevada = y > 8; if (!menuAbierto && !menuUsuario) { const delta = y - ultimoScrollY; if (delta > 6) { barraOculta = true; ultimoScrollY = y; } else if (delta < -6) { barraOculta = false; ultimoScrollY = y; } } }, { passive: true }); window.addEventListener('mousemove', (evento) => { if (!menuAbierto && !menuUsuario && evento.clientY < 120) { barraOculta = false; } }, { passive: true });">
+      x-init="ultimoScrollY = window.scrollY; window.addEventListener('scroll', () => { const y = window.scrollY; barraElevada = y > 8; if (!menuAbierto && !menuUsuario) { const delta = y - ultimoScrollY; if (delta > 6) { barraOculta = true; ultimoScrollY = y; } else if (delta < -6 && esTactil) { barraOculta = false; ultimoScrollY = y; } else if (delta < -6) { ultimoScrollY = y; } } }, { passive: true }); window.addEventListener('mousemove', (evento) => { if (!menuAbierto && !menuUsuario && evento.clientY < 120) { barraOculta = false; } }, { passive: true });">
 
     <header class="sticky top-0 z-20 barra-superior barra-superior--deslizable"
             :class="barraElevada ? 'barra-superior--elevada' : ''"
-            :style="barraOculta ? 'transform: translateY(-100%);' : 'transform: translateY(0);'">
+            :style="barraOculta ? 'transform: translateY(-100%); opacity: 0;' : 'transform: translateY(0); opacity: 1;'">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 h-20 sm:h-28 flex justify-between items-center">
             <a href="/" class="flex items-center shrink-0" aria-label="Ojo Avizor">
                 {% comment %}
