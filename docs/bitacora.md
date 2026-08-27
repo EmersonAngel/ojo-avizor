@@ -148,15 +148,15 @@ Bloque de trabajo más grande del proyecto hasta ahora:
 - Tipografía Lora autoalojada (no CDN) y animaciones de aparición al hacer
   scroll (`data-reveal` + `IntersectionObserver`, con salvedad si el
   navegador no la soporta y respeto a `prefers-reduced-motion`).
-- **RF-19/RF-29** (ayuda de la comunidad para identificar avistamientos) y
-  **RF-21** (álbum de fotos por especie): quedaban marcados como fuera de
-  alcance de esta entrega en `docs/requisitos-mvp.md` — se implementan
-  aquí, ya no están pendientes.
+- **RF-19/RF-29** (ayuda de la comunidad para identificar avistamientos),
+  **RF-21** (álbum de fotos por especie) y **RF-18** (nombre común propuesto
+  desde el formulario de registro, con aviso resumido para el revisor):
+  quedaban marcados como fuera de alcance de esta entrega en
+  `docs/requisitos-mvp.md` — se implementan aquí, ya no están pendientes.
 - Racha de días seguidos registrando, iterada varias veces en el mismo
   bloque hasta la versión actual (llama que se muestra siempre, apagada en
-  gris en cero, con pulso cuando está viva). Nombre común propuesto desde
-  el formulario de registro, con aviso resumido para el revisor. Insignias
-  por hitos y exportación del inventario en CSV.
+  gris en cero, con pulso cuando está viva). Insignias por hitos y
+  exportación del inventario en CSV.
 - Corrección de países sin colorear en el mapa de distribución (RF-22).
   Actividad por departamento y municipio de Colombia añadida al inventario
   consolidado. El menú había quedado sin ningún enlace a "Inventario" — se
@@ -281,9 +281,9 @@ por pedido explícito (mapa de distribución, historial de aportes, panel de
 administración, selector de idioma, app móvil nativa, búsqueda avanzada,
 perfil de observador, estadísticas del inventario, login con Google)
 también. De la lista que este documento marcaba como **fuera de alcance de
-la entrega original**, RF-19/RF-29 y RF-21 ya se construyeron (ver 21-22 de
-agosto); sigue sin tocarse, deliberadamente, el resto: RF-18, RF-20, RF-24,
-RNF-12.
+la entrega original**, RF-19/RF-29, RF-21 y RF-18 ya se construyeron (ver
+21-22 de agosto); sigue sin tocarse, deliberadamente, el resto: RF-20,
+RF-24, RNF-12.
 
 No hay evidencia en el repositorio de un despliegue en un lugar público y
 accesible — solo configuración de Docker para correr local/self-hosted y
