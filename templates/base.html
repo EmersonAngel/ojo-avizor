@@ -310,9 +310,11 @@ transform, opacidad Y transition juntos, no solo transform — porque
 27/08/2026 (con "position" y con "transition") salieron de pelear contra
 esa cascada en vez de aprovecharla: un estilo en línea siempre gana, así
 que puesto ahí no hay con qué pelear. Aparecer y desaparecer usan curvas
-distintas a propósito: aparecer es más lento y con un rebote sutil al
-final (se siente vivo, como si la barra "aterrizara"); desaparecer es
-más rápido y sin rebote (se siente eficiente, no queda estorbando).
+distintas a propósito: aparecer es más lento, con una curva exponencial
+pronunciada (arranca rápido y frena largo y suave, sin rebote — un rebote
+elástico se ve barato en vez de cuidado); desaparecer es más rápido y con
+una curva simétrica más discreta (se siente eficiente, no queda
+estorbando).
 
 Como la transición ahora va en línea, la media query CSS de
 "prefers-reduced-motion" ya no puede apagarla desde afuera (mismo motivo
@@ -334,7 +336,7 @@ Los comentarios de esta lógica viven aquí afuera, no adentro.
 
     <header class="sticky top-0 z-20 barra-superior"
             :class="barraElevada ? 'barra-superior--elevada' : ''"
-            :style="(barraOculta ? 'transform: translateY(-100%); opacity: 0; ' : 'transform: translateY(0); opacity: 1; ') + (prefiereMenosMovimiento ? 'transition: none;' : (barraOculta ? 'transition: box-shadow .2s ease, transform .28s cubic-bezier(.4,0,.6,1), opacity .2s ease-in;' : 'transition: box-shadow .2s ease, transform .55s cubic-bezier(.34,1.56,.64,1), opacity .35s ease-out;'))">
+            :style="(barraOculta ? 'transform: translateY(-100%); opacity: 0; ' : 'transform: translateY(0); opacity: 1; ') + (prefiereMenosMovimiento ? 'transition: none;' : (barraOculta ? 'transition: box-shadow .2s ease, transform .28s cubic-bezier(.4,0,.6,1), opacity .2s ease-in;' : 'transition: box-shadow .2s ease, transform .5s cubic-bezier(.16,1,.3,1), opacity .35s ease-out;'))">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 h-20 sm:h-28 flex justify-between items-center">
             <a href="/" class="flex items-center shrink-0" aria-label="Ojo Avizor">
                 {% comment %}
