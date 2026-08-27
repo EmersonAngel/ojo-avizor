@@ -156,6 +156,11 @@
             --fondo-barra: var(--superficie);
         }
 
+        /* html también necesita el color, no solo body: sin esto, el rebote
+           de scroll por inercia en celular (pasar el borde de arriba o abajo
+           con el dedo) muestra el blanco por defecto del navegador durante
+           ese instante, aunque el body ya tenga el fondo correcto. */
+        html { background-color: var(--superficie); }
         body { font-family: var(--fuente); background-color: var(--superficie); color: var(--texto); }
 
         /* Barra superior (apartado 5 de la guía): en claro usa azul-profundo; en
@@ -234,41 +239,31 @@
     </style>
     {% block extra_head %}{% endblock %}
 </head>
+{% comment %}
+Comportamiento de la barra superior al hacer scroll (pedido explícito del
+27/08/2026, corregido el mismo día): arriba del todo queda estática y
+visible; en cualquier otro punto se esconde al bajar el scroll y reaparece
+al subirlo (imprescindible en celular, sin cursor) o al acercar el cursor
+al borde superior (atajo extra para mouse). Un margen de 6px evita que
+tiemble con el rebote del scroll por inercia cerca del reposo.
+
+Se implementa a mano con addEventListener, dentro de x-init, en vez de con
+los modificadores @scroll.window.throttle / @mousemove.window.throttle de
+Alpine — y sin comentarios "//" dentro del propio atributo x-init: un salto
+de línea colapsado ahí se come el resto del código como si fuera parte del
+comentario (bug real encontrado ese día). Nada de requestAnimationFrame
+tampoco: un navegador puede dejar de invocarlo mientras la pestaña está en
+segundo plano o sin pintar, y entonces la barra se queda congelada sin
+reaccionar — la comparación es tan barata que no hace falta diferirla.
+Los comentarios de esta lógica viven aquí afuera, no adentro.
+{% endcomment %}
 <body class="min-h-screen flex flex-col antialiased transition-colors duration-200"
       x-data="{
           menuAbierto: false, menuUsuario: false,
           oscuro: document.documentElement.getAttribute('data-tema') === 'oscuro',
           barraElevada: false, barraOculta: false, ultimoScrollY: 0,
       }"
-      @scroll.window.throttle="
-          barraElevada = window.scrollY > 8;
-          // Nunca se esconde con un menú desplegable abierto, para no
-          // cerrarlo de golpe debajo del usuario.
-          if (!menuAbierto && !menuUsuario) {
-              if (window.scrollY <= 8) {
-                  // Arriba del todo la barra queda estática, siempre visible.
-                  barraOculta = false;
-              } else if (window.scrollY > ultimoScrollY) {
-                  barraOculta = true;
-              } else if (window.scrollY < ultimoScrollY) {
-                  // Subir el scroll también la revela — imprescindible en
-                  // celular, donde no hay cursor que acercar al borde
-                  // (hallazgo del 27/08/2026: sin esto, una vez escondida en
-                  // pantalla táctil no había forma de volver a verla).
-                  barraOculta = false;
-              }
-          }
-          ultimoScrollY = window.scrollY;
-      "
-      @mousemove.window.throttle="
-          // El cursor cerca del borde superior también la revela, en
-          // cualquier punto de la página — un atajo extra para mouse, no
-          // reemplaza el gesto de subir el scroll. Nunca la esconde: eso
-          // lo decide solo el scroll, arriba.
-          if (!menuAbierto && !menuUsuario && window.scrollY > 8 && $event.clientY < 64) {
-              barraOculta = false;
-          }
-      ">
+      x-init="ultimoScrollY = window.scrollY; window.addEventListener('scroll', () => { const y = window.scrollY; barraElevada = y > 8; if (!menuAbierto && !menuUsuario) { const delta = y - ultimoScrollY; if (y <= 8) { barraOculta = false; } else if (delta > 6) { barraOculta = true; } else if (delta < -6) { barraOculta = false; } } ultimoScrollY = y; }, { passive: true }); window.addEventListener('mousemove', (evento) => { if (!menuAbierto && !menuUsuario && window.scrollY > 8 && evento.clientY < 64) { barraOculta = false; } }, { passive: true });">
 
     <header class="sticky top-0 z-20 barra-superior barra-superior--deslizable"
             :class="[barraElevada ? 'barra-superior--elevada' : '', barraOculta ? 'barra-superior--oculta' : '']">
