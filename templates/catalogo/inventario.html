@@ -18,7 +18,7 @@
     </div>
 </div>
 
-<div class="page">
+<div class="page-wide">
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 -mt-10 relative">
         <div class="card p-6 text-center animate-fade-up" style="animation-delay:0ms">
             <span class="inline-flex text-[var(--azul-medio)]">{% icono "ave" clase="w-8 h-8" %}</span>
@@ -42,50 +42,55 @@
         </a>
     </div>
 
-    {% if tendencia_mensual %}
-    <div class="mt-6" data-reveal>
-        <h2 class="titulo-pagina !text-xl mb-1">{% translate "Actividad de los últimos meses" %}</h2>
-        <p class="text-sm text-stone-500 dark:text-stone-400 mb-3">{% translate "Avistamientos aprobados, por mes." %}</p>
-        <div class="card p-5 sm:p-6">
-            <div class="flex items-end justify-between gap-2 sm:gap-4" style="height: 140px;">
-                {% for mes in tendencia_mensual %}
-                <div class="flex-1 h-full flex flex-col items-center justify-end gap-2">
-                    <span class="text-xs font-semibold text-stone-500 dark:text-stone-400">{{ mes.total }}</span>
-                    <div class="w-full max-w-10 rounded-t-md transition-all"
-                         style="height: {% if mes.porcentaje %}{{ mes.porcentaje }}{% else %}3{% endif %}%; min-height: 4px; background-color: {% if forloop.last %}var(--azul-medio){% else %}var(--superficie-alt){% endif %};"></div>
-                    <span class="text-xs text-stone-400 dark:text-stone-500 uppercase">{{ mes.etiqueta }}</span>
+    {# Lado a lado desde lg (pedido explícito del 27/08/2026): antes quedaban
+       apiladas a lo largo de toda la página, aunque cada una es angosta de
+       por sí — se aprovecha mejor el ancho como panel de dos columnas. #}
+    <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+        {% if tendencia_mensual %}
+        <div data-reveal>
+            <h2 class="titulo-pagina !text-xl mb-1">{% translate "Actividad de los últimos meses" %}</h2>
+            <p class="text-sm text-stone-500 dark:text-stone-400 mb-3">{% translate "Avistamientos aprobados, por mes." %}</p>
+            <div class="card p-5 sm:p-6">
+                <div class="flex items-end justify-between gap-2 sm:gap-4" style="height: 140px;">
+                    {% for mes in tendencia_mensual %}
+                    <div class="flex-1 h-full flex flex-col items-center justify-end gap-2">
+                        <span class="text-xs font-semibold text-stone-500 dark:text-stone-400">{{ mes.total }}</span>
+                        <div class="w-full max-w-10 rounded-t-md transition-all"
+                             style="height: {% if mes.porcentaje %}{{ mes.porcentaje }}{% else %}3{% endif %}%; min-height: 4px; background-color: {% if forloop.last %}var(--azul-medio){% else %}var(--superficie-alt){% endif %};"></div>
+                        <span class="text-xs text-stone-400 dark:text-stone-500 uppercase">{{ mes.etiqueta }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if actividad_por_departamento %}
+        <div data-reveal>
+            <h2 class="titulo-pagina !text-xl mb-1">{% translate "Dónde se concentra la actividad" %}</h2>
+            <p class="text-sm text-stone-500 dark:text-stone-400 mb-3">
+                {% translate "Por departamento y municipio de Colombia." %}
+            </p>
+            <div class="card divide-y divide-stone-100 dark:divide-stone-800">
+                {% for departamento in actividad_por_departamento %}
+                <div class="p-4">
+                    <div class="flex items-center justify-between gap-3">
+                        <p class="font-display font-bold text-stone-900 dark:text-stone-100">{{ departamento.nombre }}</p>
+                        <p class="font-display font-bold text-[var(--azul-medio)] flex-shrink-0">{{ departamento.total }}</p>
+                    </div>
+                    <div class="flex flex-wrap gap-1.5 mt-2">
+                        {% for municipio in departamento.municipios %}
+                        <span class="badge bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300">
+                            {{ municipio.nombre }} · {{ municipio.total }}
+                        </span>
+                        {% endfor %}
+                    </div>
                 </div>
                 {% endfor %}
             </div>
         </div>
+        {% endif %}
     </div>
-    {% endif %}
-
-    {% if actividad_por_departamento %}
-    <div class="mt-6" data-reveal>
-        <h2 class="titulo-pagina !text-xl mb-1">{% translate "Dónde se concentra la actividad" %}</h2>
-        <p class="text-sm text-stone-500 dark:text-stone-400 mb-3">
-            {% translate "Por departamento y municipio de Colombia." %}
-        </p>
-        <div class="card divide-y divide-stone-100 dark:divide-stone-800">
-            {% for departamento in actividad_por_departamento %}
-            <div class="p-4">
-                <div class="flex items-center justify-between gap-3">
-                    <p class="font-display font-bold text-stone-900 dark:text-stone-100">{{ departamento.nombre }}</p>
-                    <p class="font-display font-bold text-[var(--azul-medio)] flex-shrink-0">{{ departamento.total }}</p>
-                </div>
-                <div class="flex flex-wrap gap-1.5 mt-2">
-                    {% for municipio in departamento.municipios %}
-                    <span class="badge bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300">
-                        {{ municipio.nombre }} · {{ municipio.total }}
-                    </span>
-                    {% endfor %}
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-    {% endif %}
 </div>
 
 <script>
