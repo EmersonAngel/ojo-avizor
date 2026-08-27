@@ -8,6 +8,7 @@ urlpatterns = [
     # Público — sin autenticación
     path('', views.avistamientos_publicos, name='avistamientos_publicos'),
     path('ranking/', views.ranking_observadores, name='ranking_observadores'),
+    path('observador/<int:pk>/', views.observador_perfil, name='observador_perfil'),
     path('exportar.csv', views.exportar_avistamientos_csv, name='exportar_csv'),
 
     path('nuevo/', views.registro_crear, name='crear'),

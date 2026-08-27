@@ -29,6 +29,34 @@ def ranking_observadores(request):
     return render(request, 'registros/ranking_observadores.html', {'ranking': ranking})
 
 
+def observador_perfil(request, pk):
+    """Perfil público de un observador (fuera del MVP original, pedido explícito
+    del 25/08/2026): seudónimo, aportes aprobados, insignias y sus avistamientos
+    ya publicados — nunca nombre real, correo ni coordenadas (RN-02, RN-06).
+
+    Solo existe para quien ya tiene algo publicado: sin eso, no hay nada público
+    que mostrar, y exponer la página igual sería una forma de acceder a una
+    cuenta que en la práctica todavía no aportó nada al inventario."""
+    from apps.cuentas.services import evaluar_hitos
+
+    usuario = get_object_or_404(Usuario, pk=pk)
+    aportes_aprobados = repositories.contar_aprobados_de_usuario(usuario)
+    if aportes_aprobados == 0:
+        raise Http404
+    especies_distintas = repositories.contar_especies_distintas_de_usuario(usuario)
+    racha = repositories.calcular_racha_de_usuario(usuario)
+    return render(request, 'registros/observador_perfil.html', {
+        'observador': usuario,
+        'aportes_aprobados': aportes_aprobados,
+        'especies_distintas': especies_distintas,
+        'racha': racha,
+        'insignias': evaluar_hitos(
+            aportes_aprobados=aportes_aprobados, especies_distintas=especies_distintas, racha=racha,
+        ),
+        'avistamientos': repositories.listar_avistamientos_publicos_de_usuario(usuario),
+    })
+
+
 def exportar_avistamientos_csv(request):
     """Exportación pública del inventario consolidado (fuera del MVP original,
     pedido explícito del 22/08/2026). Los mismos datos que avistamientos_publicos,

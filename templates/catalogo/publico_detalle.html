@@ -11,16 +11,17 @@
 <div class="page">
     <a class="btn-link" href="{% url 'catalogo:publico_listado' %}">{% icono "flecha-izquierda" clase="w-4 h-4" %} {% translate "Volver al catálogo" %}</a>
 
-    <div class="card p-5 sm:p-6 mt-4 flex flex-col sm:flex-row gap-5 animate-fade-up">
+    <div class="mt-4 rounded-2xl overflow-hidden animate-fade-up" style="box-shadow: var(--sombra-tarjeta);">
         {% if especie.foto_referencia %}
-        <img src="{{ especie.foto_referencia.url }}" alt="{{ especie.nombre_cientifico }}"
-             class="w-full sm:w-40 h-40 object-cover rounded-xl flex-shrink-0">
+        <div class="aspect-[16/7] sm:aspect-[21/8] overflow-hidden bg-[var(--superficie-alt)]">
+            <img src="{{ especie.foto_referencia.url }}" alt="{{ especie.nombre_cientifico }}" class="w-full h-full object-cover">
+        </div>
         {% else %}
-        <div class="w-full sm:w-40 h-40 rounded-xl flex-shrink-0 flex items-center justify-center bg-[var(--superficie-alt)] text-[var(--azul-medio)]">{% icono "ave" clase="w-12 h-12" %}</div>
+        <div class="aspect-[16/7] sm:aspect-[21/8] flex items-center justify-center bg-[var(--superficie-alt)] text-[var(--azul-medio)]">{% icono "ave" clase="w-16 h-16" %}</div>
         {% endif %}
-        <div class="min-w-0">
-            <h1 class="font-display italic text-2xl sm:text-3xl font-bold text-stone-900 dark:text-stone-50">{{ especie.nombre_cientifico }}</h1>
-            <p class="text-stone-600 dark:text-stone-400 mt-1">
+        <div class="bg-white dark:bg-stone-900 p-5 sm:p-6">
+            <h1 class="font-display italic text-3xl sm:text-4xl font-bold text-stone-900 dark:text-stone-50 text-balance">{{ especie.nombre_cientifico }}</h1>
+            <p class="text-stone-600 dark:text-stone-400 mt-1.5">
                 {% for nombre in especie.nombres_comunes.all %}{{ nombre.nombre }}{% if nombre.region %} <span class="text-stone-400 dark:text-stone-500">({{ nombre.region }})</span>{% endif %}{% if not forloop.last %}, {% endif %}{% empty %}{% translate "Sin nombre común registrado" %}{% endfor %}
             </p>
             {% if especie.familia or especie.orden or especie.tamano_cm %}
@@ -98,6 +99,35 @@
                 <p class="text-xs text-stone-500 dark:text-stone-400 mt-1 truncate">
                     {{ foto.registro.usuario.seudonimo }} · {{ foto.registro.fecha_avistamiento }}
                 </p>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if especies_similares %}
+    <div class="mt-8">
+        <h2 class="titulo-pagina !text-xl mb-1">{% translate "Especies similares" %}</h2>
+        <p class="text-sm text-stone-500 dark:text-stone-400 mb-3">
+            {% blocktranslate with familia=especie.familia %}Otras especies de la familia {{ familia }}.{% endblocktranslate %}
+        </p>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {% for similar in especies_similares %}
+            <a href="{% url 'catalogo:especie_detalle' similar.pk %}" class="group card-interactive overflow-hidden">
+                {% if similar.foto_referencia %}
+                <div class="aspect-square overflow-hidden bg-[var(--superficie-alt)]">
+                    <img src="{{ similar.foto_referencia.url }}" alt="{{ similar.nombre_cientifico }}"
+                         class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.04]">
+                </div>
+                {% else %}
+                <div class="aspect-square flex items-center justify-center bg-[var(--superficie-alt)] text-[var(--azul-medio)]">{% icono "ave" clase="w-10 h-10" %}</div>
+                {% endif %}
+                <div class="p-3">
+                    <p class="font-display italic font-bold text-sm text-stone-900 dark:text-stone-100 truncate">{{ similar.nombre_cientifico }}</p>
+                    <p class="text-xs text-stone-500 dark:text-stone-400 truncate mt-0.5">
+                        {% for nombre in similar.nombres_comunes.all %}{{ nombre.nombre }}{% if not forloop.last %}, {% endif %}{% empty %}—{% endfor %}
+                    </p>
+                </div>
             </a>
             {% endfor %}
         </div>

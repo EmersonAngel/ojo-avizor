@@ -13,15 +13,17 @@
     {% if ranking %}
     <ol class="card divide-y divide-stone-100 dark:divide-stone-800">
         {% for fila in ranking %}
-        <li class="p-4 flex items-center gap-4">
-            <span class="font-display font-bold text-lg w-8 text-center flex-shrink-0 text-[var(--azul-medio)]">{{ forloop.counter }}</span>
-            <span class="flex-1 font-medium text-stone-900 dark:text-stone-100 truncate">{{ fila.usuario__seudonimo }}</span>
-            <span class="flex-shrink-0">
-                {% include "_racha.html" with racha=fila.racha clase_icono="w-7 h-7" clase_texto="text-base" %}
-            </span>
-            <span class="text-sm text-stone-500 dark:text-stone-400 flex-shrink-0">
-                {% blocktranslate count contador=fila.total_aportes %}{{ contador }} aporte{% plural %}{{ contador }} aportes{% endblocktranslate %}
-            </span>
+        <li>
+            <a href="{% url 'registros:observador_perfil' fila.usuario_id %}" class="p-4 flex items-center gap-4 hover:bg-[var(--superficie-alt)] transition-colors">
+                <span class="font-display font-bold text-lg w-8 text-center flex-shrink-0 text-[var(--azul-medio)]">{{ forloop.counter }}</span>
+                <span class="flex-1 font-medium text-stone-900 dark:text-stone-100 truncate">{{ fila.usuario__seudonimo }}</span>
+                <span class="flex-shrink-0">
+                    {% include "_racha.html" with racha=fila.racha clase_icono="w-7 h-7" clase_texto="text-base" %}
+                </span>
+                <span class="text-sm text-stone-500 dark:text-stone-400 flex-shrink-0">
+                    {% blocktranslate count contador=fila.total_aportes %}{{ contador }} aporte{% plural %}{{ contador }} aportes{% endblocktranslate %}
+                </span>
+            </a>
         </li>
         {% endfor %}
     </ol>

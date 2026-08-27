@@ -12,29 +12,67 @@
         </p>
     </div>
 
-    <div class="max-w-lg relative mb-4">
-        <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400">{% icono "busqueda" clase="w-5 h-5" %}</span>
-        <input type="search" name="q" value="{{ query }}"
-               placeholder="{% translate 'Buscar por nombre científico, común, familia u orden…' %}"
-               class="!pl-10"
-               hx-get="{% url 'catalogo:publico_listado' %}"
-               hx-trigger="input changed delay:350ms, search"
-               hx-target="#resultados-especies"
-               hx-swap="innerHTML"
-               hx-push-url="true"
-               hx-indicator="#buscando, #buscando-skeleton">
-        <span id="buscando" class="htmx-indicator absolute right-3.5 top-1/2 -translate-y-1/2 text-stone-400 animate-spin">{% icono "brujula" clase="w-4 h-4" %}</span>
-    </div>
+    <form id="form-filtros"
+          hx-get="{% url 'catalogo:publico_listado' %}"
+          hx-trigger="input changed delay:350ms, search, change, submit"
+          hx-target="#resultados-especies"
+          hx-swap="innerHTML"
+          hx-push-url="true"
+          hx-indicator="#buscando, #buscando-skeleton"
+          class="card p-4 mb-6 space-y-3">
+        <div class="relative">
+            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400">{% icono "busqueda" clase="w-5 h-5" %}</span>
+            <input type="search" name="q" value="{{ texto }}"
+                   placeholder="{% translate 'Buscar por nombre científico, común, familia u orden…' %}"
+                   class="!pl-10">
+            <span id="buscando" class="htmx-indicator absolute right-3.5 top-1/2 -translate-y-1/2 text-stone-400 animate-spin">{% icono "brujula" clase="w-4 h-4" %}</span>
+        </div>
 
-    {% if familias %}
-    <div class="flex flex-wrap gap-2 mb-6">
-        {% for familia in familias %}
-        <a href="?q={{ familia }}" class="badge bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 hover:bg-[var(--superficie-alt)] hover:text-[var(--azul-medio)] transition-colors">
-            {{ familia }}
-        </a>
-        {% endfor %}
-    </div>
-    {% endif %}
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+            <div>
+                <label class="field-label" for="filtro-familia">{% translate "Familia" %}</label>
+                <select id="filtro-familia" name="familia" class="!text-sm">
+                    <option value="">{% translate "Todas" %}</option>
+                    {% for opcion in familias %}
+                    <option value="{{ opcion }}" {% if opcion == familia %}selected{% endif %}>{{ opcion }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="field-label" for="filtro-orden">{% translate "Orden" %}</label>
+                <select id="filtro-orden" name="orden" class="!text-sm">
+                    <option value="">{% translate "Todos" %}</option>
+                    {% for opcion in ordenes %}
+                    <option value="{{ opcion }}" {% if opcion == orden %}selected{% endif %}>{{ opcion }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="field-label" for="filtro-tamano-min">{% translate "Tamaño mín. (cm)" %}</label>
+                <input type="number" id="filtro-tamano-min" name="tamano_min" min="0" step="0.1"
+                       value="{{ tamano_min|default_if_none:'' }}" class="!text-sm">
+            </div>
+            <div>
+                <label class="field-label" for="filtro-tamano-max">{% translate "Tamaño máx. (cm)" %}</label>
+                <input type="number" id="filtro-tamano-max" name="tamano_max" min="0" step="0.1"
+                       value="{{ tamano_max|default_if_none:'' }}" class="!text-sm">
+            </div>
+            <div>
+                <label class="field-label" for="filtro-ordenar">{% translate "Ordenar por" %}</label>
+                <select id="filtro-ordenar" name="ordenar" class="!text-sm">
+                    <option value="nombre" {% if ordenar == 'nombre' %}selected{% endif %}>{% translate "Nombre" %}</option>
+                    <option value="recientes" {% if ordenar == 'recientes' %}selected{% endif %}>{% translate "Más recientes" %}</option>
+                    <option value="tamano_asc" {% if ordenar == 'tamano_asc' %}selected{% endif %}>{% translate "Tamaño: menor a mayor" %}</option>
+                    <option value="tamano_desc" {% if ordenar == 'tamano_desc' %}selected{% endif %}>{% translate "Tamaño: mayor a menor" %}</option>
+                </select>
+            </div>
+        </div>
+
+        {% if familia or orden or tamano_min or tamano_max or ordenar != 'nombre' %}
+        <a href="{% url 'catalogo:publico_listado' %}{% if texto %}?q={{ texto }}{% endif %}"
+           class="btn-link !text-xs">{% icono "cerrar" clase="w-3.5 h-3.5" %} {% translate "Quitar filtros" %}</a>
+        {% endif %}
+    </form>
 
     <div class="relative">
         <div id="buscando-skeleton" class="htmx-indicator pointer-events-none absolute inset-0 z-10 bg-[var(--superficie)] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-2">

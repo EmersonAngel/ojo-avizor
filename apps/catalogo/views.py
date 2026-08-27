@@ -29,14 +29,37 @@ def portada(request):
     return render(request, 'catalogo/portada.html', contexto)
 
 
+def _leer_filtros(request):
+    """Filtros del catálogo público (fuera del MVP original, pedido explícito
+    del 25/08/2026): comparte la lectura de parámetros entre la página
+    completa y el fragmento HTMX, para no duplicarla."""
+    def _decimal(nombre):
+        valor = request.GET.get(nombre, '').strip()
+        try:
+            return float(valor) if valor else None
+        except ValueError:
+            return None
+
+    return {
+        'texto': request.GET.get('q', '').strip(),
+        'familia': request.GET.get('familia', '').strip(),
+        'orden': request.GET.get('orden', '').strip(),
+        'tamano_min': _decimal('tamano_min'),
+        'tamano_max': _decimal('tamano_max'),
+        'ordenar': request.GET.get('ordenar', 'nombre').strip(),
+    }
+
+
 def especie_listar_publico(request):
-    """RF-03, RF-05: catálogo público, con búsqueda por nombre científico y común.
+    """RF-03, RF-05: catálogo público, con búsqueda por nombre científico y
+    común, y filtros combinables por familia, orden y tamaño.
 
     Cuando la petición viene de HTMX (buscador en vivo), responde solo el
     fragmento con los resultados en vez de la página completa.
     """
+    filtros = _leer_filtros(request)
+    especies = repositories.buscar_especies(filtros.pop('texto'), **filtros)
     query = request.GET.get('q', '').strip()
-    especies = repositories.buscar_especies(query)
     if request.headers.get('HX-Request') == 'true':
         # Búsqueda en vivo: sin paginar, para no complicar el intercambio parcial.
         return render(request, 'catalogo/_resultados_especies.html', {'especies': especies, 'query': query})
@@ -46,7 +69,9 @@ def especie_listar_publico(request):
         'pagina': pagina,
         'query': query,
         'familias': repositories.listar_familias(),
+        'ordenes': repositories.listar_ordenes(),
         'total_especies': repositories.contar_especies(),
+        **filtros,
     }
     return render(request, 'catalogo/publico_listado.html', contexto)
 
@@ -60,8 +85,10 @@ def especie_detalle(request, pk):
         .order_by('-fecha_avistamiento')
     )
     fotos = registros_repositories.listar_fotos_de_especie(especie)
+    especies_similares = repositories.listar_especies_similares(especie)
     return render(request, 'catalogo/publico_detalle.html', {
         'especie': especie, 'avistamientos': avistamientos, 'fotos': fotos,
+        'especies_similares': especies_similares,
     })
 
 
@@ -72,6 +99,7 @@ def inventario(request):
         'total_avistamientos': registros_repositories.contar_avistamientos_publicados(),
         'total_observadores': registros_repositories.contar_observadores_participantes(),
         'actividad_por_departamento': registros_repositories.contar_actividad_por_departamento(),
+        'tendencia_mensual': registros_repositories.tendencia_mensual(),
     }
     return render(request, 'catalogo/inventario.html', contexto)
 

@@ -2,10 +2,44 @@
 from datetime import timedelta
 
 from django.db.models import Count
-from django.db.models.functions import TruncDate
+from django.db.models.functions import TruncDate, TruncMonth
 from django.utils import timezone
 
 from .models import Fotografia, Registro
+
+_MESES_ABREVIADOS = [
+    'ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic',
+]
+
+
+def tendencia_mensual(meses=6):
+    """Avistamientos aprobados por mes, los últimos `meses` (panel de
+    estadísticas fuera del MVP original, pedido explícito del 25/08/2026).
+    Siempre devuelve una fila por mes, incluso en cero, para que la gráfica
+    no salte huecos silenciosos."""
+    hoy = timezone.localdate().replace(day=1)
+    inicio = hoy
+    for _ in range(meses - 1):
+        inicio = (inicio - timedelta(days=1)).replace(day=1)
+
+    conteos = dict(
+        Registro.publicados.filter(fecha_avistamiento__gte=inicio)
+        .annotate(mes=TruncMonth('fecha_avistamiento'))
+        .values('mes')
+        .annotate(total=Count('id'))
+        .values_list('mes', 'total')
+    )
+
+    filas = []
+    cursor = inicio
+    while cursor <= hoy:
+        filas.append({'etiqueta': _MESES_ABREVIADOS[cursor.month - 1], 'total': conteos.get(cursor, 0)})
+        cursor = (cursor.replace(day=28) + timedelta(days=4)).replace(day=1)
+
+    maximo = max((fila['total'] for fila in filas), default=0)
+    for fila in filas:
+        fila['porcentaje'] = round(fila['total'] / maximo * 100) if maximo else 0
+    return filas
 
 
 def contar_actividad_por_departamento():
@@ -125,6 +159,18 @@ def calcular_rachas_por_usuario():
     return {usuario_id: _racha_desde_fechas(fechas) for usuario_id, fechas in fechas_por_usuario.items()}
 
 
+def listar_avistamientos_publicos_de_usuario(usuario, cantidad=12):
+    """Avistamientos aprobados y publicados de un observador, para su perfil
+    público (fuera del MVP original, pedido explícito del 25/08/2026). Solo
+    lo mismo que ya es público en cualquier otra vista del catálogo — nunca
+    coordenadas (RN-06)."""
+    return (
+        Registro.publicados.filter(usuario=usuario)
+        .select_related('especie')
+        .order_by('-fecha_avistamiento')[:cantidad]
+    )
+
+
 def contar_todos_por_estado():
     """Cuántos registros hay en cada estado, para el panel de administrador."""
     conteos = {estado: 0 for estado, _ in Registro.Estado.choices}
@@ -140,6 +186,13 @@ def contar_por_estado_de_usuario(usuario):
     for fila in filas:
         conteos[fila['estado']] = fila['total']
     return conteos
+
+
+def contar_aprobados_de_usuario(usuario):
+    """Solo lo aprobado y publicado — la cuenta que puede verse en un perfil
+    público, a diferencia de contar_por_estado_de_usuario (mi_cuenta.html,
+    privada), que también muestra pendientes y devueltos."""
+    return Registro.publicados.filter(usuario=usuario).count()
 
 
 def contar_especies_distintas_de_usuario(usuario):
