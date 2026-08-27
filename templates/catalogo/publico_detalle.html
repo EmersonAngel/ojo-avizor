@@ -27,10 +27,12 @@
         </div>
     </div>
 
-    {# Distribuido en dos columnas desde lg (pedido explícito del 27/08/2026):
-       el relato de la especie a la izquierda, y a la derecha una columna
-       fija de datos rápidos — ficha, mapa y especies emparentadas — para
-       no obligar a bajar por una sola columna larga. #}
+    {% comment %}
+    Distribuido en dos columnas desde lg (pedido explícito del 27/08/2026):
+    el relato de la especie a la izquierda, y a la derecha una columna fija
+    de datos rápidos — ficha, mapa y especies emparentadas — para no
+    obligar a bajar por una sola columna larga.
+    {% endcomment %}
     <div class="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
         <div class="lg:col-span-2 space-y-4 lg:order-1">
             {% if especie.historia_natural %}

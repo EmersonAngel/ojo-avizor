@@ -28,7 +28,7 @@ Declara estas variables y **no uses colores fuera de esta lista**. La aplicació
   --cian:           #00ACE8;  /* acentos, iconos, cifras grandes */
 
   /* Superficies */
-  --blanco:         #FFFFFF;
+  --blanco:         #FBFDFF;  /* pedido explícito el 27/08/2026: azul muy claro, no blanco puro */
   --superficie:     #F7FAFC;  /* fondo general de página */
   --superficie-alt: #EEF3F8;  /* tarjetas destacadas, bloques de datos */
   --borde:          #C9D6E2;

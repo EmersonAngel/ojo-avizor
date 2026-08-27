@@ -76,8 +76,11 @@
             --azul-medio:     #0173BC;
             --cian:           #00ACE8;
 
-            /* Superficies */
-            --blanco:         #FFFFFF;
+            /* Superficies — blanco ya no es blanco puro (pedido explícito
+               del 27/08/2026): un azul muy claro, apenas más luminoso que
+               --superficie, para que las tarjetas se sigan viendo
+               "elevadas" sin caer en el blanco plano. */
+            --blanco:         #FBFDFF;
             --superficie:     #F7FAFC;
             --superficie-alt: #EEF3F8;
             --borde:          #C9D6E2;
@@ -237,14 +240,25 @@
       }"
       @scroll.window.throttle="
           barraElevada = window.scrollY > 8;
-          // Se esconde solo bajando y ya pasado el propio alto de la barra —
-          // así no parpadea justo al llegar arriba de la página — y nunca
-          // mientras algún menú desplegable esté abierto, para no cerrarlo
-          // de golpe debajo del usuario.
+          // Nunca se esconde con un menú desplegable abierto, para no
+          // cerrarlo de golpe debajo del usuario.
           if (!menuAbierto && !menuUsuario) {
-              barraOculta = window.scrollY > ultimoScrollY && window.scrollY > 112;
+              if (window.scrollY <= 8) {
+                  // Arriba del todo la barra queda estática, siempre visible.
+                  barraOculta = false;
+              } else if (window.scrollY > ultimoScrollY) {
+                  barraOculta = true;
+              }
+              // Al subir no se revela sola aquí — eso ahora lo decide la
+              // cercanía del cursor al borde superior (ver @mousemove abajo),
+              // en cualquier punto de la página, no solo subiendo.
           }
           ultimoScrollY = window.scrollY;
+      "
+      @mousemove.window.throttle="
+          if (!menuAbierto && !menuUsuario && window.scrollY > 8) {
+              barraOculta = $event.clientY >= 64;
+          }
       ">
 
     <header class="sticky top-0 z-20 barra-superior barra-superior--deslizable"

@@ -28,7 +28,8 @@
     input[type="text"], input[type="email"], input[type="password"],
     input[type="number"], input[type="date"], input[type="search"],
     select, textarea {
-        @apply w-full rounded-lg border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-900 px-3 py-2 text-[0.95rem] text-stone-900 dark:text-stone-100 placeholder:text-stone-400 dark:placeholder:text-stone-500 transition-colors;
+        @apply w-full rounded-lg border border-stone-300 dark:border-stone-700 px-3 py-2 text-[0.95rem] text-stone-900 dark:text-stone-100 placeholder:text-stone-400 dark:placeholder:text-stone-500 transition-colors;
+        background-color: var(--blanco);
     }
     input[type="file"] {
         @apply w-full rounded-lg border border-dashed border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-900 px-3 py-2.5 text-sm text-stone-600 dark:text-stone-400;
@@ -138,7 +139,11 @@
        genérico de Tailwind: el mismo lenguaje de profundidad que ya usan los
        botones, para que toda superficie elevada del sitio se perciba como
        parte de un mismo sistema físico en vez de dos estilos de sombra distintos. */
-    .card { @apply bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 transition-colors; box-shadow: var(--sombra-tarjeta); }
+    .card {
+        @apply rounded-2xl border border-stone-200 dark:border-stone-800 transition-colors;
+        background-color: var(--blanco);
+        box-shadow: var(--sombra-tarjeta);
+    }
     .card-interactive { @apply card hover:-translate-y-0.5 hover:border-[var(--azul-medio)] transition-all duration-200; }
     .card-interactive:hover { box-shadow: var(--sombra-elevada); }
 
@@ -200,7 +205,8 @@
     animation: intro-marca-salida .5s ease .95s forwards;
 }
 .intro-marca img {
-    width: 88px;
+    width: 160px;
+    max-width: 40vw;
     height: auto;
     animation: intro-marca-entrada .6s ease both;
 }

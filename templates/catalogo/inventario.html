@@ -42,9 +42,11 @@
         </a>
     </div>
 
-    {# Lado a lado desde lg (pedido explícito del 27/08/2026): antes quedaban
-       apiladas a lo largo de toda la página, aunque cada una es angosta de
-       por sí — se aprovecha mejor el ancho como panel de dos columnas. #}
+    {% comment %}
+    Lado a lado desde lg (pedido explícito del 27/08/2026): antes quedaban
+    apiladas a lo largo de toda la página, aunque cada una es angosta de
+    por sí — se aprovecha mejor el ancho como panel de dos columnas.
+    {% endcomment %}
     <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         {% if tendencia_mensual %}
         <div data-reveal>
