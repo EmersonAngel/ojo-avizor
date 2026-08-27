@@ -241,12 +241,16 @@
 </head>
 {% comment %}
 Comportamiento de la barra superior al hacer scroll (pedido explícito del
-27/08/2026, corregido el mismo día): arriba del todo queda estática y
-visible; en cualquier otro punto se esconde al bajar el scroll y reaparece
-al subirlo (imprescindible en celular, sin cursor) o al acercar el cursor
-a los 120px superiores de la pantalla (atajo extra para mouse — antes eran
-solo 64px, un margen tan angosto que costaba acertarle). Un margen de 6px
-evita que tiemble con el rebote del scroll por inercia cerca del reposo.
+27/08/2026, ajustado varias veces ese día): la barra acompaña la
+navegación sin quedar presente todo el tiempo — se esconde al bajar el
+scroll y reaparece al subirlo (imprescindible en celular, sin cursor) o al
+acercar el cursor a los 120px superiores de la pantalla, desde cualquier
+punto de la página, incluida la parte de arriba (antes había un caso
+especial que la dejaba fija y visible mientras el scroll estuviera cerca
+del tope, y esa excepción era justo lo que hacía que pareciera "siempre
+presente" e impedía que el cursor hiciera algo ahí — se quitó). Un margen
+de 6px evita que tiemble con el rebote del scroll por inercia cerca del
+reposo.
 
 Se implementa a mano con addEventListener, dentro de x-init, en vez de con
 los modificadores @scroll.window.throttle / @mousemove.window.throttle de
@@ -258,14 +262,14 @@ segundo plano o sin pintar, y entonces la barra se queda congelada sin
 reaccionar — la comparación es tan barata que no hace falta diferirla.
 
 ultimoScrollY es el punto de referencia de la comparación, y solo se mueve
-cuando la barra realmente se esconde o se muestra (o al llegar arriba del
-todo) — nunca en cada evento. Si se actualizara siempre, cerca del final de
-la página (donde el navegador suele entregar el scroll en pasos chiquitos,
-al frenar el impulso) ningún paso individual llega a superar el margen de
-6px contra el anterior y la barra se queda pegada sin reaccionar (bug real
-encontrado el 27/08/2026). Al comparar siempre contra el mismo punto fijo,
-esos pasos chiquitos se van sumando hasta cruzar el margen, sin importar
-qué tan lento vaya el scroll.
+cuando la barra realmente se esconde o se muestra — nunca en cada evento.
+Si se actualizara siempre, cerca del final de la página (donde el
+navegador suele entregar el scroll en pasos chiquitos, al frenar el
+impulso) ningún paso individual llega a superar el margen de 6px contra el
+anterior y la barra se queda pegada sin reaccionar (bug real encontrado el
+27/08/2026). Al comparar siempre contra el mismo punto fijo, esos pasos
+chiquitos se van sumando hasta cruzar el margen, sin importar qué tan lento
+vaya el scroll.
 
 Los comentarios de esta lógica viven aquí afuera, no adentro.
 {% endcomment %}
@@ -275,7 +279,7 @@ Los comentarios de esta lógica viven aquí afuera, no adentro.
           oscuro: document.documentElement.getAttribute('data-tema') === 'oscuro',
           barraElevada: false, barraOculta: false, ultimoScrollY: 0,
       }"
-      x-init="ultimoScrollY = window.scrollY; window.addEventListener('scroll', () => { const y = window.scrollY; barraElevada = y > 8; if (!menuAbierto && !menuUsuario) { if (y <= 8) { barraOculta = false; ultimoScrollY = y; } else { const delta = y - ultimoScrollY; if (delta > 6) { barraOculta = true; ultimoScrollY = y; } else if (delta < -6) { barraOculta = false; ultimoScrollY = y; } } } }, { passive: true }); window.addEventListener('mousemove', (evento) => { if (!menuAbierto && !menuUsuario && window.scrollY > 8 && evento.clientY < 120) { barraOculta = false; } }, { passive: true });">
+      x-init="ultimoScrollY = window.scrollY; window.addEventListener('scroll', () => { const y = window.scrollY; barraElevada = y > 8; if (!menuAbierto && !menuUsuario) { const delta = y - ultimoScrollY; if (delta > 6) { barraOculta = true; ultimoScrollY = y; } else if (delta < -6) { barraOculta = false; ultimoScrollY = y; } } }, { passive: true }); window.addEventListener('mousemove', (evento) => { if (!menuAbierto && !menuUsuario && evento.clientY < 120) { barraOculta = false; } }, { passive: true });">
 
     <header class="sticky top-0 z-20 barra-superior barra-superior--deslizable"
             :class="[barraElevada ? 'barra-superior--elevada' : '', barraOculta ? 'barra-superior--oculta' : '']">
