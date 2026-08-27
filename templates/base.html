@@ -77,15 +77,15 @@
             --cian:           #00ACE8;
 
             /* Superficies — ninguna es blanco puro (pedido explícito del
-               27/08/2026, reforzado el mismo día porque el primer tono
-               apenas se notaba): un azul claro que sí se percibe a simple
-               vista, en tres pasos — blanco (tarjetas, más luminoso),
-               superficie (fondo de página) y superficie-alt (bloques
-               destacados, el más saturado de los tres). */
-            --blanco:         #F2F8FD;
-            --superficie:     #E6F1FA;
-            --superficie-alt: #D6E9F7;
-            --borde:          #B7D2E8;
+               27/08/2026, reforzado dos veces ese día porque los tonos
+               anteriores apenas se notaban): un azul claro que sí se percibe
+               a simple vista, en tres pasos — blanco (tarjetas, más
+               luminoso), superficie (fondo de página) y superficie-alt
+               (bloques destacados, el más saturado de los tres). */
+            --blanco:         #EAF3FB;
+            --superficie:     #D2E7F7;
+            --superficie-alt: #BEDBF2;
+            --borde:          #93C0E4;
 
             /* Texto */
             --texto:          #2E3A45;
@@ -244,8 +244,9 @@ Comportamiento de la barra superior al hacer scroll (pedido explícito del
 27/08/2026, corregido el mismo día): arriba del todo queda estática y
 visible; en cualquier otro punto se esconde al bajar el scroll y reaparece
 al subirlo (imprescindible en celular, sin cursor) o al acercar el cursor
-al borde superior (atajo extra para mouse). Un margen de 6px evita que
-tiemble con el rebote del scroll por inercia cerca del reposo.
+a los 120px superiores de la pantalla (atajo extra para mouse — antes eran
+solo 64px, un margen tan angosto que costaba acertarle). Un margen de 6px
+evita que tiemble con el rebote del scroll por inercia cerca del reposo.
 
 Se implementa a mano con addEventListener, dentro de x-init, en vez de con
 los modificadores @scroll.window.throttle / @mousemove.window.throttle de
@@ -263,7 +264,7 @@ Los comentarios de esta lógica viven aquí afuera, no adentro.
           oscuro: document.documentElement.getAttribute('data-tema') === 'oscuro',
           barraElevada: false, barraOculta: false, ultimoScrollY: 0,
       }"
-      x-init="ultimoScrollY = window.scrollY; window.addEventListener('scroll', () => { const y = window.scrollY; barraElevada = y > 8; if (!menuAbierto && !menuUsuario) { const delta = y - ultimoScrollY; if (y <= 8) { barraOculta = false; } else if (delta > 6) { barraOculta = true; } else if (delta < -6) { barraOculta = false; } } ultimoScrollY = y; }, { passive: true }); window.addEventListener('mousemove', (evento) => { if (!menuAbierto && !menuUsuario && window.scrollY > 8 && evento.clientY < 64) { barraOculta = false; } }, { passive: true });">
+      x-init="ultimoScrollY = window.scrollY; window.addEventListener('scroll', () => { const y = window.scrollY; barraElevada = y > 8; if (!menuAbierto && !menuUsuario) { const delta = y - ultimoScrollY; if (y <= 8) { barraOculta = false; } else if (delta > 6) { barraOculta = true; } else if (delta < -6) { barraOculta = false; } } ultimoScrollY = y; }, { passive: true }); window.addEventListener('mousemove', (evento) => { if (!menuAbierto && !menuUsuario && window.scrollY > 8 && evento.clientY < 120) { barraOculta = false; } }, { passive: true });">
 
     <header class="sticky top-0 z-20 barra-superior barra-superior--deslizable"
             :class="[barraElevada ? 'barra-superior--elevada' : '', barraOculta ? 'barra-superior--oculta' : '']">
