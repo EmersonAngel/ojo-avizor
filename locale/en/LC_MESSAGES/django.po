@@ -21,7 +21,9 @@ msgid "Distribución"
 msgstr "Distribution"
 
 #: ./apps/catalogo/forms.py:16
-msgid "Países donde se encuentra la especie. Se muestran como mapa en la ficha pública."
+msgid ""
+"Países donde se encuentra la especie. Se muestran como mapa en la ficha "
+"pública."
 msgstr "Countries where the species is found. Shown as a map on the public record."
 
 #: ./apps/catalogo/forms.py:26 ./templates/catalogo/especie_listar.html:23
@@ -78,7 +80,8 @@ msgstr "Status"
 msgid "Código de país no reconocido: %(codigos)s."
 msgstr "Unrecognized country code: %(codigos)s."
 
-#: ./apps/catalogo/models.py:60 ./apps/curaduria/models.py:17 ./apps/registros/models.py:32 ./templates/registros/registro_mis.html:23
+#: ./apps/catalogo/models.py:60 ./apps/curaduria/models.py:17
+#: ./apps/registros/models.py:32 ./templates/registros/registro_mis.html:23
 msgid "Aprobado"
 msgstr "Approved"
 
@@ -240,7 +243,9 @@ msgstr "Uruguay"
 msgid "Usuario"
 msgstr "Username"
 
-#: ./apps/cuentas/forms.py:11 ./templates/cuentas/contrasena_recuperar.html:21 ./templates/cuentas/mi_cuenta.html:24 ./templates/cuentas/panel_admin.html:84
+#: ./apps/cuentas/forms.py:11 ./templates/cuentas/contrasena_recuperar.html:21
+#: ./templates/cuentas/mi_cuenta.html:24
+#: ./templates/cuentas/panel_admin.html:84
 msgid "Correo"
 msgstr "Email"
 
@@ -261,8 +266,12 @@ msgid "Confirmar contraseña"
 msgstr "Confirm password"
 
 #: ./apps/cuentas/forms.py:18
-msgid "Quiero recibir correos con notificaciones de la plataforma (por ejemplo, cuando aprueben o devuelvan uno de mis avistamientos)."
-msgstr "I want to receive emails with platform notifications (for example, when one of my sightings is approved or returned)."
+msgid ""
+"Quiero recibir correos con notificaciones de la plataforma (por ejemplo, "
+"cuando aprueben o devuelvan uno de mis avistamientos)."
+msgstr ""
+"I want to receive emails with platform notifications (for example, when "
+"one of my sightings is approved or returned)."
 
 #: ./apps/cuentas/forms.py:24
 msgid "Ya existe una cuenta con este nombre de usuario."
@@ -302,7 +311,8 @@ msgstr "Active"
 msgid "Suspendido"
 msgstr "Suspended"
 
-#: ./apps/cuentas/models.py:56 ./apps/registros/models.py:31 ./templates/registros/registro_mis.html:20
+#: ./apps/cuentas/models.py:56 ./apps/registros/models.py:31
+#: ./templates/registros/registro_mis.html:20
 msgid "Pendiente"
 msgstr "Pending"
 
@@ -342,8 +352,14 @@ msgid "Tu solicitud para ser revisor fue aprobada"
 msgstr "Your reviewer request was approved"
 
 #: ./apps/cuentas/services.py:108
-msgid "Un administrador aprobó tu solicitud para ser revisor voluntario en Ojo Avizor. Ya puedes crear y editar fichas de especie, y aprobar o devolver avistamientos desde la bandeja de revisión."
-msgstr "An administrator approved your request to become a volunteer reviewer on Ojo Avizor. You can now create and edit species records, and approve or return sightings from the review queue."
+msgid ""
+"Un administrador aprobó tu solicitud para ser revisor voluntario en Ojo "
+"Avizor. Ya puedes crear y editar fichas de especie, y aprobar o devolver "
+"avistamientos desde la bandeja de revisión."
+msgstr ""
+"An administrator approved your request to become a volunteer reviewer on "
+"Ojo Avizor. You can now create and edit species records, and approve or "
+"return sightings from the review queue."
 
 # | msgid "Solicitudes para ser revisor"
 #: ./apps/cuentas/services.py:115
@@ -351,8 +367,12 @@ msgid "Tu solicitud para ser revisor fue rechazada"
 msgstr "Your reviewer request was rejected"
 
 #: ./apps/cuentas/services.py:117
-msgid "Un administrador revisó tu solicitud para ser revisor voluntario en Ojo Avizor y decidió no aprobarla por ahora."
-msgstr "An administrator reviewed your request to become a volunteer reviewer on Ojo Avizor and decided not to approve it for now."
+msgid ""
+"Un administrador revisó tu solicitud para ser revisor voluntario en Ojo "
+"Avizor y decidió no aprobarla por ahora."
+msgstr ""
+"An administrator reviewed your request to become a volunteer reviewer on "
+"Ojo Avizor and decided not to approve it for now."
 
 #: ./apps/cuentas/views.py:59
 msgid "Vas a recibir correos con notificaciones de la plataforma."
@@ -380,7 +400,8 @@ msgstr "%(seudonimo)s's request was rejected."
 msgid "Motivo de la devolución"
 msgstr "Reason for returning it"
 
-#: ./apps/curaduria/models.py:18 ./apps/registros/models.py:33 ./templates/registros/registro_mis.html:26
+#: ./apps/curaduria/models.py:18 ./apps/registros/models.py:33
+#: ./templates/registros/registro_mis.html:26
 msgid "Devuelto"
 msgstr "Returned"
 
@@ -398,8 +419,12 @@ msgstr "Your sighting was approved"
 
 #: ./apps/curaduria/services.py:32
 #, python-format
-msgid "Tu avistamiento en %(lugar)s (%(fecha)s) fue aprobado y ya aparece en el catálogo público de Ojo Avizor."
-msgstr "Your sighting in %(lugar)s (%(fecha)s) was approved and is now in the Ojo Avizor public catalog."
+msgid ""
+"Tu avistamiento en %(lugar)s (%(fecha)s) fue aprobado y ya aparece en el "
+"catálogo público de Ojo Avizor."
+msgstr ""
+"Your sighting in %(lugar)s (%(fecha)s) was approved and is now in the Ojo"
+" Avizor public catalog."
 
 #: ./apps/curaduria/services.py:41
 msgid "Solo se puede devolver un registro PENDIENTE."
@@ -416,8 +441,12 @@ msgstr "Your sighting was returned"
 
 #: ./apps/curaduria/services.py:53
 #, python-format
-msgid "Tu avistamiento en %(lugar)s (%(fecha)s) fue devuelto para que lo corrijas. Motivo: %(motivo)s"
-msgstr "Your sighting in %(lugar)s (%(fecha)s) was returned for correction. Reason: %(motivo)s"
+msgid ""
+"Tu avistamiento en %(lugar)s (%(fecha)s) fue devuelto para que lo "
+"corrijas. Motivo: %(motivo)s"
+msgstr ""
+"Your sighting in %(lugar)s (%(fecha)s) was returned for correction. "
+"Reason: %(motivo)s"
 
 #: ./apps/curaduria/services.py
 msgid "Tienes avistamientos esperando revisión"
@@ -425,8 +454,12 @@ msgstr "You have sightings waiting for review"
 
 #: ./apps/curaduria/services.py
 #, python-format
-msgid "Hay %(total)s avistamiento(s) pendientes de revisión en la bandeja de Ojo Avizor."
-msgstr "There are %(total)s sighting(s) waiting for review in the Ojo Avizor queue."
+msgid ""
+"Hay %(total)s avistamiento(s) pendientes de revisión en la bandeja de Ojo"
+" Avizor."
+msgstr ""
+"There are %(total)s sighting(s) waiting for review in the Ojo Avizor "
+"queue."
 
 #: ./apps/registros/forms.py:26
 msgid "Especie (si la identificas)"
@@ -474,15 +507,18 @@ msgstr "No birds around here"
 msgid "La página que buscas no existe o se movió de lugar."
 msgstr "The page you're looking for doesn't exist or has moved."
 
-#: ./templates/404.html:17 ./templates/catalogo/inventario.html:13 ./templates/catalogo/publico_detalle.html:12
+#: ./templates/404.html:17 ./templates/catalogo/inventario.html:13
+#: ./templates/catalogo/publico_detalle.html:12
 msgid "Volver al catálogo"
 msgstr "Back to the catalog"
 
-#: ./templates/_menu_usuario.html:3 ./templates/cuentas/mi_cuenta.html:4 ./templates/cuentas/mi_cuenta.html:9
+#: ./templates/_menu_usuario.html:3 ./templates/cuentas/mi_cuenta.html:4
+#: ./templates/cuentas/mi_cuenta.html:9
 msgid "Mi cuenta"
 msgstr "My account"
 
-#: ./templates/_menu_usuario.html:7 ./templates/cuentas/panel_admin.html:4 ./templates/cuentas/panel_admin.html:9
+#: ./templates/_menu_usuario.html:7 ./templates/cuentas/panel_admin.html:4
+#: ./templates/cuentas/panel_admin.html:9
 msgid "Panel de administración"
 msgstr "Admin dashboard"
 
@@ -494,24 +530,34 @@ msgstr "Log out"
 msgid "Catálogo"
 msgstr "Catalog"
 
-#: ./templates/_nav_enlaces.html:8 ./templates/registros/registro_mis.html:4 ./templates/registros/registro_mis.html:9
+#: ./templates/_nav_enlaces.html:8 ./templates/registros/registro_mis.html:4
+#: ./templates/registros/registro_mis.html:9
 msgid "Mis avistamientos"
 msgstr "My sightings"
 
-#: ./templates/_nav_enlaces.html:12 ./templates/catalogo/especie_formulario.html:8 ./templates/catalogo/especie_listar.html:4 ./templates/catalogo/especie_listar.html:10
+#: ./templates/_nav_enlaces.html:12
+#: ./templates/catalogo/especie_formulario.html:8
+#: ./templates/catalogo/especie_listar.html:4
+#: ./templates/catalogo/especie_listar.html:10
 msgid "Fichas de especie"
 msgstr "Species records"
 
-#: ./templates/_nav_enlaces.html:15 ./templates/curaduria/bandeja.html:4 ./templates/curaduria/bandeja.html:8 ./templates/curaduria/detalle.html:4 ./templates/curaduria/detalle.html:8
-#: ./templates/curaduria/devolver.html:8
+#: ./templates/_nav_enlaces.html:15 ./templates/curaduria/bandeja.html:4
+#: ./templates/curaduria/bandeja.html:8 ./templates/curaduria/detalle.html:4
+#: ./templates/curaduria/detalle.html:8 ./templates/curaduria/devolver.html:8
 msgid "Bandeja de revisión"
 msgstr "Review queue"
 
-#: ./templates/_nav_enlaces.html:20 ./templates/base.html:445 ./templates/cuentas/contrasena_completa.html:16 ./templates/cuentas/sesion_iniciar.html:4 ./templates/cuentas/sesion_iniciar.html:12
+#: ./templates/_nav_enlaces.html:20 ./templates/base.html:445
+#: ./templates/cuentas/contrasena_completa.html:16
+#: ./templates/cuentas/sesion_iniciar.html:4
+#: ./templates/cuentas/sesion_iniciar.html:12
 msgid "Iniciar sesión"
 msgstr "Log in"
 
-#: ./templates/_nav_enlaces.html:22 ./templates/base.html:446 ./templates/cuentas/usuario_registrar.html:4 ./templates/cuentas/usuario_registrar.html:12
+#: ./templates/_nav_enlaces.html:22 ./templates/base.html:446
+#: ./templates/cuentas/usuario_registrar.html:4
+#: ./templates/cuentas/usuario_registrar.html:12
 msgid "Crear cuenta"
 msgstr "Create account"
 
@@ -569,7 +615,8 @@ msgstr "participatory bird inventory"
 msgid "Un proyecto de la comunidad, para la comunidad."
 msgstr "A project by the community, for the community."
 
-#: ./templates/base.html:502 ./templates/condiciones_uso.html:4 ./templates/condiciones_uso.html:8
+#: ./templates/base.html:502 ./templates/condiciones_uso.html:4
+#: ./templates/condiciones_uso.html:8
 msgid "Condiciones de uso"
 msgstr "Terms of use"
 
@@ -581,14 +628,20 @@ msgstr "A project by the Pijao community, supported by:"
 msgid "Volver arriba"
 msgstr "Back to top"
 
-#: ./templates/catalogo/_resultados_especies.html:17 ./templates/catalogo/portada.html:87 ./templates/catalogo/publico_detalle.html:24
+#: ./templates/catalogo/_resultados_especies.html:17
+#: ./templates/catalogo/portada.html:87
+#: ./templates/catalogo/publico_detalle.html:24
 msgid "Sin nombre común registrado"
 msgstr "No common name recorded"
 
 #: ./templates/catalogo/_resultados_especies.html:32
 #, python-format
-msgid "No encontramos \"%(termino)s\" — prueba con el nombre científico o un nombre común de tu región."
-msgstr "We couldn't find \"%(termino)s\" — try the scientific name or a common name from your region."
+msgid ""
+"No encontramos \"%(termino)s\" — prueba con el nombre científico o un "
+"nombre común de tu región."
+msgstr ""
+"We couldn't find \"%(termino)s\" — try the scientific name or a common "
+"name from your region."
 
 #: ./templates/catalogo/_resultados_especies.html:34
 msgid "Todavía no hay especies publicadas — pronto llegarán las primeras fichas."
@@ -598,19 +651,23 @@ msgstr "No species published yet — the first records are on their way."
 msgid "Datos de la especie"
 msgstr "Species details"
 
-#: ./templates/catalogo/especie_formulario.html:57 ./templates/catalogo/publico_detalle.html:56
+#: ./templates/catalogo/especie_formulario.html:57
+#: ./templates/catalogo/publico_detalle.html:56
 msgid "Alejar"
 msgstr "Zoom out"
 
-#: ./templates/catalogo/especie_formulario.html:59 ./templates/catalogo/publico_detalle.html:58
+#: ./templates/catalogo/especie_formulario.html:59
+#: ./templates/catalogo/publico_detalle.html:58
 msgid "Restablecer zoom"
 msgstr "Reset zoom"
 
-#: ./templates/catalogo/especie_formulario.html:61 ./templates/catalogo/publico_detalle.html:60
+#: ./templates/catalogo/especie_formulario.html:61
+#: ./templates/catalogo/publico_detalle.html:60
 msgid "Acercar"
 msgstr "Zoom in"
 
-#: ./templates/catalogo/especie_formulario.html:70 ./templates/catalogo/especie_listar.html:25
+#: ./templates/catalogo/especie_formulario.html:70
+#: ./templates/catalogo/especie_listar.html:25
 msgid "Nombres comunes"
 msgstr "Common names"
 
@@ -618,11 +675,15 @@ msgstr "Common names"
 msgid "Incluye las denominaciones propias del municipio, si las hay."
 msgstr "Include names specific to the municipality, if any."
 
-#: ./templates/catalogo/especie_formulario.html:89 ./templates/cuentas/mi_cuenta.html:50 ./templates/cuentas/panel_admin.html:108
+#: ./templates/catalogo/especie_formulario.html:89
+#: ./templates/cuentas/mi_cuenta.html:50
+#: ./templates/cuentas/panel_admin.html:108
 msgid "Guardar"
 msgstr "Save"
 
-#: ./templates/catalogo/especie_formulario.html:90 ./templates/curaduria/devolver.html:26 ./templates/registros/registro_crear.html:93
+#: ./templates/catalogo/especie_formulario.html:90
+#: ./templates/curaduria/devolver.html:26
+#: ./templates/registros/registro_crear.html:93
 msgid "Cancelar"
 msgstr "Cancel"
 
@@ -634,15 +695,18 @@ msgstr "Catalog layer 1: the curated information for each species."
 msgid "Nueva ficha"
 msgstr "New record"
 
-#: ./templates/catalogo/especie_listar.html:38 ./templates/catalogo/especie_listar.html:61
+#: ./templates/catalogo/especie_listar.html:38
+#: ./templates/catalogo/especie_listar.html:61
 msgid "Editar"
 msgstr "Edit"
 
-#: ./templates/catalogo/especie_listar.html:41 ./templates/catalogo/especie_listar.html:64
+#: ./templates/catalogo/especie_listar.html:41
+#: ./templates/catalogo/especie_listar.html:64
 msgid "¿Retirar esta ficha del catálogo?"
 msgstr "Remove this record from the catalog?"
 
-#: ./templates/catalogo/especie_listar.html:43 ./templates/catalogo/especie_listar.html:66
+#: ./templates/catalogo/especie_listar.html:43
+#: ./templates/catalogo/especie_listar.html:66
 msgid "Retirar"
 msgstr "Remove"
 
@@ -666,7 +730,8 @@ msgstr "Bird inventory of Pijao"
 msgid "Construido por la comunidad, avistamiento a avistamiento."
 msgstr "Built by the community, one sighting at a time."
 
-#: ./templates/catalogo/inventario.html:26 ./templates/catalogo/portada.html:45 ./templates/cuentas/panel_admin.html:15
+#: ./templates/catalogo/inventario.html:26 ./templates/catalogo/portada.html:45
+#: ./templates/cuentas/panel_admin.html:15
 msgid "especies"
 msgstr "species"
 
@@ -674,7 +739,8 @@ msgstr "species"
 msgid "avistamientos"
 msgstr "sightings"
 
-#: ./templates/catalogo/inventario.html:36 ./templates/catalogo/portada.html:53 ./templates/cuentas/panel_admin.html:31
+#: ./templates/catalogo/inventario.html:36 ./templates/catalogo/portada.html:53
+#: ./templates/cuentas/panel_admin.html:31
 msgid "observadores"
 msgstr "observers"
 
@@ -687,8 +753,12 @@ msgid "Cada ave que ves, cuenta una historia del territorio"
 msgstr "Every bird you see tells a story about this land"
 
 #: ./templates/catalogo/portada.html:19
-msgid "Ojo Avizor junta lo que la gente de Pijao observa, día a día, en un solo inventario abierto para todos."
-msgstr "Ojo Avizor gathers what the people of Pijao observe, day by day, into one inventory open to everyone."
+msgid ""
+"Ojo Avizor junta lo que la gente de Pijao observa, día a día, en un solo "
+"inventario abierto para todos."
+msgstr ""
+"Ojo Avizor gathers what the people of Pijao observe, day by day, into one"
+" inventory open to everyone."
 
 #: ./templates/catalogo/portada.html:26
 msgid "Busca una especie por nombre…"
@@ -698,7 +768,8 @@ msgstr "Search for a species by name…"
 msgid "Explorar el catálogo"
 msgstr "Explore the catalog"
 
-#: ./templates/catalogo/portada.html:35 ./templates/catalogo/publico_detalle.html:100
+#: ./templates/catalogo/portada.html:35
+#: ./templates/catalogo/publico_detalle.html:100
 msgid "Registrar un avistamiento"
 msgstr "Report a sighting"
 
@@ -711,8 +782,16 @@ msgid "¿Qué es Ojo Avizor?"
 msgstr "What is Ojo Avizor?"
 
 #: ./templates/catalogo/portada.html:86
-msgid "En Pijao hay años de observadores anotando qué aves ven, dónde y cuándo — en cuadernos, en la memoria, en grupos de mensajes. Ojo Avizor junta ese conocimiento disperso en un solo inventario abierto, con los nombres que la gente de acá realmente usa."
-msgstr "In Pijao, observers have spent years noting which birds they see, where, and when — in notebooks, from memory, in message groups. Ojo Avizor gathers that scattered knowledge into one open inventory, with the names people here actually use."
+msgid ""
+"En Pijao hay años de observadores anotando qué aves ven, dónde y cuándo —"
+" en cuadernos, en la memoria, en grupos de mensajes. Ojo Avizor junta ese"
+" conocimiento disperso en un solo inventario abierto, con los nombres que"
+" la gente de acá realmente usa."
+msgstr ""
+"In Pijao, observers have spent years noting which birds they see, where, "
+"and when — in notebooks, from memory, in message groups. Ojo Avizor "
+"gathers that scattered knowledge into one open inventory, with the names "
+"people here actually use."
 
 #: ./templates/catalogo/portada.html:93
 msgid "Registras lo que ves"
@@ -720,7 +799,9 @@ msgstr "You log what you see"
 
 #: ./templates/catalogo/portada.html:94
 msgid "Especie, lugar y fecha. Con foto si tienes, sin ella si no."
-msgstr "Species, place, and date. With a photo if you have one, without if you don't."
+msgstr ""
+"Species, place, and date. With a photo if you have one, without if you "
+"don't."
 
 #: ./templates/catalogo/portada.html:100
 msgid "La comunidad lo revisa"
@@ -797,8 +878,12 @@ msgid "aportado por"
 msgstr "contributed by"
 
 #: ./templates/catalogo/publico_detalle.html:99
-msgid "Todavía no hay avistamientos aprobados de esta especie — podrías reportar el primero."
-msgstr "No approved sightings of this species yet — you could report the first one."
+msgid ""
+"Todavía no hay avistamientos aprobados de esta especie — podrías reportar"
+" el primero."
+msgstr ""
+"No approved sightings of this species yet — you could report the first "
+"one."
 
 #: ./templates/catalogo/publico_listado.html:4
 msgid "Catálogo de aves de Pijao"
@@ -829,11 +914,15 @@ msgstr "1. What you contribute is still yours"
 
 #: ./templates/condiciones_uso.html:19
 msgid ""
-"Cada avistamiento, fotografía y nombre común que registras es un aporte tuyo y de la comunidad de observadores de Pijao. La autoría de ese contenido es permanente: nunca se transfiere, se reasigna "
-"ni se anonimiza."
+"Cada avistamiento, fotografía y nombre común que registras es un aporte "
+"tuyo y de la comunidad de observadores de Pijao. La autoría de ese "
+"contenido es permanente: nunca se transfiere, se reasigna ni se "
+"anonimiza."
 msgstr ""
-"Every sighting, photograph, and common name you record is a contribution from you and from the community of observers in Pijao. Authorship of that content is permanent: it is never transferred, "
-"reassigned, or anonymized."
+"Every sighting, photograph, and common name you record is a contribution "
+"from you and from the community of observers in Pijao. Authorship of that"
+" content is permanent: it is never transferred, reassigned, or "
+"anonymized."
 
 #: ./templates/condiciones_uso.html:25
 msgid "2. Quién puede usar esos datos, y para qué"
@@ -841,47 +930,77 @@ msgstr "2. Who can use that data, and for what"
 
 #: ./templates/condiciones_uso.html:28
 msgid ""
-"La Fundación Smurfit Westrock Colombia, la universidad y quien desarrolla esta plataforma pueden usar la información del inventario para los fines del proyecto: construir el catálogo, elaborar la "
-"documentación académica y, en el futuro, fines educativos relacionados."
+"La Fundación Smurfit Westrock Colombia, la universidad y quien desarrolla"
+" esta plataforma pueden usar la información del inventario para los fines"
+" del proyecto: construir el catálogo, elaborar la documentación académica"
+" y, en el futuro, fines educativos relacionados."
 msgstr ""
-"Fundación Smurfit Westrock Colombia, the university, and whoever develops this platform may use the inventory data for the purposes of the project: building the catalog, preparing academic "
-"documentation, and, in the future, related educational purposes."
+"Fundación Smurfit Westrock Colombia, the university, and whoever develops"
+" this platform may use the inventory data for the purposes of the "
+"project: building the catalog, preparing academic documentation, and, in "
+"the future, related educational purposes."
 
 #: ./templates/condiciones_uso.html:31
-msgid "Usar no es lo mismo que ser dueño: en ningún caso esas organizaciones adquieren la autoría de tu aporte."
-msgstr "Using is not the same as owning: those organizations never acquire authorship of your contribution."
+msgid ""
+"Usar no es lo mismo que ser dueño: en ningún caso esas organizaciones "
+"adquieren la autoría de tu aporte."
+msgstr ""
+"Using is not the same as owning: those organizations never acquire "
+"authorship of your contribution."
 
 #: ./templates/condiciones_uso.html:37
 msgid "3. Tu identidad"
 msgstr "3. Your identity"
 
 #: ./templates/condiciones_uso.html:40
-msgid "En público, tus aportes se muestran con tu seudónimo. Tu nombre real y tu correo nunca se publican; solo los puede ver un Revisor o un Administrador, y únicamente para gestionar la plataforma."
-msgstr "In public, your contributions are shown under your nickname. Your real name and email are never published; only a Reviewer or Administrator can see them, and only to manage the platform."
+msgid ""
+"En público, tus aportes se muestran con tu seudónimo. Tu nombre real y tu"
+" correo nunca se publican; solo los puede ver un Revisor o un "
+"Administrador, y únicamente para gestionar la plataforma."
+msgstr ""
+"In public, your contributions are shown under your nickname. Your real "
+"name and email are never published; only a Reviewer or Administrator can "
+"see them, and only to manage the platform."
 
 #: ./templates/condiciones_uso.html:46
 msgid "4. La ubicación exacta no se publica"
 msgstr "4. The exact location is never published"
 
 #: ./templates/condiciones_uso.html:49
-msgid "Si registras coordenadas, se guardan completas pero nunca se muestran en público — solo el lugar en texto. Es una medida para no facilitar la localización de especies vulnerables."
-msgstr "If you record coordinates, they are stored in full but never shown in public — only the place as text. This protects vulnerable species from being located."
+msgid ""
+"Si registras coordenadas, se guardan completas pero nunca se muestran en "
+"público — solo el lugar en texto. Es una medida para no facilitar la "
+"localización de especies vulnerables."
+msgstr ""
+"If you record coordinates, they are stored in full but never shown in "
+"public — only the place as text. This protects vulnerable species from "
+"being located."
 
 #: ./templates/condiciones_uso.html:55
 msgid "5. Solo fotos propias o con autorización"
 msgstr "5. Only your own photos, or ones you're authorized to use"
 
 #: ./templates/condiciones_uso.html:58
-msgid "Las fotografías que subas deben ser tuyas o contar con autorización de quien las tomó. No se publica material tomado de internet."
-msgstr "The photos you upload must be your own or have permission from whoever took them. Material taken from the internet is not published."
+msgid ""
+"Las fotografías que subas deben ser tuyas o contar con autorización de "
+"quien las tomó. No se publica material tomado de internet."
+msgstr ""
+"The photos you upload must be your own or have permission from whoever "
+"took them. Material taken from the internet is not published."
 
 #: ./templates/condiciones_uso.html:64
 msgid "6. Todo pasa por revisión"
 msgstr "6. Everything goes through review"
 
 #: ./templates/condiciones_uso.html:67
-msgid "Ningún aporte se publica sin que un Revisor lo apruebe. Si te devuelven un registro, siempre viene con un motivo explicado — se conserva, no se elimina — y puedes corregirlo y reenviarlo."
-msgstr "No contribution is published until a Reviewer approves it. If a record is returned to you, it always comes with an explained reason — it is kept, not deleted — and you can correct and resend it."
+msgid ""
+"Ningún aporte se publica sin que un Revisor lo apruebe. Si te devuelven "
+"un registro, siempre viene con un motivo explicado — se conserva, no se "
+"elimina — y puedes corregirlo y reenviarlo."
+msgstr ""
+"No contribution is published until a Reviewer approves it. If a record is"
+" returned to you, it always comes with an explained reason — it is kept, "
+"not deleted — and you can correct and resend it."
 
 #: ./templates/cuentas/_boton_google.html:4
 msgid "o"
@@ -892,7 +1011,8 @@ msgid "Continuar con Google"
 msgstr "Continue with Google"
 
 # | msgid "Contraseña"
-#: ./templates/cuentas/contrasena_completa.html:4 ./templates/cuentas/contrasena_completa.html:12
+#: ./templates/cuentas/contrasena_completa.html:4
+#: ./templates/cuentas/contrasena_completa.html:12
 msgid "Contraseña actualizada"
 msgstr "Password updated"
 
@@ -901,7 +1021,8 @@ msgid "Ya puedes iniciar sesión con tu contraseña nueva."
 msgstr "You can now log in with your new password."
 
 # | msgid "Confirmar contraseña"
-#: ./templates/cuentas/contrasena_confirmar.html:4 ./templates/cuentas/contrasena_confirmar.html:12
+#: ./templates/cuentas/contrasena_confirmar.html:4
+#: ./templates/cuentas/contrasena_confirmar.html:12
 msgid "Elegir contraseña nueva"
 msgstr "Choose a new password"
 
@@ -916,21 +1037,30 @@ msgid "Guardar contraseña"
 msgstr "Save password"
 
 #: ./templates/cuentas/contrasena_confirmar.html:36
-msgid "Este enlace para elegir una contraseña nueva ya no es válido — puede que ya lo hayas usado, o que haya caducado. Pide uno nuevo."
-msgstr "This link to choose a new password is no longer valid — you may have already used it, or it may have expired. Request a new one."
+msgid ""
+"Este enlace para elegir una contraseña nueva ya no es válido — puede que "
+"ya lo hayas usado, o que haya caducado. Pide uno nuevo."
+msgstr ""
+"This link to choose a new password is no longer valid — you may have "
+"already used it, or it may have expired. Request a new one."
 
 #: ./templates/cuentas/contrasena_confirmar.html:38
 msgid "Pedir un enlace nuevo"
 msgstr "Request a new link"
 
 # | msgid "Confirmar contraseña"
-#: ./templates/cuentas/contrasena_recuperar.html:4 ./templates/cuentas/contrasena_recuperar.html:12
+#: ./templates/cuentas/contrasena_recuperar.html:4
+#: ./templates/cuentas/contrasena_recuperar.html:12
 msgid "Recuperar contraseña"
 msgstr "Reset password"
 
 #: ./templates/cuentas/contrasena_recuperar.html:14
-msgid "Escribe el correo de tu cuenta y te enviamos un enlace para elegir una contraseña nueva."
-msgstr "Enter your account's email and we'll send you a link to choose a new password."
+msgid ""
+"Escribe el correo de tu cuenta y te enviamos un enlace para elegir una "
+"contraseña nueva."
+msgstr ""
+"Enter your account's email and we'll send you a link to choose a new "
+"password."
 
 # | msgid "Enviar"
 #: ./templates/cuentas/contrasena_recuperar.html:27
@@ -938,32 +1068,46 @@ msgid "Enviar enlace"
 msgstr "Send link"
 
 # | msgid "Iniciar sesión"
-#: ./templates/cuentas/contrasena_recuperar.html:31 ./templates/cuentas/contrasena_recuperar_enviado.html:18
+#: ./templates/cuentas/contrasena_recuperar.html:31
+#: ./templates/cuentas/contrasena_recuperar_enviado.html:18
 msgid "Volver a iniciar sesión"
 msgstr "Back to log in"
 
 # | msgid "revisores"
 # | msgid "Revisor"
-#: ./templates/cuentas/contrasena_recuperar_enviado.html:4 ./templates/cuentas/contrasena_recuperar_enviado.html:12
+#: ./templates/cuentas/contrasena_recuperar_enviado.html:4
+#: ./templates/cuentas/contrasena_recuperar_enviado.html:12
 msgid "Revisa tu correo"
 msgstr "Check your email"
 
 #: ./templates/cuentas/contrasena_recuperar_enviado.html:14
-msgid "Si el correo que escribiste está registrado, te enviamos un enlace para elegir una contraseña nueva. Puede tardar unos minutos en llegar."
-msgstr "If the email you entered is registered, we've sent a link to choose a new password. It may take a few minutes to arrive."
+msgid ""
+"Si el correo que escribiste está registrado, te enviamos un enlace para "
+"elegir una contraseña nueva. Puede tardar unos minutos en llegar."
+msgstr ""
+"If the email you entered is registered, we've sent a link to choose a new"
+" password. It may take a few minutes to arrive."
 
 #: ./templates/cuentas/correo_recuperar_contrasena.txt:2
 #, python-format
-msgid "Recibimos un pedido para cambiar la contraseña de tu cuenta en Ojo Avizor (%(user)s)."
-msgstr "We received a request to change the password for your Ojo Avizor account (%(user)s)."
+msgid ""
+"Recibimos un pedido para cambiar la contraseña de tu cuenta en Ojo Avizor"
+" (%(user)s)."
+msgstr ""
+"We received a request to change the password for your Ojo Avizor account "
+"(%(user)s)."
 
 #: ./templates/cuentas/correo_recuperar_contrasena.txt:4
 msgid "Si fuiste tú, entra a este enlace para elegir una contraseña nueva:"
 msgstr "If this was you, follow this link to choose a new password:"
 
 #: ./templates/cuentas/correo_recuperar_contrasena.txt:7
-msgid "Si no lo pediste tú, ignora este correo: tu contraseña sigue siendo la misma."
-msgstr "If you didn't request this, ignore this email: your password stays the same."
+msgid ""
+"Si no lo pediste tú, ignora este correo: tu contraseña sigue siendo la "
+"misma."
+msgstr ""
+"If you didn't request this, ignore this email: your password stays the "
+"same."
 
 #: ./templates/cuentas/correo_recuperar_contrasena.txt:9
 msgid "El equipo de Ojo Avizor"
@@ -973,15 +1117,19 @@ msgstr "The Ojo Avizor team"
 msgid "Recuperar tu contraseña en Ojo Avizor"
 msgstr "Reset your Ojo Avizor password"
 
-#: ./templates/cuentas/mi_cuenta.html:28 ./templates/cuentas/panel_admin.html:85
+#: ./templates/cuentas/mi_cuenta.html:28
+#: ./templates/cuentas/panel_admin.html:85
 msgid "Miembro desde"
 msgstr "Member since"
 
 #: ./templates/cuentas/mi_cuenta.html:33
-msgid "Tu nombre real y tu correo nunca se muestran en público — solo tu seudónimo."
+msgid ""
+"Tu nombre real y tu correo nunca se muestran en público — solo tu "
+"seudónimo."
 msgstr "Your real name and email are never shown in public — only your nickname."
 
-#: ./templates/cuentas/mi_cuenta.html:24 ./templates/registros/ranking_observadores.html:19
+#: ./templates/cuentas/mi_cuenta.html:24
+#: ./templates/registros/ranking_observadores.html:19
 msgid "Días seguidos registrando"
 msgstr "Consecutive days logging sightings"
 
@@ -994,8 +1142,12 @@ msgid "Notificaciones por correo"
 msgstr "Email notifications"
 
 #: ./templates/cuentas/mi_cuenta.html:42
-msgid "Avisos como la aprobación o devolución de un avistamiento, o la respuesta a una solicitud para ser revisor."
-msgstr "Notices like a sighting being approved or returned, or a response to a reviewer request."
+msgid ""
+"Avisos como la aprobación o devolución de un avistamiento, o la respuesta"
+" a una solicitud para ser revisor."
+msgstr ""
+"Notices like a sighting being approved or returned, or a response to a "
+"reviewer request."
 
 #: ./templates/cuentas/mi_cuenta.html:48
 msgid "Quiero recibir estos correos"
@@ -1009,11 +1161,13 @@ msgstr "My contributions"
 msgid "en total"
 msgstr "total"
 
-#: ./templates/cuentas/mi_cuenta.html:64 ./templates/cuentas/panel_admin.html:23
+#: ./templates/cuentas/mi_cuenta.html:64
+#: ./templates/cuentas/panel_admin.html:23
 msgid "aprobados"
 msgstr "approved"
 
-#: ./templates/cuentas/mi_cuenta.html:68 ./templates/cuentas/panel_admin.html:19
+#: ./templates/cuentas/mi_cuenta.html:68
+#: ./templates/cuentas/panel_admin.html:19
 msgid "pendientes"
 msgstr "pending"
 
@@ -1071,11 +1225,14 @@ msgid_plural "Tienes %(contador)s registros devueltos esperando corrección."
 msgstr[0] "You have %(contador)s returned record waiting for correction."
 msgstr[1] "You have %(contador)s returned records waiting for correction."
 
-#: ./templates/cuentas/mi_cuenta.html:83 ./templates/registros/registro_enviado.html:18
+#: ./templates/cuentas/mi_cuenta.html:83
+#: ./templates/registros/registro_enviado.html:18
 msgid "Ver mis avistamientos"
 msgstr "View my sightings"
 
-#: ./templates/cuentas/mi_cuenta.html:86 ./templates/registros/registro_crear.html:4 ./templates/registros/registro_crear.html:21
+#: ./templates/cuentas/mi_cuenta.html:86
+#: ./templates/registros/registro_crear.html:4
+#: ./templates/registros/registro_crear.html:21
 msgid "Registrar avistamiento"
 msgstr "Report sighting"
 
@@ -1084,13 +1241,21 @@ msgid "¿Quieres ser un revisor voluntario?"
 msgstr "Want to be a volunteer reviewer?"
 
 #: ./templates/cuentas/mi_cuenta.html:96
-msgid "Un Revisor crea y edita fichas de especie, y aprueba o devuelve los avistamientos que llegan de la comunidad. Es un compromiso de confianza: revisas contenido antes de que se publique."
-msgstr "A Reviewer creates and edits species records, and approves or returns sightings submitted by the community. It's a role built on trust: you review content before it goes public."
+msgid ""
+"Un Revisor crea y edita fichas de especie, y aprueba o devuelve los "
+"avistamientos que llegan de la comunidad. Es un compromiso de confianza: "
+"revisas contenido antes de que se publique."
+msgstr ""
+"A Reviewer creates and edits species records, and approves or returns "
+"sightings submitted by the community. It's a role built on trust: you "
+"review content before it goes public."
 
 #: ./templates/cuentas/mi_cuenta.html:102
 #, python-format
 msgid "Tu solicitud del %(fecha)s está esperando respuesta de un administrador."
-msgstr "Your request from %(fecha)s is waiting for a response from an administrator."
+msgstr ""
+"Your request from %(fecha)s is waiting for a response from an "
+"administrator."
 
 #: ./templates/cuentas/mi_cuenta.html:107
 msgid "Cuéntale al administrador por qué te gustaría ser revisor (opcional)"
@@ -1128,7 +1293,8 @@ msgstr "Requests to become a reviewer"
 msgid "Rechazar"
 msgstr "Reject"
 
-#: ./templates/cuentas/panel_admin.html:67 ./templates/curaduria/bandeja.html:66 ./templates/curaduria/detalle.html:91
+#: ./templates/cuentas/panel_admin.html:67
+#: ./templates/curaduria/bandeja.html:66 ./templates/curaduria/detalle.html:91
 msgid "Aprobar"
 msgstr "Approve"
 
@@ -1175,11 +1341,14 @@ msgstr "Your real name is never shown in public — only your nickname."
 #: ./templates/cuentas/usuario_registrar.html:37
 #, python-format
 msgid ""
-"Al registrarte, aceptas las <a href=\"%(url_condiciones)s\" class=\"underline hover:text-stone-700 dark:hover:text-stone-300\" target=\"_blank\">condiciones de uso</a>: lo que aportas sigue siendo "
+"Al registrarte, aceptas las <a href=\"%(url_condiciones)s\" "
+"class=\"underline hover:text-stone-700 dark:hover:text-stone-300\" "
+"target=\"_blank\">condiciones de uso</a>: lo que aportas sigue siendo "
 "tuyo."
 msgstr ""
-"By signing up, you accept the <a href=\"%(url_condiciones)s\" class=\"underline hover:text-stone-700 dark:hover:text-stone-300\" target=\"_blank\">terms of use</a>: what you contribute is still "
-"yours."
+"By signing up, you accept the <a href=\"%(url_condiciones)s\" "
+"class=\"underline hover:text-stone-700 dark:hover:text-stone-300\" "
+"target=\"_blank\">terms of use</a>: what you contribute is still yours."
 
 #: ./templates/cuentas/usuario_registrar.html:39
 msgid "Registrarme"
@@ -1225,7 +1394,8 @@ msgstr "Return"
 msgid "Estás al día: no hay registros pendientes de revisión."
 msgstr "You're all caught up: no records waiting for review."
 
-#: ./templates/curaduria/detalle.html:27 ./templates/registros/registro_mis.html:36
+#: ./templates/curaduria/detalle.html:27
+#: ./templates/registros/registro_mis.html:36
 msgid "Lugar"
 msgstr "Place"
 
@@ -1257,7 +1427,8 @@ msgstr "Substrate"
 msgid "Información adicional"
 msgstr "Additional information"
 
-#: ./templates/curaduria/detalle.html:76 ./templates/registros/registro_crear.html:84
+#: ./templates/curaduria/detalle.html:76
+#: ./templates/registros/registro_crear.html:84
 msgid "Fotografías"
 msgstr "Photos"
 
@@ -1281,16 +1452,25 @@ msgstr "Add to the record"
 
 #: ./templates/curaduria/detalle.html:114
 #, python-format
-msgid "El observador sugiere \"%(nombre)s\", pero no se puede agregar sin identificar primero la especie."
-msgstr "The observer suggests \"%(nombre)s\", but it can't be added without first identifying the species."
+msgid ""
+"El observador sugiere \"%(nombre)s\", pero no se puede agregar sin "
+"identificar primero la especie."
+msgstr ""
+"The observer suggests \"%(nombre)s\", but it can't be added without first"
+" identifying the species."
 
 #: ./templates/curaduria/devolver.html:4 ./templates/curaduria/devolver.html:11
 msgid "Devolver registro"
 msgstr "Return record"
 
 #: ./templates/curaduria/devolver.html:18
-msgid "El motivo es obligatorio y el autor lo verá para poder corregir su registro (RN-03, RN-08): no se modifica el contenido, solo se explica por qué se devuelve."
-msgstr "A reason is required, and the author will see it to correct their record: the content itself is never edited, only explained."
+msgid ""
+"El motivo es obligatorio y el autor lo verá para poder corregir su "
+"registro (RN-03, RN-08): no se modifica el contenido, solo se explica por"
+" qué se devuelve."
+msgstr ""
+"A reason is required, and the author will see it to correct their record:"
+" the content itself is never edited, only explained."
 
 #: ./templates/curaduria/devolver.html:25
 msgid "Devolver con este motivo"
@@ -1335,15 +1515,22 @@ msgstr[1] "%(contador)s contributions"
 msgid "Todavía no hay avistamientos publicados para armar un ranking."
 msgstr "There are no published sightings yet to build a ranking."
 
-#: ./templates/_nav_enlaces.html:10 ./templates/registros/identificar_listar.html:9 ./templates/registros/identificar_detalle.html:4
+#: ./templates/_nav_enlaces.html:10
+#: ./templates/registros/identificar_detalle.html:4
+#: ./templates/registros/identificar_listar.html:9
 msgid "Ayudar a identificar"
 msgstr "Help identify"
 
 #: ./templates/registros/identificar_listar.html:10
-msgid "Avistamientos que su autor no supo identificar. Comenta si reconoces el ave — un revisor decide con lo que aporte la comunidad."
-msgstr "Sightings their author couldn't identify. Comment if you recognize the bird — a reviewer decides with the community's input."
+msgid ""
+"Avistamientos que su autor no supo identificar. Comenta si reconoces el "
+"ave — un revisor decide con lo que aporte la comunidad."
+msgstr ""
+"Sightings their author couldn't identify. Comment if you recognize the "
+"bird — a reviewer decides with the community's input."
 
-#: ./templates/registros/identificar_listar.html:34 ./templates/registros/identificar_detalle.html:47
+#: ./templates/registros/identificar_detalle.html:47
+#: ./templates/registros/identificar_listar.html:34
 #, python-format
 msgid "%(contador)s comentario"
 msgid_plural "%(contador)s comentarios"
@@ -1358,7 +1545,7 @@ msgstr "No sightings are waiting for identification help right now."
 msgid "Todavía no hay comentarios — sé el primero en ayudar a identificarla."
 msgstr "No comments yet — be the first to help identify it."
 
-#: ./templates/registros/identificar_detalle.html:78 ./apps/registros/forms.py
+#: ./apps/registros/forms.py ./templates/registros/identificar_detalle.html:78
 msgid "Deja tu comentario"
 msgstr "Leave your comment"
 
@@ -1374,7 +1561,8 @@ msgstr "Do you recognize this bird? Tell us which species you think it is and wh
 msgid "Comentar"
 msgstr "Comment"
 
-#: ./templates/registros/registro_crear.html:4 ./templates/registros/registro_crear.html:21
+#: ./templates/registros/registro_crear.html:4
+#: ./templates/registros/registro_crear.html:21
 msgid "Corregir avistamiento"
 msgstr "Correct sighting"
 
@@ -1383,8 +1571,12 @@ msgid "Motivo de la devolución:"
 msgstr "Reason for returning it:"
 
 #: ./templates/registros/registro_crear.html:34
-msgid "Sin conexión: el registro quedó guardado en este dispositivo y se enviará solo cuando vuelva la señal."
-msgstr "Offline: the record was saved on this device and will be sent once you're back online."
+msgid ""
+"Sin conexión: el registro quedó guardado en este dispositivo y se enviará"
+" solo cuando vuelva la señal."
+msgstr ""
+"Offline: the record was saved on this device and will be sent once you're"
+" back online."
 
 #: ./templates/registros/registro_crear.html:42
 msgid "¿Qué viste?"
@@ -1404,8 +1596,12 @@ msgid "Toca el mapa para marcar el sitio, o arrastra el punto para ajustarlo."
 msgstr "Tap the map to mark the spot, or drag the point to adjust it."
 
 #: ./templates/registros/registro_crear.html:59
-msgid "Sin conexión no se ve el mapa (las imágenes vienen de internet), pero puedes escribir la latitud y longitud a mano si las conoces."
-msgstr "The map doesn't show offline (its images come from the internet), but you can type in the latitude and longitude by hand if you know them."
+msgid ""
+"Sin conexión no se ve el mapa (las imágenes vienen de internet), pero "
+"puedes escribir la latitud y longitud a mano si las conoces."
+msgstr ""
+"The map doesn't show offline (its images come from the internet), but you"
+" can type in the latitude and longitude by hand if you know them."
 
 #: ./templates/registros/registro_crear.html:65
 msgid "Buscando…"
@@ -1440,8 +1636,12 @@ msgid "¡Gracias por tu aporte!"
 msgstr "Thanks for your contribution!"
 
 #: ./templates/registros/registro_enviado.html:14
-msgid "Tu avistamiento quedó pendiente de revisión. En cuanto un Revisor lo apruebe, aparecerá en el catálogo público con tu seudónimo."
-msgstr "Your sighting is now pending review. Once a Reviewer approves it, it will appear in the public catalog under your nickname."
+msgid ""
+"Tu avistamiento quedó pendiente de revisión. En cuanto un Revisor lo "
+"apruebe, aparecerá en el catálogo público con tu seudónimo."
+msgstr ""
+"Your sighting is now pending review. Once a Reviewer approves it, it will"
+" appear in the public catalog under your nickname."
 
 #: ./templates/registros/registro_enviado.html:21
 msgid "Registrar otro avistamiento"
@@ -1463,7 +1663,8 @@ msgstr "Species"
 msgid "Fecha"
 msgstr "Date"
 
-#: ./templates/registros/registro_mis.html:53 ./templates/registros/registro_mis.html:73
+#: ./templates/registros/registro_mis.html:53
+#: ./templates/registros/registro_mis.html:73
 msgid "Corregir"
 msgstr "Correct"
 
@@ -1472,8 +1673,12 @@ msgid "No tienes avistamientos con este estado."
 msgstr "You have no sightings with this status."
 
 #: ./templates/registros/registro_mis.html:83
-msgid "Todavía no has registrado ningún avistamiento — cuando veas un ave, este es su lugar."
-msgstr "You haven't recorded a sighting yet — when you spot a bird, this is the place for it."
+msgid ""
+"Todavía no has registrado ningún avistamiento — cuando veas un ave, este "
+"es su lugar."
+msgstr ""
+"You haven't recorded a sighting yet — when you spot a bird, this is the "
+"place for it."
 
 #: ./templates/registros/registro_mis.html:84
 msgid "Registrar mi primer avistamiento"
@@ -1631,12 +1836,51 @@ msgstr "Vaupés"
 msgid "Vichada"
 msgstr "Vichada"
 
-#~ msgid "Sin conexión no se pueden adjuntar fotos; se pueden agregar más tarde desde la bandeja de revisión."
-#~ msgstr "Photos can't be attached while offline; they can be added later from the review queue."
+#: ./templates/catalogo/portada.html
+msgid "Inventario participativo de avifauna"
+msgstr "Participatory bird inventory"
 
-#~ msgid "Sin conexión no se pueden enviar fotografías. Quítalas del formulario o espera a recuperar la señal."
-#~ msgstr "Photos can't be sent while offline. Remove them from the form or wait until you're back online."
+#: ./templates/catalogo/portada.html
+msgid "De la libreta de campo a un inventario que todos pueden consultar"
+msgstr "From the field notebook to an inventory anyone can consult"
 
-#~ msgid "Panel"
-#~ msgstr "Dashboard"
+#: ./templates/catalogo/portada.html
+msgid "Cómo funciona"
+msgstr "How it works"
+
+#: ./templates/catalogo/portada.html
+msgid "Por familia"
+msgstr "By family"
+
+#: ./templates/catalogo/portada.html
+msgid "Explora el catálogo por familia"
+msgstr "Explore the catalog by family"
+
+#: ./templates/catalogo/portada.html
+msgid "Recién agregadas"
+msgstr "Recently added"
+
+#: ./templates/catalogo/portada.html
+msgid "Últimas fichas del inventario"
+msgstr "Latest species added"
+
+#: ./templates/catalogo/portada.html
+msgid "En vivo"
+msgstr "Live"
+
+#: ./templates/catalogo/portada.html
+msgid "Actividad reciente de la comunidad"
+msgstr "Recent community activity"
+
+#: ./templates/catalogo/portada.html
+msgid "¿Viste un ave hoy?"
+msgstr "Did you see a bird today?"
+
+#: ./templates/catalogo/portada.html
+msgid ""
+"Súmala al inventario — toma cinco minutos y tu aporte queda documentado "
+"para todo el municipio."
+msgstr ""
+"Add it to the inventory — it takes five minutes and your contribution "
+"gets documented for the whole municipality."
 

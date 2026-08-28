@@ -38,9 +38,18 @@ caso el script la quita antes de que llegue a pintarse, sin parpadeo.
         <img src="{% static 'catalogo/portada-nevado.jpg' %}" alt="" class="w-full h-full object-cover">
         <div class="absolute inset-0" style="background: linear-gradient(0deg, var(--azul-profundo) 8%, color-mix(in srgb, var(--azul-profundo) 78%, transparent) 46%, color-mix(in srgb, var(--azul-profundo) 35%, transparent) 100%);"></div>
     </div>
-    <div class="page-wide relative !pt-20 sm:!pt-28 !pb-16 sm:!pb-20">
+    <div class="page-wide relative !pt-24 sm:!pt-32 !pb-24 sm:!pb-28">
         <div class="max-w-2xl">
-            <h1 class="font-display italic text-4xl sm:text-6xl font-bold text-white leading-[1.08] text-balance">
+            {% comment %}
+            Texto blanco con opacidad, no --cian: la guía de identidad visual
+            prohíbe el cian como color de texto pequeño (2,6:1 de contraste,
+            insuficiente incluso sobre fondo claro) para cualquier caso, sin
+            excepción por fondo oscuro — apartado 2 de identidad-visual.md.
+            {% endcomment %}
+            <p class="text-xs sm:text-sm font-bold tracking-[0.14em] uppercase text-[var(--texto-en-barra)] opacity-70">
+                {% translate "Inventario participativo de avifauna" %}
+            </p>
+            <h1 class="font-display italic text-4xl sm:text-6xl font-bold text-white leading-[1.08] text-balance mt-3">
                 {% translate "Cada ave que ves, cuenta una historia del territorio" %}
             </h1>
             <p class="text-[var(--texto-en-barra)] opacity-90 mt-4 max-w-md text-lg">
@@ -66,61 +75,114 @@ caso el script la quita antes de que llegue a pintarse, sin parpadeo.
     </div>
 </div>
 
-<div class="page-wide -mt-14 relative">
-    <div class="grid grid-cols-3 gap-3 sm:gap-4 mb-12">
-        <a href="{% url 'catalogo:publico_listado' %}" class="card-interactive p-4 sm:p-5 text-center">
-            <p class="font-display text-2xl sm:text-3xl font-bold text-[var(--azul-medio)]">{{ total_especies }}</p>
-            <p class="text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-0.5">{% translate "especies" %}</p>
+<div class="page-wide -mt-16 sm:-mt-20 relative">
+    {% comment %}
+    Franja de cifras (pedido explícito del 27/08/2026, "landing page muy
+    profesional"): antes eran tres números pelados en una grilla; ahora
+    cada uno lleva ícono y rótulo dentro de una sola tarjeta flotante que
+    monta sobre el borde del hero — el mismo recurso que usan la mayoría de
+    landing pages reales para mostrar cifras de confianza sin que se
+    sientan una sección aparte del encabezado.
+
+    Los títulos y textos de acá abajo usan var(--texto), no
+    var(--azul-profundo): esa variable cambia de significado en modo
+    oscuro (pasa a ser color de superficie, casi igual al fondo, no de
+    texto — mismo motivo ya documentado en .btn-secondary de entrada.css)
+    y quedaba casi ilegible ahí (bug real encontrado el 27/08/2026,
+    verificado forzando el tema oscuro). --texto está pensado para leerse
+    en los dos temas.
+    {% endcomment %}
+    <div class="card grid grid-cols-3 divide-x divide-[var(--borde)] mb-14 sm:mb-16 overflow-hidden">
+        <a href="{% url 'catalogo:publico_listado' %}" class="group flex flex-col items-center gap-1.5 sm:flex-row sm:gap-3 sm:justify-center p-4 sm:p-6 hover:bg-[var(--superficie)] transition-colors">
+            <span class="hidden sm:flex flex-shrink-0 w-10 h-10 rounded-full items-center justify-center bg-[var(--superficie-alt)] text-[var(--azul-medio)] group-hover:bg-[var(--azul-medio)] group-hover:text-white transition-colors">
+                {% icono "ave" clase="w-5 h-5" %}
+            </span>
+            <span>
+                <p class="font-display text-2xl sm:text-3xl font-bold text-[var(--azul-medio)] text-center sm:text-left">{{ total_especies }}</p>
+                <p class="text-xs sm:text-sm text-[var(--texto-suave)] mt-0.5 text-center sm:text-left">{% translate "especies" %}</p>
+            </span>
         </a>
-        <a href="{% url 'registros:avistamientos_publicos' %}" class="card-interactive p-4 sm:p-5 text-center">
-            <p class="font-display text-2xl sm:text-3xl font-bold text-[var(--azul-medio)]">{{ total_avistamientos }}</p>
-            <p class="text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-0.5">{% translate "avistamientos" %}</p>
+        <a href="{% url 'registros:avistamientos_publicos' %}" class="group flex flex-col items-center gap-1.5 sm:flex-row sm:gap-3 sm:justify-center p-4 sm:p-6 hover:bg-[var(--superficie)] transition-colors">
+            <span class="hidden sm:flex flex-shrink-0 w-10 h-10 rounded-full items-center justify-center bg-[var(--superficie-alt)] text-[var(--azul-medio)] group-hover:bg-[var(--azul-medio)] group-hover:text-white transition-colors">
+                {% icono "ubicacion" clase="w-5 h-5" %}
+            </span>
+            <span>
+                <p class="font-display text-2xl sm:text-3xl font-bold text-[var(--azul-medio)] text-center sm:text-left">{{ total_avistamientos }}</p>
+                <p class="text-xs sm:text-sm text-[var(--texto-suave)] mt-0.5 text-center sm:text-left">{% translate "avistamientos" %}</p>
+            </span>
         </a>
-        <a href="{% url 'registros:ranking_observadores' %}" class="card-interactive p-4 sm:p-5 text-center">
-            <p class="font-display text-2xl sm:text-3xl font-bold text-[var(--azul-medio)]">{{ total_observadores }}</p>
-            <p class="text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-0.5">{% translate "observadores" %}</p>
+        <a href="{% url 'registros:ranking_observadores' %}" class="group flex flex-col items-center gap-1.5 sm:flex-row sm:gap-3 sm:justify-center p-4 sm:p-6 hover:bg-[var(--superficie)] transition-colors">
+            <span class="hidden sm:flex flex-shrink-0 w-10 h-10 rounded-full items-center justify-center bg-[var(--superficie-alt)] text-[var(--azul-medio)] group-hover:bg-[var(--azul-medio)] group-hover:text-white transition-colors">
+                {% icono "usuarios" clase="w-5 h-5" %}
+            </span>
+            <span>
+                <p class="font-display text-2xl sm:text-3xl font-bold text-[var(--azul-medio)] text-center sm:text-left">{{ total_observadores }}</p>
+                <p class="text-xs sm:text-sm text-[var(--texto-suave)] mt-0.5 text-center sm:text-left">{% translate "observadores" %}</p>
+            </span>
         </a>
     </div>
 
-    <div class="mb-12" data-reveal>
-        <div class="max-w-2xl">
-            <h2 class="titulo-pagina !text-xl mb-2">{% translate "¿Qué es Ojo Avizor?" %}</h2>
-            <p class="text-stone-600 dark:text-stone-400">
+    <div class="mb-16 sm:mb-20" data-reveal>
+        <p class="text-xs sm:text-sm font-bold tracking-[0.14em] uppercase text-[var(--azul-medio)]">{% translate "Cómo funciona" %}</p>
+        <div class="max-w-2xl mt-2">
+            <h2 class="titulo-pagina !text-xl sm:!text-2xl mb-2" style="color: var(--texto);">{% translate "De la libreta de campo a un inventario que todos pueden consultar" %}</h2>
+            <p class="text-[var(--texto-suave)]">
                 {% blocktranslate %}En Pijao hay años de observadores anotando qué aves ven, dónde y cuándo — en cuadernos, en la memoria, en grupos de mensajes. Ojo Avizor junta ese conocimiento disperso en un solo inventario abierto, con los nombres que la gente de acá realmente usa.{% endblocktranslate %}
             </p>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-5 mt-7">
-            <div class="flex gap-3" data-reveal style="transition-delay: 0ms">
-                <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--superficie-alt)] text-[var(--azul-medio)] flex items-center justify-center font-display font-bold text-sm">1</span>
+
+        {% comment %}
+        Los tres pasos representan el mecanismo real de dos capas del
+        proyecto (CLAUDE.md, apartado 2): registro → revisión → ficha de
+        especie. La línea que los conecta no es decoración suelta, hace
+        visible ese flujo — es la única secuencia real de la página, así
+        que la numeración tiene sentido acá (a diferencia de una lista
+        cualquiera, donde solo serviría de relleno visual).
+        {% endcomment %}
+        {% comment %}
+        La línea conectora usa calc((100% - 48px) / 6) a cada lado, no un
+        16.666% aproximado: con gap-x-6 (24px, dos huecos entre tres
+        columnas = 48px que no son ancho de columna) un porcentaje simple
+        queda corrido respecto al centro real de la primera y la última
+        columna. Los tres pasos van centrados (items-center, no items-start)
+        para que el círculo quede exactamente en el centro de su columna —
+        si no, la línea nunca calza con los círculos sin importar qué tan
+        preciso sea el cálculo (bug real encontrado el 27/08/2026). */
+        {% endcomment %}
+        <div class="relative grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-8 mt-9">
+            <div class="hidden sm:block absolute top-6 h-px" style="left: calc((100% - 48px) / 6); right: calc((100% - 48px) / 6); background: var(--borde);" aria-hidden="true"></div>
+            <div class="relative flex flex-col items-center text-center gap-3" data-reveal style="transition-delay: 0ms">
+                <span class="relative z-10 flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center font-display font-bold text-lg" style="background: var(--azul-profundo); color: white; box-shadow: 0 0 0 6px var(--superficie);">1</span>
                 <div>
-                    <p class="font-semibold text-stone-900 dark:text-stone-100">{% translate "Registras lo que ves" %}</p>
-                    <p class="text-sm text-stone-500 dark:text-stone-400 mt-0.5">{% translate "Especie, lugar y fecha. Con foto si tienes, sin ella si no." %}</p>
+                    <p class="font-semibold" style="color: var(--texto);">{% translate "Registras lo que ves" %}</p>
+                    <p class="text-sm text-[var(--texto-suave)] mt-0.5">{% translate "Especie, lugar y fecha. Con foto si tienes, sin ella si no." %}</p>
                 </div>
             </div>
-            <div class="flex gap-3" data-reveal style="transition-delay: 120ms">
-                <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--superficie-alt)] text-[var(--azul-medio)] flex items-center justify-center font-display font-bold text-sm">2</span>
+            <div class="relative flex flex-col items-center text-center gap-3" data-reveal style="transition-delay: 120ms">
+                <span class="relative z-10 flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center font-display font-bold text-lg" style="background: var(--azul-profundo); color: white; box-shadow: 0 0 0 6px var(--superficie);">2</span>
                 <div>
-                    <p class="font-semibold text-stone-900 dark:text-stone-100">{% translate "La comunidad lo revisa" %}</p>
-                    <p class="text-sm text-stone-500 dark:text-stone-400 mt-0.5">{% translate "Un revisor confirma la especie antes de que se publique." %}</p>
+                    <p class="font-semibold" style="color: var(--texto);">{% translate "La comunidad lo revisa" %}</p>
+                    <p class="text-sm text-[var(--texto-suave)] mt-0.5">{% translate "Un revisor confirma la especie antes de que se publique." %}</p>
                 </div>
             </div>
-            <div class="flex gap-3" data-reveal style="transition-delay: 240ms">
-                <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--superficie-alt)] text-[var(--azul-medio)] flex items-center justify-center font-display font-bold text-sm">3</span>
+            <div class="relative flex flex-col items-center text-center gap-3" data-reveal style="transition-delay: 240ms">
+                <span class="relative z-10 flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center font-display font-bold text-lg" style="background: var(--azul-profundo); color: white; box-shadow: 0 0 0 6px var(--superficie);">3</span>
                 <div>
-                    <p class="font-semibold text-stone-900 dark:text-stone-100">{% translate "La ficha de la especie crece" %}</p>
-                    <p class="text-sm text-stone-500 dark:text-stone-400 mt-0.5">{% translate "Cada avistamiento aprobado suma una foto, un lugar, un dato más." %}</p>
+                    <p class="font-semibold" style="color: var(--texto);">{% translate "La ficha de la especie crece" %}</p>
+                    <p class="text-sm text-[var(--texto-suave)] mt-0.5">{% translate "Cada avistamiento aprobado suma una foto, un lugar, un dato más." %}</p>
                 </div>
             </div>
         </div>
     </div>
 
     {% if familias %}
-    <div class="mb-12" data-reveal>
-        <h2 class="titulo-pagina !text-xl mb-3">{% translate "Explora por familia" %}</h2>
+    <div class="mb-16 sm:mb-20" data-reveal>
+        <p class="text-xs sm:text-sm font-bold tracking-[0.14em] uppercase text-[var(--azul-medio)]">{% translate "Por familia" %}</p>
+        <h2 class="titulo-pagina !text-xl sm:!text-2xl mt-2 mb-4" style="color: var(--texto);">{% translate "Explora el catálogo por familia" %}</h2>
         <div class="flex flex-wrap gap-2">
             {% for familia in familias %}
             <a href="{% url 'catalogo:publico_listado' %}?q={{ familia }}"
-               class="badge bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 hover:bg-[var(--superficie-alt)] hover:text-[var(--azul-medio)] transition-colors">
+               class="badge border border-[var(--borde)] text-[var(--texto-suave)] hover:bg-[var(--superficie-alt)] hover:text-[var(--azul-medio)] hover:border-[var(--azul-medio)] transition-colors">
                 {{ familia }}
             </a>
             {% endfor %}
@@ -129,25 +191,40 @@ caso el script la quita antes de que llegue a pintarse, sin parpadeo.
     {% endif %}
 
     {% if especies_recientes %}
-    <div class="mb-12" data-reveal>
-        <div class="flex justify-between items-center mb-3">
-            <h2 class="titulo-pagina !text-xl">{% translate "Últimas fichas agregadas" %}</h2>
-            <a href="{% url 'catalogo:publico_listado' %}" class="btn-link !text-sm">{% translate "Ver todo el catálogo" %}</a>
+    <div class="mb-16 sm:mb-20" data-reveal>
+        <div class="flex justify-between items-end mb-4">
+            <div>
+                <p class="text-xs sm:text-sm font-bold tracking-[0.14em] uppercase text-[var(--azul-medio)]">{% translate "Recién agregadas" %}</p>
+                <h2 class="titulo-pagina !text-xl sm:!text-2xl mt-2" style="color: var(--texto);">{% translate "Últimas fichas del inventario" %}</h2>
+            </div>
+            <a href="{% url 'catalogo:publico_listado' %}" class="btn-link !text-sm flex-shrink-0">{% translate "Ver todo el catálogo" %}</a>
         </div>
         {% include "catalogo/_resultados_especies.html" with especies=especies_recientes %}
     </div>
     {% endif %}
 
     {% if ultimos_avistamientos %}
-    <div class="mb-4" data-reveal>
-        <h2 class="titulo-pagina !text-xl mb-3">{% translate "Actividad reciente" %}</h2>
-        <ul class="card divide-y divide-stone-100 dark:divide-stone-800">
+    <div class="mb-16 sm:mb-20" data-reveal>
+        <p class="text-xs sm:text-sm font-bold tracking-[0.14em] uppercase text-[var(--azul-medio)]">{% translate "En vivo" %}</p>
+        <h2 class="titulo-pagina !text-xl sm:!text-2xl mt-2 mb-5" style="color: var(--texto);">{% translate "Actividad reciente de la comunidad" %}</h2>
+        {% comment %}
+        Línea de tiempo en vez de la lista dividida plana de antes: cada
+        aporte queda como un punto sobre una línea continua, para que se
+        lea como lo que es — un inventario que crece en el tiempo, no una
+        lista de filas sueltas.
+        {% endcomment %}
+        <ul class="card p-5 sm:p-6">
             {% for avistamiento in ultimos_avistamientos %}
-            <li class="p-4 flex items-start gap-3">
-                <span class="text-stone-400 dark:text-stone-500 mt-0.5">{% icono "ubicacion" clase="w-4 h-4" %}</span>
-                <div class="text-sm min-w-0">
-                    <p class="text-stone-700 dark:text-stone-300">
-                        <span class="font-medium text-stone-900 dark:text-stone-100">{{ avistamiento.usuario.seudonimo }}</span>
+            <li class="relative flex gap-4 pb-6 last:pb-0">
+                {% if not forloop.last %}
+                <span class="absolute left-4 top-9 bottom-0 w-px -translate-x-1/2" style="background: var(--borde);" aria-hidden="true"></span>
+                {% endif %}
+                <span class="relative z-10 flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center" style="background: var(--superficie-alt); color: var(--azul-medio);">
+                    {% icono "ubicacion" clase="w-4 h-4" %}
+                </span>
+                <div class="text-sm min-w-0 pt-1">
+                    <p class="text-[var(--texto)]">
+                        <span class="font-medium" style="color: var(--texto);">{{ avistamiento.usuario.seudonimo }}</span>
                         {% translate "avistó" %}
                         {% if avistamiento.especie %}
                         <a href="{% url 'catalogo:especie_detalle' avistamiento.especie.pk %}" class="font-display italic text-[var(--azul-medio)] hover:underline">{{ avistamiento.especie.nombre_cientifico }}</a>
@@ -156,12 +233,36 @@ caso el script la quita antes de que llegue a pintarse, sin parpadeo.
                         {% endif %}
                         {% translate "en" %} {{ avistamiento.lugar }}
                     </p>
-                    <p class="text-stone-400 dark:text-stone-500 text-xs mt-0.5">{{ avistamiento.fecha_avistamiento }}</p>
+                    <p class="text-[var(--texto-suave)] text-xs mt-0.5">{{ avistamiento.fecha_avistamiento }}</p>
                 </div>
             </li>
             {% endfor %}
         </ul>
     </div>
     {% endif %}
+
+    {% comment %}
+    Cierre con llamado a la acción (pedido explícito del 27/08/2026,
+    "landing page muy profesional"): antes la página terminaba de golpe
+    después de la actividad reciente, sin invitar a nada. Reusa el mismo
+    degradado del hero para que la página abra y cierre con el mismo
+    lenguaje visual, en vez de sentirse cortada.
+    {% endcomment %}
+    <div class="hero rounded-2xl overflow-hidden relative mb-8" data-reveal>
+        <div class="hero-blobs" aria-hidden="true">
+            <div class="absolute -top-16 -right-16 w-64 h-64 rounded-full opacity-20" style="background: var(--cian); filter: blur(60px);"></div>
+        </div>
+        <div class="relative px-6 py-12 sm:px-14 sm:py-16 text-center">
+            <p class="font-display italic text-2xl sm:text-3xl font-bold text-white text-balance">
+                {% translate "¿Viste un ave hoy?" %}
+            </p>
+            <p class="text-[var(--texto-en-barra)] opacity-90 mt-3 max-w-md mx-auto">
+                {% translate "Súmala al inventario — toma cinco minutos y tu aporte queda documentado para todo el municipio." %}
+            </p>
+            <a href="{% if user.is_authenticated %}{% url 'registros:crear' %}{% else %}{% url 'cuentas:registrar' %}{% endif %}" class="btn-primary !bg-white !text-[var(--azul-profundo)] mt-6">
+                {% icono "mas" clase="w-4 h-4" %} {% translate "Registrar un avistamiento" %}
+            </a>
+        </div>
+    </div>
 </div>
 {% endblock %}
