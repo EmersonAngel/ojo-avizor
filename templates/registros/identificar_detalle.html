@@ -82,10 +82,30 @@
                     {% for foto in registro.fotografias.all %}
                     <div x-show="fotoAbierta === {{ forloop.counter0 }}" x-cloak>
                         <img src="{{ foto.archivo.url }}" alt="" class="w-full max-h-[65vh] object-contain rounded-xl">
-                        <div class="mt-3 p-4 rounded-xl text-white"
+                        {% comment %}
+                        Descripción además de autor/lugar/fecha (pedido
+                        explícito del 30/08/2026, mismo criterio que en
+                        templates/curaduria/detalle.html): lo que la
+                        persona escribió sobre el avistamiento, no solo
+                        quién y dónde.
+                        {% endcomment %}
+                        <div class="mt-3 p-4 rounded-xl text-white max-h-[25vh] overflow-y-auto"
                              style="background-color: rgba(255,255,255,.1); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,.16);">
                             <p class="font-semibold">{{ registro.usuario.seudonimo }}</p>
                             <p class="text-sm opacity-80 mt-0.5">{{ registro.lugar }} · {{ registro.fecha_avistamiento }}</p>
+                            {% if registro.comportamiento or registro.sustrato or registro.info_adicional %}
+                            <div class="mt-2.5 pt-2.5 border-t border-white/20 space-y-1.5 text-sm">
+                                {% if registro.comportamiento %}
+                                <p><span class="opacity-70">{% translate "Comportamiento:" %}</span> {{ registro.comportamiento }}</p>
+                                {% endif %}
+                                {% if registro.sustrato %}
+                                <p><span class="opacity-70">{% translate "Sustrato:" %}</span> {{ registro.sustrato }}</p>
+                                {% endif %}
+                                {% if registro.info_adicional %}
+                                <p><span class="opacity-70">{% translate "Información adicional:" %}</span> {{ registro.info_adicional }}</p>
+                                {% endif %}
+                            </div>
+                            {% endif %}
                         </div>
                     </div>
                     {% endfor %}

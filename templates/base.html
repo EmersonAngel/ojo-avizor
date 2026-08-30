@@ -464,17 +464,26 @@ Los comentarios de esta lógica viven aquí afuera, no adentro.
                             {% endif %}
                         </button>
                         {% comment %}
-                        bg-.../85 + backdrop-blur-md: segundo (y último) uso
-                        de "liquid glass" del sitio, junto con la barra
-                        superior — pedido explícito del 30/08/2026, "sin
-                        usarlo excesivamente". Un menú flotante sobre
-                        contenido es un lugar natural para este efecto; no
-                        se extiende a más paneles para que siga siendo un
-                        detalle puntual.
+                        Vidrio del menú de cuenta (pedido explícito del
+                        30/08/2026). El fondo va por style, no por la clase
+                        bg-[var(--blanco)]/85 que tenía antes — bug real
+                        encontrado el 30/08/2026: Tailwind no logra generar
+                        una regla válida para un modificador de opacidad
+                        ("/85") sobre un color arbitrario que es una
+                        variable CSS ("var(--blanco)"), necesita conocer el
+                        color en tiempo de compilación para poder mezclarle
+                        alfa. La clase quedaba en el HTML sin ninguna regla
+                        real detrás — el panel no tenía fondo de verdad, y
+                        el texto oscuro del menú (.dropdown-item) quedaba
+                        sin nada claro debajo para contrastar. color-mix()
+                        en línea sí resuelve esto en tiempo real, en vez de
+                        en el build — mismo patrón que el resto del vidrio
+                        del sitio (ver entrada.css).
                         {% endcomment %}
                         <div x-show="menuUsuario" x-cloak @click.outside="menuUsuario = false" @keydown.escape.window="menuUsuario = false"
                              x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
-                             class="absolute right-0 mt-2 w-60 rounded-xl border border-[var(--borde)] bg-[var(--blanco)]/85 backdrop-blur-md shadow-[var(--sombra-elevada)] py-1.5 z-30"
+                             class="absolute right-0 mt-2 w-60 rounded-xl border border-[var(--borde)] backdrop-blur-md shadow-[var(--sombra-elevada)] py-1.5 z-30"
+                             style="background-color: color-mix(in srgb, var(--blanco) 88%, transparent);"
                              @click="menuUsuario = false">
                             {% include "_menu_usuario.html" %}
                         </div>
