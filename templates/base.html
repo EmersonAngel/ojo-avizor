@@ -178,9 +178,19 @@
            menor opacidad, para que se sienta como ambientación de toda la
            pantalla y no como un elemento más. "fixed" para que no se mueva
            con el scroll — así acompaña el contenido en vez de quedar fijo
-           en un punto de una página que puede ser mucho más alta. */
+           en un punto de una página que puede ser mucho más alta.
+
+           Dos tonos, no uno (pedido explícito del 30/08/2026, "más
+           llamativo y sofisticado"): morado arriba a la izquierda, un
+           toque frío de --cian abajo a la derecha — dos fuentes de luz dan
+           sensación de profundidad real, una sola mancha se ve plana. El
+           cian queda muy contenido (8%, esquina opuesta) para que sea
+           acento, no protagonista — no vuelve el problema original de que
+           se leyera verdoso. */
         [data-tema="oscuro"] body {
-            background-image: radial-gradient(900px 500px at 15% 0%, color-mix(in srgb, var(--brillo-difuminado) 9%, transparent), transparent 70%);
+            background-image:
+                radial-gradient(1000px 600px at 12% -5%, color-mix(in srgb, var(--brillo-difuminado) 16%, transparent), transparent 65%),
+                radial-gradient(800px 500px at 100% 100%, color-mix(in srgb, var(--cian) 8%, transparent), transparent 70%);
             background-attachment: fixed;
         }
 
@@ -220,7 +230,9 @@
         }
         .barra-superior--elevada { box-shadow: var(--sombra-elevada); }
         [data-tema="oscuro"] .barra-superior {
-            background-image: radial-gradient(500px 180px at 10% 0%, color-mix(in srgb, var(--brillo-difuminado) 16%, transparent), transparent 70%);
+            background-image:
+                radial-gradient(550px 200px at 8% -30%, color-mix(in srgb, var(--brillo-difuminado) 24%, transparent), transparent 70%),
+                radial-gradient(380px 160px at 96% 140%, color-mix(in srgb, var(--cian) 10%, transparent), transparent 70%);
         }
         @media (prefers-reduced-motion: reduce) {
             .barra-superior { transition: none; }

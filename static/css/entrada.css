@@ -147,12 +147,28 @@
     /* Mismo brillo difuminado morado de la barra superior (pedido explícito
        del 30/08/2026, solo modo oscuro), pero a una escala más chica que
        encaje en una tarjeta en vez de una barra ancha — sin esto, el
-       tamaño de la barra se ve desproporcionado en una tarjeta pequeña. */
+       tamaño de la barra se ve desproporcionado en una tarjeta pequeña.
+       Dos tonos (morado + un toque de cian en la esquina opuesta) por la
+       misma razón que en el fondo de página: da profundidad en vez de una
+       mancha plana. El filo superior claro (inset 0 1px 0) es la técnica
+       típica de "vidrio" en tarjetas de modo oscuro — una línea casi
+       imperceptible que sugiere una superficie con volumen, iluminada
+       desde arriba, en vez de un rectángulo de color plano. */
     [data-tema="oscuro"] .card {
-        background-image: radial-gradient(220px 140px at 12% 0%, color-mix(in srgb, var(--brillo-difuminado) 14%, transparent), transparent 70%);
+        background-image:
+            radial-gradient(260px 160px at 10% -15%, color-mix(in srgb, var(--brillo-difuminado) 22%, transparent), transparent 70%),
+            radial-gradient(200px 140px at 105% 115%, color-mix(in srgb, var(--cian) 10%, transparent), transparent 70%);
+        box-shadow: var(--sombra-tarjeta), inset 0 1px 0 rgba(255, 255, 255, .07);
     }
     .card-interactive { @apply card hover:-translate-y-0.5 hover:border-[var(--azul-medio)] transition-all duration-200; }
     .card-interactive:hover { box-shadow: var(--sombra-elevada); }
+    /* En oscuro, el borde al pasar el mouse se vuelve morado en vez de
+       azul — coherente con el brillo difuminado nuevo, en vez de quedar
+       desconectado usando el mismo azul que en modo claro. */
+    [data-tema="oscuro"] .card-interactive:hover {
+        border-color: var(--brillo-difuminado);
+        box-shadow: var(--sombra-elevada), inset 0 1px 0 rgba(255, 255, 255, .09);
+    }
 
     .badge { @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold; }
     /* Estados de un registro (identidad-visual.md, apartado 5):
