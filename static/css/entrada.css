@@ -88,6 +88,14 @@
        resultó ser la animación de aparición al hacer scroll trabada, no
        la opacidad en sí (ver scroll-reveal.js), pero de todas formas
        queda con más presencia visual, no solo arreglado. */
+    /* Sombra propia + brillo, no solo transparencia (pedido explícito del
+       30/08/2026): la transparencia por sí sola depende de qué haya
+       detrás — sobre un fondo parecido en tono, el botón se puede perder
+       aunque el CSS esté bien. var(--sombra-tarjeta) le da una sombra
+       real por debajo (ya es distinta por tema: suave en claro, marcada
+       en oscuro — ver su declaración en :root/[data-tema="oscuro"]), así
+       que el botón se separa de lo que tenga detrás sin importar el
+       tema ni el fondo. */
     .btn-secondary {
         @apply btn focus-visible:ring-[var(--azul-medio)];
         background-color: color-mix(in srgb, var(--blanco) 48%, transparent);
@@ -102,9 +110,13 @@
         border: 1px solid color-mix(in srgb, var(--borde) 70%, transparent);
         border-radius: var(--radio-chico);
         min-height: 44px;
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, .5);
+        box-shadow: var(--sombra-tarjeta), inset 0 1px 0 rgba(255, 255, 255, .5);
     }
-    .btn-secondary:hover { background-color: color-mix(in srgb, var(--superficie-alt) 55%, transparent); border-color: var(--brillo-difuminado); }
+    .btn-secondary:hover {
+        background-color: color-mix(in srgb, var(--superficie-alt) 55%, transparent);
+        border-color: var(--brillo-difuminado);
+        box-shadow: var(--sombra-elevada), inset 0 1px 0 rgba(255, 255, 255, .5);
+    }
     /* Botón de "Iniciar sesión": contorno, para emparejar visualmente
        con el botón sólido de "Crear cuenta" en vez de quedar como
        texto suelto. Se usa tanto en la barra (fondo oscuro en los
@@ -122,9 +134,25 @@
         border: 1px solid color-mix(in srgb, var(--borde) 70%, transparent);
         border-radius: var(--radio-chico);
         min-height: 44px;
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, .5);
+        box-shadow: var(--sombra-tarjeta), inset 0 1px 0 rgba(255, 255, 255, .5);
     }
-    .btn-outline-barra:hover { background-color: color-mix(in srgb, var(--superficie-alt) 55%, transparent); border-color: var(--brillo-difuminado); }
+    .btn-outline-barra:hover {
+        background-color: color-mix(in srgb, var(--superficie-alt) 55%, transparent);
+        border-color: var(--brillo-difuminado);
+        box-shadow: var(--sombra-elevada), inset 0 1px 0 rgba(255, 255, 255, .5);
+    }
+    /* En oscuro, el filo superior más tenue (.22 en vez de .5): a esa
+       intensidad sobre un fondo ya oscuro se veía como una línea blanca
+       marcada en vez de un brillo sutil. La sombra de por sí ya cambia
+       sola vía var(--sombra-tarjeta)/var(--sombra-elevada). */
+    [data-tema="oscuro"] .btn-secondary,
+    [data-tema="oscuro"] .btn-outline-barra {
+        box-shadow: var(--sombra-tarjeta), inset 0 1px 0 rgba(255, 255, 255, .22);
+    }
+    [data-tema="oscuro"] .btn-secondary:hover,
+    [data-tema="oscuro"] .btn-outline-barra:hover {
+        box-shadow: var(--sombra-elevada), inset 0 1px 0 rgba(255, 255, 255, .28);
+    }
     /* background-color: transparent acá, no el vidrio de arriba: dentro
        de la barra (fondo oscuro fijo en los dos temas) el vidrio con base
        de --blanco quedaba como un recuadro claro fuera de lugar sobre un
@@ -159,10 +187,14 @@
         background-image: linear-gradient(165deg, color-mix(in srgb, white 30%, transparent), transparent 55%);
         backdrop-filter: blur(8px) saturate(160%);
         -webkit-backdrop-filter: blur(8px) saturate(160%);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35);
     }
     .btn-ghost:hover {
         background-color: color-mix(in srgb, var(--superficie-alt) 55%, transparent);
+        box-shadow: var(--sombra-tarjeta), inset 0 1px 0 rgba(255, 255, 255, .35);
     }
+    [data-tema="oscuro"] .btn-ghost { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .16); }
+    [data-tema="oscuro"] .btn-ghost:hover { box-shadow: var(--sombra-tarjeta), inset 0 1px 0 rgba(255, 255, 255, .2); }
 
     /* Las utilidades condicionales (relleno compacto, ancho automático) cambian
        en el mismo punto donde la barra pasa de menú hamburguesa a fila
