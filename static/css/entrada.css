@@ -82,11 +82,16 @@
        colores variados los promedia hacia gris, que es justo la queja).
        El degradado de arriba (blanco que se desvanece) simula el brillo
        que agarra el borde superior de un panel de vidrio curvo — la seña
-       visual más reconocible del estilo "liquid glass" de Apple. */
+       visual más reconocible del estilo "liquid glass" de Apple. Opacidad
+       de fondo subida de 32% a 48% el 30/08/2026 (pedido explícito: "más
+       perceptible") — lo que parecía un botón invisible en un caso real
+       resultó ser la animación de aparición al hacer scroll trabada, no
+       la opacidad en sí (ver scroll-reveal.js), pero de todas formas
+       queda con más presencia visual, no solo arreglado. */
     .btn-secondary {
         @apply btn focus-visible:ring-[var(--azul-medio)];
-        background-color: color-mix(in srgb, var(--blanco) 32%, transparent);
-        background-image: linear-gradient(165deg, color-mix(in srgb, white 35%, transparent), transparent 55%);
+        background-color: color-mix(in srgb, var(--blanco) 48%, transparent);
+        background-image: linear-gradient(165deg, color-mix(in srgb, white 40%, transparent), transparent 55%);
         backdrop-filter: blur(10px) saturate(180%);
         -webkit-backdrop-filter: blur(10px) saturate(180%);
         /* --azul-profundo, no --texto: en oscuro esa variable cambia de
@@ -109,8 +114,8 @@
        .nav-link unas líneas más abajo. */
     .btn-outline-barra {
         @apply btn;
-        background-color: color-mix(in srgb, var(--blanco) 32%, transparent);
-        background-image: linear-gradient(165deg, color-mix(in srgb, white 35%, transparent), transparent 55%);
+        background-color: color-mix(in srgb, var(--blanco) 48%, transparent);
+        background-image: linear-gradient(165deg, color-mix(in srgb, white 40%, transparent), transparent 55%);
         backdrop-filter: blur(10px) saturate(180%);
         -webkit-backdrop-filter: blur(10px) saturate(180%);
         color: var(--texto);
@@ -133,14 +138,31 @@
         @apply inline-flex items-center gap-1.5 text-sm font-medium hover:underline transition-colors;
         color: var(--azul-medio);
     }
+    /* Mismo brillo sólido que .btn-primary, no vidrio translúcido (pedido
+       explícito del 30/08/2026, "el resto de botones"): es una acción
+       sólida (destructiva, además), igual que el principal — necesita
+       quedarse clara y fuerte, no volverse traslúcida. */
     .btn-danger {
         @apply btn text-white shadow-sm hover:shadow-md;
         background-color: var(--error);
+        background-image: linear-gradient(165deg, rgba(255, 255, 255, .28), transparent 55%);
         border-radius: var(--radio-chico);
         --tw-ring-color: var(--error);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35);
     }
     .btn-danger:hover { filter: brightness(.92); }
-    .btn-ghost { @apply btn rounded-lg bg-transparent text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 focus-visible:ring-stone-400; }
+    /* Vidrio igual que .btn-secondary/.btn-outline-barra (pedido explícito
+       del 30/08/2026): ya era transparente de base, mismo criterio. */
+    .btn-ghost {
+        @apply btn rounded-lg text-stone-600 dark:text-stone-400 focus-visible:ring-stone-400;
+        background-color: color-mix(in srgb, var(--blanco) 18%, transparent);
+        background-image: linear-gradient(165deg, color-mix(in srgb, white 30%, transparent), transparent 55%);
+        backdrop-filter: blur(8px) saturate(160%);
+        -webkit-backdrop-filter: blur(8px) saturate(160%);
+    }
+    .btn-ghost:hover {
+        background-color: color-mix(in srgb, var(--superficie-alt) 55%, transparent);
+    }
 
     /* Las utilidades condicionales (relleno compacto, ancho automático) cambian
        en el mismo punto donde la barra pasa de menú hamburguesa a fila

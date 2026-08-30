@@ -45,7 +45,16 @@
     <form id="form-registro" method="post" enctype="multipart/form-data" class="space-y-6">
         {% csrf_token %}
 
-        <div class="card p-5 sm:p-6 space-y-4">
+        {% comment %}
+        relative z-10 acá (bug real encontrado el 30/08/2026, "el panel
+        queda por debajo de las fichas" — mismo motivo comentado en
+        templates/catalogo/publico_listado.html): .card tiene
+        backdrop-filter (el vidrio), y eso crea un contexto de
+        apilamiento propio en CSS, así que el z-index del panel
+        desplegable de acá adentro no compite con la tarjeta de "¿Dónde y
+        cuándo?" que viene después en el documento.
+        {% endcomment %}
+        <div class="card p-5 sm:p-6 space-y-4 relative z-10">
             <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400">{% translate "¿Qué viste?" %}</h2>
             {% comment %}
             Selector personalizado, no _campo.html (pedido explícito del
@@ -94,7 +103,7 @@
             {% include "_campo.html" with field=form.nombre_comun_propuesto %}
         </div>
 
-        <div class="card p-5 sm:p-6 space-y-4">
+        <div class="card p-5 sm:p-6 space-y-4 relative z-10">
             <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400">{% translate "¿Dónde y cuándo?" %}</h2>
             <div class="grid grid-cols-2 gap-4">
                 <div>
