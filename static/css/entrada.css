@@ -144,6 +144,13 @@
         background-color: var(--blanco);
         box-shadow: var(--sombra-tarjeta);
     }
+    /* Mismo brillo difuminado morado de la barra superior (pedido explícito
+       del 30/08/2026, solo modo oscuro), pero a una escala más chica que
+       encaje en una tarjeta en vez de una barra ancha — sin esto, el
+       tamaño de la barra se ve desproporcionado en una tarjeta pequeña. */
+    [data-tema="oscuro"] .card {
+        background-image: radial-gradient(220px 140px at 12% 0%, color-mix(in srgb, var(--brillo-difuminado) 14%, transparent), transparent 70%);
+    }
     .card-interactive { @apply card hover:-translate-y-0.5 hover:border-[var(--azul-medio)] transition-all duration-200; }
     .card-interactive:hover { box-shadow: var(--sombra-elevada); }
 

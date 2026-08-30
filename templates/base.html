@@ -154,6 +154,16 @@
             --sombra-elevada: 0 4px 14px rgba(0,0,0,.55);
 
             --fondo-barra: var(--superficie);
+
+            /* Brillo difuminado del modo oscuro (pedido explícito del
+               30/08/2026): el mismo tratamiento que ya tenía la barra
+               superior (un radial-gradient suave en la esquina), pero con
+               este morado en vez de --cian — a esa opacidad tan baja el
+               cian se leía verdoso. Es una variable aparte, no un cambio
+               a --cian: --cian se sigue usando tal cual en otras partes
+               (el subrayado de la pestaña activa, el hilo inferior de la
+               barra), y esas no se tocan acá. */
+            --brillo-difuminado: #A78BFA;
         }
 
         /* html también necesita el color, no solo body: sin esto, el rebote
@@ -162,6 +172,17 @@
            ese instante, aunque el body ya tenga el fondo correcto. */
         html { background-color: var(--superficie); }
         body { font-family: var(--fuente); background-color: var(--superficie); color: var(--texto); }
+
+        /* Fondo general de cada página en modo oscuro: el mismo brillo
+           difuminado de la barra y las tarjetas, pero a mayor escala y
+           menor opacidad, para que se sienta como ambientación de toda la
+           pantalla y no como un elemento más. "fixed" para que no se mueva
+           con el scroll — así acompaña el contenido en vez de quedar fijo
+           en un punto de una página que puede ser mucho más alta. */
+        [data-tema="oscuro"] body {
+            background-image: radial-gradient(900px 500px at 15% 0%, color-mix(in srgb, var(--brillo-difuminado) 9%, transparent), transparent 70%);
+            background-attachment: fixed;
+        }
 
         /* Barra superior (apartado 5 de la guía): en claro usa azul-profundo; en
            oscuro usa --fondo-barra (ver su declaración en :root) para que no se
@@ -180,6 +201,10 @@
                position: sticky también sirve de referencia para ::before
                y ::after de acá abajo, así que no hace falta position propia. */
             background-color: var(--fondo-barra);
+            /* Cian en claro; en oscuro cambia a --brillo-difuminado (morado)
+               más abajo — a esa opacidad tan baja el cian se leía verdoso
+               en oscuro (pedido explícito del 30/08/2026). En claro se deja
+               igual: ahí no hubo esa queja. */
             background-image: radial-gradient(500px 180px at 10% 0%, color-mix(in srgb, var(--cian) 16%, transparent), transparent 70%);
             box-shadow: var(--sombra-tarjeta);
             color: var(--texto-en-barra);
@@ -194,6 +219,9 @@
             transition: box-shadow .2s ease;
         }
         .barra-superior--elevada { box-shadow: var(--sombra-elevada); }
+        [data-tema="oscuro"] .barra-superior {
+            background-image: radial-gradient(500px 180px at 10% 0%, color-mix(in srgb, var(--brillo-difuminado) 16%, transparent), transparent 70%);
+        }
         @media (prefers-reduced-motion: reduce) {
             .barra-superior { transition: none; }
         }
