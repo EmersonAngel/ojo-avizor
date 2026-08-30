@@ -116,6 +116,17 @@
             --texto-en-barra: #FFFFFF;
             --barra-hover:    rgba(255, 255, 255, .12);
 
+            /* Brillo difuminado (pedido explícito del 30/08/2026: el mismo
+               tratamiento en claro que ya existía en oscuro, con un color
+               "contrario" al morado de oscuro en vez del mismo). Esmeralda
+               en vez de un complementario estricto de rueda de color
+               (que habría dado un amarillo-verdoso, difícil de casar con
+               el resto de la paleta, sobre todo azul) — verde y azul es
+               una combinación con más tradición y además encaja temática-
+               mente con un proyecto de observación de aves. Ver la
+               declaración del morado en [data-tema="oscuro"] más abajo. */
+            --brillo-difuminado: #10B981;
+
             /* En claro, la barra usa azul-profundo (coincide con el fondo del
                logo horizontal de esa variante). En oscuro coincide con --superficie
                en vez de con --azul-profundo: así queda del mismo color que el fondo
@@ -155,14 +166,14 @@
 
             --fondo-barra: var(--superficie);
 
-            /* Brillo difuminado del modo oscuro (pedido explícito del
-               30/08/2026): el mismo tratamiento que ya tenía la barra
-               superior (un radial-gradient suave en la esquina), pero con
-               este morado en vez de --cian — a esa opacidad tan baja el
-               cian se leía verdoso. Es una variable aparte, no un cambio
-               a --cian: --cian se sigue usando tal cual en otras partes
-               (el subrayado de la pestaña activa, el hilo inferior de la
-               barra), y esas no se tocan acá. */
+            /* Morado en oscuro, esmeralda en claro (ver :root) — mismo
+               nombre de variable, mismas reglas que la usan (barra,
+               tarjetas, fondo de página), un solo color cambia por tema en
+               vez de duplicar la regla entera. Es una variable aparte de
+               --cian, no un cambio a --cian: --cian se sigue usando tal
+               cual en otras partes (el subrayado de la pestaña activa, el
+               hilo inferior de la barra) y en el segundo tono del propio
+               brillo difuminado — esas no se tocan acá. */
             --brillo-difuminado: #A78BFA;
         }
 
@@ -173,7 +184,7 @@
         html { background-color: var(--superficie); }
         body { font-family: var(--fuente); background-color: var(--superficie); color: var(--texto); }
 
-        /* Fondo general de cada página en modo oscuro: el mismo brillo
+        /* Fondo general de cada página, en los dos temas: el mismo brillo
            difuminado de la barra y las tarjetas, pero a mayor escala y
            menor opacidad, para que se sienta como ambientación de toda la
            pantalla y no como un elemento más. "fixed" para que no se mueva
@@ -181,17 +192,27 @@
            en un punto de una página que puede ser mucho más alta.
 
            Dos tonos, no uno (pedido explícito del 30/08/2026, "más
-           llamativo y sofisticado"): morado arriba a la izquierda, un
-           toque frío de --cian abajo a la derecha — dos fuentes de luz dan
-           sensación de profundidad real, una sola mancha se ve plana. El
-           cian queda muy contenido (8%, esquina opuesta) para que sea
-           acento, no protagonista — no vuelve el problema original de que
-           se leyera verdoso. */
+           llamativo y sofisticado", extendido a claro el mismo día):
+           --brillo-difuminado arriba a la izquierda (morado en oscuro,
+           esmeralda en claro), un toque frío de --cian abajo a la derecha
+           — dos fuentes de luz dan sensación de profundidad real, una
+           sola mancha se ve plana. El cian queda contenido para que sea
+           acento, no protagonista.
+
+           Opacidad distinta por tema, a propósito (mismo motivo que en
+           .card de entrada.css): el mismo porcentaje se percibe mucho más
+           débil sobre el fondo claro que sobre el oscuro. Estos valores
+           son los de claro; oscuro los reduce en la regla de más abajo. */
+        body {
+            background-image:
+                radial-gradient(1000px 600px at 12% -5%, color-mix(in srgb, var(--brillo-difuminado) 30%, transparent), transparent 65%),
+                radial-gradient(800px 500px at 100% 100%, color-mix(in srgb, var(--cian) 16%, transparent), transparent 70%);
+            background-attachment: fixed;
+        }
         [data-tema="oscuro"] body {
             background-image:
                 radial-gradient(1000px 600px at 12% -5%, color-mix(in srgb, var(--brillo-difuminado) 16%, transparent), transparent 65%),
                 radial-gradient(800px 500px at 100% 100%, color-mix(in srgb, var(--cian) 8%, transparent), transparent 70%);
-            background-attachment: fixed;
         }
 
         /* Barra superior (apartado 5 de la guía): en claro usa azul-profundo; en
@@ -210,12 +231,27 @@
                real encontrado el 27/08/2026, larguísimo de diagnosticar).
                position: sticky también sirve de referencia para ::before
                y ::after de acá abajo, así que no hace falta position propia. */
-            background-color: var(--fondo-barra);
-            /* Cian en claro; en oscuro cambia a --brillo-difuminado (morado)
-               más abajo — a esa opacidad tan baja el cian se leía verdoso
-               en oscuro (pedido explícito del 30/08/2026). En claro se deja
-               igual: ahí no hubo esa queja. */
-            background-image: radial-gradient(500px 180px at 10% 0%, color-mix(in srgb, var(--cian) 16%, transparent), transparent 70%);
+
+            /* Translúcida + desenfocada (pedido explícito del 30/08/2026,
+               "un poco de liquid glass, sin usarlo excesivamente"): la
+               barra deja ver el contenido detrás, desenfocado, en vez de
+               un color sólido — el mismo principio que una barra de menú
+               nativa. Se aplica solo acá y en los menús desplegables de
+               más abajo, no en toda la interfaz, para que siga siendo un
+               detalle y no un efecto por todas partes; también pesa en
+               celulares de gama baja, así que dos usos nada más. */
+            background-color: color-mix(in srgb, var(--fondo-barra) 82%, transparent);
+            backdrop-filter: blur(14px) saturate(160%);
+            -webkit-backdrop-filter: blur(14px) saturate(160%);
+
+            /* Dos tonos, en los dos temas (pedido explícito del 30/08/2026,
+               extendido de oscuro a claro el mismo día): --brillo-difuminado
+               (morado en oscuro, esmeralda en claro) como protagonista, un
+               toque contenido de --cian en la esquina opuesta — profundidad
+               real en vez de una sola mancha plana. */
+            background-image:
+                radial-gradient(550px 200px at 8% -30%, color-mix(in srgb, var(--brillo-difuminado) 20%, transparent), transparent 70%),
+                radial-gradient(380px 160px at 96% 140%, color-mix(in srgb, var(--cian) 10%, transparent), transparent 70%);
             box-shadow: var(--sombra-tarjeta);
             color: var(--texto-en-barra);
             /* Solo box-shadow acá: el desplazamiento/desvanecido al esconderse
@@ -229,11 +265,6 @@
             transition: box-shadow .2s ease;
         }
         .barra-superior--elevada { box-shadow: var(--sombra-elevada); }
-        [data-tema="oscuro"] .barra-superior {
-            background-image:
-                radial-gradient(550px 200px at 8% -30%, color-mix(in srgb, var(--brillo-difuminado) 24%, transparent), transparent 70%),
-                radial-gradient(380px 160px at 96% 140%, color-mix(in srgb, var(--cian) 10%, transparent), transparent 70%);
-        }
         @media (prefers-reduced-motion: reduce) {
             .barra-superior { transition: none; }
         }
@@ -432,9 +463,18 @@ Los comentarios de esta lógica viven aquí afuera, no adentro.
                             <span class="absolute top-0.5 left-0.5 w-2.5 h-2.5 rounded-full bg-[var(--error)] ring-2 ring-[var(--fondo-barra)]" aria-hidden="true"></span>
                             {% endif %}
                         </button>
+                        {% comment %}
+                        bg-.../85 + backdrop-blur-md: segundo (y último) uso
+                        de "liquid glass" del sitio, junto con la barra
+                        superior — pedido explícito del 30/08/2026, "sin
+                        usarlo excesivamente". Un menú flotante sobre
+                        contenido es un lugar natural para este efecto; no
+                        se extiende a más paneles para que siga siendo un
+                        detalle puntual.
+                        {% endcomment %}
                         <div x-show="menuUsuario" x-cloak @click.outside="menuUsuario = false" @keydown.escape.window="menuUsuario = false"
                              x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
-                             class="absolute right-0 mt-2 w-60 rounded-xl border border-[var(--borde)] bg-[var(--blanco)] shadow-[var(--sombra-elevada)] py-1.5 z-30"
+                             class="absolute right-0 mt-2 w-60 rounded-xl border border-[var(--borde)] bg-[var(--blanco)]/85 backdrop-blur-md shadow-[var(--sombra-elevada)] py-1.5 z-30"
                              @click="menuUsuario = false">
                             {% include "_menu_usuario.html" %}
                         </div>

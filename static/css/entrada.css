@@ -144,29 +144,52 @@
         background-color: var(--blanco);
         box-shadow: var(--sombra-tarjeta);
     }
-    /* Mismo brillo difuminado morado de la barra superior (pedido explícito
-       del 30/08/2026, solo modo oscuro), pero a una escala más chica que
-       encaje en una tarjeta en vez de una barra ancha — sin esto, el
-       tamaño de la barra se ve desproporcionado en una tarjeta pequeña.
-       Dos tonos (morado + un toque de cian en la esquina opuesta) por la
-       misma razón que en el fondo de página: da profundidad en vez de una
-       mancha plana. El filo superior claro (inset 0 1px 0) es la técnica
-       típica de "vidrio" en tarjetas de modo oscuro — una línea casi
-       imperceptible que sugiere una superficie con volumen, iluminada
-       desde arriba, en vez de un rectángulo de color plano. */
+    /* Mismo brillo difuminado de la barra superior, en los dos temas
+       (pedido explícito del 30/08/2026, extendido de oscuro a claro el
+       mismo día), pero a una escala más chica que encaje en una tarjeta
+       en vez de una barra ancha — sin esto, el tamaño de la barra se ve
+       desproporcionado en una tarjeta pequeña. Dos tonos (--brillo-
+       difuminado + un toque de cian en la esquina opuesta) por la misma
+       razón que en el fondo de página: da profundidad en vez de una
+       mancha plana.
+
+       "at ... 0%", no un porcentaje negativo: un desplazamiento negativo
+       (por fuera del propio elemento) se notaba bien en tarjetas oscuras
+       y angostas, pero en tarjetas claras y anchas (el panel de filtros,
+       por ejemplo) buena parte del brillo caía fuera de los límites
+       reales y casi no se veía. Arrancando en el borde mismo, se nota sin
+       importar el tamaño o la proporción de la tarjeta.
+
+       La opacidad NO es la misma en los dos temas, a propósito: el mismo
+       porcentaje se percibe muchísimo más débil sobre un fondo claro que
+       sobre uno oscuro (cuestión de contraste perceptual, no un valor
+       "correcto" único) — motivo real por el que en claro casi no se
+       notaba con los números que sí funcionaban bien en oscuro. Estos
+       valores de acá son los de claro, más altos; oscuro los reduce más
+       abajo, junto a [data-tema="oscuro"] .card. */
+    .card {
+        background-image:
+            radial-gradient(280px 200px at 8% 0%, color-mix(in srgb, var(--brillo-difuminado) 45%, transparent), transparent 72%),
+            radial-gradient(220px 160px at 100% 100%, color-mix(in srgb, var(--cian) 22%, transparent), transparent 72%);
+    }
+    /* El filo superior claro (inset 0 1px 0) es la técnica típica de
+       "vidrio" en tarjetas de modo oscuro — una línea casi imperceptible
+       que sugiere una superficie con volumen, iluminada desde arriba, en
+       vez de un rectángulo de color plano. Solo oscuro: sobre una tarjeta
+       ya casi blanca en claro, un filo blanco no se nota ni aporta nada. */
     [data-tema="oscuro"] .card {
         background-image:
-            radial-gradient(260px 160px at 10% -15%, color-mix(in srgb, var(--brillo-difuminado) 22%, transparent), transparent 70%),
-            radial-gradient(200px 140px at 105% 115%, color-mix(in srgb, var(--cian) 10%, transparent), transparent 70%);
+            radial-gradient(280px 200px at 8% 0%, color-mix(in srgb, var(--brillo-difuminado) 26%, transparent), transparent 72%),
+            radial-gradient(220px 160px at 100% 100%, color-mix(in srgb, var(--cian) 13%, transparent), transparent 72%);
         box-shadow: var(--sombra-tarjeta), inset 0 1px 0 rgba(255, 255, 255, .07);
     }
-    .card-interactive { @apply card hover:-translate-y-0.5 hover:border-[var(--azul-medio)] transition-all duration-200; }
+    /* El borde al pasar el mouse usa el mismo --brillo-difuminado que el
+       resto del sistema nuevo (morado en oscuro, esmeralda en claro), en
+       vez del azul fijo de antes — coherente en los dos temas, no solo en
+       oscuro. */
+    .card-interactive { @apply card hover:-translate-y-0.5 hover:border-[var(--brillo-difuminado)] transition-all duration-200; }
     .card-interactive:hover { box-shadow: var(--sombra-elevada); }
-    /* En oscuro, el borde al pasar el mouse se vuelve morado en vez de
-       azul — coherente con el brillo difuminado nuevo, en vez de quedar
-       desconectado usando el mismo azul que en modo claro. */
     [data-tema="oscuro"] .card-interactive:hover {
-        border-color: var(--brillo-difuminado);
         box-shadow: var(--sombra-elevada), inset 0 1px 0 rgba(255, 255, 255, .09);
     }
 
