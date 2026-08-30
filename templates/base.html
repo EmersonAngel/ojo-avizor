@@ -232,17 +232,14 @@
                position: sticky también sirve de referencia para ::before
                y ::after de acá abajo, así que no hace falta position propia. */
 
-            /* Translúcida + desenfocada (pedido explícito del 30/08/2026,
-               "un poco de liquid glass, sin usarlo excesivamente"): la
-               barra deja ver el contenido detrás, desenfocado, en vez de
-               un color sólido — el mismo principio que una barra de menú
-               nativa. Se aplica solo acá y en los menús desplegables de
-               más abajo, no en toda la interfaz, para que siga siendo un
-               detalle y no un efecto por todas partes; también pesa en
-               celulares de gama baja, así que dos usos nada más. */
-            background-color: color-mix(in srgb, var(--fondo-barra) 82%, transparent);
-            backdrop-filter: blur(14px) saturate(160%);
-            -webkit-backdrop-filter: blur(14px) saturate(160%);
+            /* Sólida, no translúcida (pedido explícito del 30/08/2026,
+               revertido el mismo día): un primer intento de "liquid glass"
+               acá dejaba ver de más el contenido detrás al desenfocarlo, y
+               el color de marca terminaba leyéndose gris en vez de azul
+               profundo — se quita. El vidrio se aplica ahora en las
+               fichas y en botones de contorno, donde no compite con un
+               color de marca que tiene que quedarse fijo. */
+            background-color: var(--fondo-barra);
 
             /* Dos tonos, en los dos temas (pedido explícito del 30/08/2026,
                extendido de oscuro a claro el mismo día): --brillo-difuminado

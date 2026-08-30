@@ -58,9 +58,16 @@
     }
     .btn-primary:hover { filter: brightness(.94); box-shadow: var(--sombra-elevada); transform: translateY(-1px); }
     .btn-primary:active { transform: translateY(0); }
+    /* Vidrio en los botones de contorno, no en .btn-primary (pedido
+       explícito del 30/08/2026): estos ya son transparentes de base, así
+       que el desenfoque encaja natural — en .btn-primary, que es sólido y
+       es el llamado a la acción principal, volverlo translúcido le
+       restaría fuerza visual justo donde más la necesita. */
     .btn-secondary {
         @apply btn focus-visible:ring-[var(--azul-medio)];
-        background-color: transparent;
+        background-color: color-mix(in srgb, var(--blanco) 55%, transparent);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
         /* --azul-profundo, no --texto: en oscuro esa variable cambia de
            significado (pasa a ser color de superficie, no de texto — ver
            su declaración en :root) y el botón casi no se distinguía del
@@ -70,7 +77,7 @@
         border-radius: var(--radio-chico);
         min-height: 44px;
     }
-    .btn-secondary:hover { background-color: var(--superficie-alt); border-color: var(--azul-medio); }
+    .btn-secondary:hover { background-color: color-mix(in srgb, var(--superficie-alt) 75%, transparent); border-color: var(--brillo-difuminado); }
     /* Botón de "Iniciar sesión": contorno, para emparejar visualmente
        con el botón sólido de "Crear cuenta" en vez de quedar como
        texto suelto. Se usa tanto en la barra (fondo oscuro en los
@@ -80,14 +87,20 @@
        .nav-link unas líneas más abajo. */
     .btn-outline-barra {
         @apply btn;
-        background-color: transparent;
+        background-color: color-mix(in srgb, var(--blanco) 55%, transparent);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
         color: var(--texto);
         border: 1px solid var(--borde);
         border-radius: var(--radio-chico);
         min-height: 44px;
     }
-    .btn-outline-barra:hover { background-color: var(--superficie-alt); border-color: var(--azul-medio); }
-    .barra-superior-nav .btn-outline-barra { color: var(--texto-en-barra); border-color: var(--barra-hover); }
+    .btn-outline-barra:hover { background-color: color-mix(in srgb, var(--superficie-alt) 75%, transparent); border-color: var(--brillo-difuminado); }
+    /* background-color: transparent acá, no el vidrio de arriba: dentro
+       de la barra (fondo oscuro fijo en los dos temas) el vidrio con base
+       de --blanco quedaba como un recuadro claro fuera de lugar sobre un
+       fondo oscuro. */
+    .barra-superior-nav .btn-outline-barra { background-color: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; color: var(--texto-en-barra); border-color: var(--barra-hover); }
     .barra-superior-nav .btn-outline-barra:hover { background-color: var(--barra-hover); border-color: rgba(255, 255, 255, .35); }
     /* Se usa en decenas de plantillas ("Volver al catálogo", "Regístrate"...)
        pero nunca tuvo regla propia: quedaba con el azul/subrayado por
@@ -141,7 +154,16 @@
        parte de un mismo sistema físico en vez de dos estilos de sombra distintos. */
     .card {
         @apply rounded-2xl border border-stone-200 dark:border-stone-800 transition-colors;
-        background-color: var(--blanco);
+        /* Vidrio (pedido explícito del 30/08/2026): la ficha deja ver el
+           fondo de la página —incluido su brillo difuminado— desenfocado
+           y translúcido detrás, en vez de un color sólido plano. Un
+           desenfoque más chico que el que tuvo la barra (que se quitó):
+           acá hay muchas fichas a la vez en una grilla, así que cuesta
+           menos en celulares de gama baja (RNF-01) que uno grande
+           repetido decenas de veces. */
+        background-color: color-mix(in srgb, var(--blanco) 88%, transparent);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
         box-shadow: var(--sombra-tarjeta);
     }
     /* Mismo brillo difuminado de la barra superior, en los dos temas
@@ -172,25 +194,32 @@
             radial-gradient(280px 200px at 8% 0%, color-mix(in srgb, var(--brillo-difuminado) 45%, transparent), transparent 72%),
             radial-gradient(220px 160px at 100% 100%, color-mix(in srgb, var(--cian) 22%, transparent), transparent 72%);
     }
-    /* El filo superior claro (inset 0 1px 0) es la técnica típica de
-       "vidrio" en tarjetas de modo oscuro — una línea casi imperceptible
-       que sugiere una superficie con volumen, iluminada desde arriba, en
-       vez de un rectángulo de color plano. Solo oscuro: sobre una tarjeta
-       ya casi blanca en claro, un filo blanco no se nota ni aporta nada. */
+    /* El filo superior claro (inset 0 1px 0) sugiere una superficie de
+       vidrio con volumen, iluminada desde arriba, en vez de un rectángulo
+       de color plano — subido bastante de intensidad (pedido explícito
+       del 30/08/2026: la primera versión, a 7-9%, era casi imperceptible).
+       En los dos temas ahora, con más fuerza en claro porque un filo
+       blanco sobre una ficha ya casi blanca necesita más opacidad para
+       notarse (mismo motivo que el brillo difuminado de más arriba). */
+    .card { box-shadow: var(--sombra-tarjeta), inset 0 1px 0 rgba(255, 255, 255, .5); }
     [data-tema="oscuro"] .card {
         background-image:
             radial-gradient(280px 200px at 8% 0%, color-mix(in srgb, var(--brillo-difuminado) 26%, transparent), transparent 72%),
             radial-gradient(220px 160px at 100% 100%, color-mix(in srgb, var(--cian) 13%, transparent), transparent 72%);
-        box-shadow: var(--sombra-tarjeta), inset 0 1px 0 rgba(255, 255, 255, .07);
+        box-shadow: var(--sombra-tarjeta), inset 0 1px 0 rgba(255, 255, 255, .18);
     }
-    /* El borde al pasar el mouse usa el mismo --brillo-difuminado que el
-       resto del sistema nuevo (morado en oscuro, esmeralda en claro), en
-       vez del azul fijo de antes — coherente en los dos temas, no solo en
-       oscuro. */
+    /* El borde Y un aro de resplandor alrededor al pasar el mouse, los dos
+       con --brillo-difuminado (morado en oscuro, esmeralda en claro) en
+       vez del azul fijo de antes — coherente con el resto del sistema
+       nuevo. El aro (0 0 0 3px) se agrega porque el cambio de color del
+       borde de 1px solo era demasiado sutil para notarse a simple vista
+       (mismo pedido del 30/08/2026). */
     .card-interactive { @apply card hover:-translate-y-0.5 hover:border-[var(--brillo-difuminado)] transition-all duration-200; }
-    .card-interactive:hover { box-shadow: var(--sombra-elevada); }
+    .card-interactive:hover {
+        box-shadow: var(--sombra-elevada), 0 0 0 3px color-mix(in srgb, var(--brillo-difuminado) 35%, transparent);
+    }
     [data-tema="oscuro"] .card-interactive:hover {
-        box-shadow: var(--sombra-elevada), inset 0 1px 0 rgba(255, 255, 255, .09);
+        box-shadow: var(--sombra-elevada), inset 0 1px 0 rgba(255, 255, 255, .22), 0 0 0 3px color-mix(in srgb, var(--brillo-difuminado) 45%, transparent);
     }
 
     .badge { @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold; }
