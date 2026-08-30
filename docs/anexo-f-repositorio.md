@@ -4,7 +4,7 @@ Este anexo describe el repositorio en el que se ha desarrollado Ojo Avizor, las 
 
 ## Datos del repositorio
 
-El código fuente está alojado en GitHub, en `https://github.com/EmersonAngel/ojo-avizor`, con visibilidad **privada** — confirmado por el autor del proyecto el 30 de agosto de 2026. El acceso se otorga agregando colaboradores directamente desde la configuración del repositorio en GitHub (**Settings → Collaborators**); **queda pendiente documentar aquí quién tiene acceso otorgado a la fecha** (por ejemplo, el docente evaluador, si corresponde) y por qué medio institucional se solicita.
+El código fuente está alojado en GitHub, en `https://github.com/EmersonAngel/ojo-avizor`, con visibilidad **privada** — confirmado por el autor del proyecto el 30 de agosto de 2026. Al ser un repositorio personal (no de organización), GitHub no ofrece un flujo de solicitud de acceso automático para quien intente entrar sin permiso: quien no es colaborador simplemente no puede verlo. El acceso se otorga de forma explícita, agregando a la persona como colaborador con rol **Read** (solo lectura) desde **Settings → Collaborators** — puede ver el código, clonarlo y navegar el historial completo, pero no puede modificarlo ni subir cambios. GitHub le envía una invitación que la persona debe aceptar antes de que el acceso quede activo. A la fecha de este anexo no hay ningún colaborador agregado; **queda pendiente documentar aquí a quién se le otorgue acceso** (por ejemplo, el docente evaluador) una vez se realice.
 
 ## Convenciones adoptadas
 
