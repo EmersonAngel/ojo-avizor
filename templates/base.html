@@ -232,14 +232,17 @@
                position: sticky también sirve de referencia para ::before
                y ::after de acá abajo, así que no hace falta position propia. */
 
-            /* Sólida, no translúcida (pedido explícito del 30/08/2026,
-               revertido el mismo día): un primer intento de "liquid glass"
-               acá dejaba ver de más el contenido detrás al desenfocarlo, y
-               el color de marca terminaba leyéndose gris en vez de azul
-               profundo — se quita. El vidrio se aplica ahora en las
-               fichas y en botones de contorno, donde no compite con un
-               color de marca que tiene que quedarse fijo. */
-            background-color: var(--fondo-barra);
+            /* Vidrio de vuelta (pedido explícito del 30/08/2026, quitado y
+               vuelto a poner el mismo día): la primera vez dejaba pasar
+               demasiado el contenido de atrás (82% de opacidad) y el azul
+               profundo de marca se lavaba a gris, sobre todo arriba del
+               todo, contra una página clara o la foto del hero. Con más
+               opacidad de base (94%, casi sólido) sigue siendo vidrio —
+               conserva el desenfoque y dejar ver algo detrás — pero el
+               color de marca manda, no se disuelve. */
+            background-color: color-mix(in srgb, var(--fondo-barra) 94%, transparent);
+            backdrop-filter: blur(14px) saturate(160%);
+            -webkit-backdrop-filter: blur(14px) saturate(160%);
 
             /* Dos tonos, en los dos temas (pedido explícito del 30/08/2026,
                extendido de oscuro a claro el mismo día): --brillo-difuminado

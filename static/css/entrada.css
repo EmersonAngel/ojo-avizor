@@ -62,22 +62,34 @@
        explícito del 30/08/2026): estos ya son transparentes de base, así
        que el desenfoque encaja natural — en .btn-primary, que es sólido y
        es el llamado a la acción principal, volverlo translúcido le
-       restaría fuerza visual justo donde más la necesita. */
+       restaría fuerza visual justo donde más la necesita.
+
+       Ajustado el mismo día ("no solo que se ponga gris, un efecto vidrio
+       líquido de verdad"): menos color de fondo propio (32%, no 55%) para
+       que deje ver más lo de atrás — eso es lo que lo hace leer como
+       vidrio en vez de una tarjeta gris lisa — compensado con más
+       saturación en el desenfoque (saturate(180%): sin esto, blurrear
+       colores variados los promedia hacia gris, que es justo la queja).
+       El degradado de arriba (blanco que se desvanece) simula el brillo
+       que agarra el borde superior de un panel de vidrio curvo — la seña
+       visual más reconocible del estilo "liquid glass" de Apple. */
     .btn-secondary {
         @apply btn focus-visible:ring-[var(--azul-medio)];
-        background-color: color-mix(in srgb, var(--blanco) 55%, transparent);
-        backdrop-filter: blur(6px);
-        -webkit-backdrop-filter: blur(6px);
+        background-color: color-mix(in srgb, var(--blanco) 32%, transparent);
+        background-image: linear-gradient(165deg, color-mix(in srgb, white 35%, transparent), transparent 55%);
+        backdrop-filter: blur(10px) saturate(180%);
+        -webkit-backdrop-filter: blur(10px) saturate(180%);
         /* --azul-profundo, no --texto: en oscuro esa variable cambia de
            significado (pasa a ser color de superficie, no de texto — ver
            su declaración en :root) y el botón casi no se distinguía del
            fondo. --texto está pensado para leerse en los dos temas. */
         color: var(--texto);
-        border: 1px solid var(--borde);
+        border: 1px solid color-mix(in srgb, var(--borde) 70%, transparent);
         border-radius: var(--radio-chico);
         min-height: 44px;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, .5);
     }
-    .btn-secondary:hover { background-color: color-mix(in srgb, var(--superficie-alt) 75%, transparent); border-color: var(--brillo-difuminado); }
+    .btn-secondary:hover { background-color: color-mix(in srgb, var(--superficie-alt) 55%, transparent); border-color: var(--brillo-difuminado); }
     /* Botón de "Iniciar sesión": contorno, para emparejar visualmente
        con el botón sólido de "Crear cuenta" en vez de quedar como
        texto suelto. Se usa tanto en la barra (fondo oscuro en los
@@ -87,20 +99,22 @@
        .nav-link unas líneas más abajo. */
     .btn-outline-barra {
         @apply btn;
-        background-color: color-mix(in srgb, var(--blanco) 55%, transparent);
-        backdrop-filter: blur(6px);
-        -webkit-backdrop-filter: blur(6px);
+        background-color: color-mix(in srgb, var(--blanco) 32%, transparent);
+        background-image: linear-gradient(165deg, color-mix(in srgb, white 35%, transparent), transparent 55%);
+        backdrop-filter: blur(10px) saturate(180%);
+        -webkit-backdrop-filter: blur(10px) saturate(180%);
         color: var(--texto);
-        border: 1px solid var(--borde);
+        border: 1px solid color-mix(in srgb, var(--borde) 70%, transparent);
         border-radius: var(--radio-chico);
         min-height: 44px;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, .5);
     }
-    .btn-outline-barra:hover { background-color: color-mix(in srgb, var(--superficie-alt) 75%, transparent); border-color: var(--brillo-difuminado); }
+    .btn-outline-barra:hover { background-color: color-mix(in srgb, var(--superficie-alt) 55%, transparent); border-color: var(--brillo-difuminado); }
     /* background-color: transparent acá, no el vidrio de arriba: dentro
        de la barra (fondo oscuro fijo en los dos temas) el vidrio con base
        de --blanco quedaba como un recuadro claro fuera de lugar sobre un
        fondo oscuro. */
-    .barra-superior-nav .btn-outline-barra { background-color: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; color: var(--texto-en-barra); border-color: var(--barra-hover); }
+    .barra-superior-nav .btn-outline-barra { background-color: transparent; background-image: none; backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: none; color: var(--texto-en-barra); border-color: var(--barra-hover); }
     .barra-superior-nav .btn-outline-barra:hover { background-color: var(--barra-hover); border-color: rgba(255, 255, 255, .35); }
     /* Se usa en decenas de plantillas ("Volver al catálogo", "Regístrate"...)
        pero nunca tuvo regla propia: quedaba con el azul/subrayado por
