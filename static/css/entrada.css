@@ -54,7 +54,17 @@
         background-color: var(--azul-medio);
         border-radius: var(--radio-chico);
         min-height: 44px;
-        box-shadow: var(--sombra-tarjeta);
+        /* Brillo de vidrio sin translucidez (pedido explícito del
+           30/08/2026: los botones donde sí se notaba el vidrio —
+           secundario y de contorno— casi no aparecen en el uso normal
+           del sitio; "Registrar avistamiento", "Crear cuenta", "Entrar"
+           son todos .btn-primary, sólido a propósito, así que ahí nunca
+           se veía nada nuevo). Mismo degradado diagonal que el vidrio de
+           los otros botones, pero sin bajar la opacidad del fondo: sigue
+           totalmente sólido — es el llamado a la acción principal, no
+           puede perder fuerza — solo gana el brillo característico. */
+        background-image: linear-gradient(165deg, rgba(255, 255, 255, .28), transparent 55%);
+        box-shadow: var(--sombra-tarjeta), inset 0 1px 0 rgba(255, 255, 255, .35);
     }
     .btn-primary:hover { filter: brightness(.94); box-shadow: var(--sombra-elevada); transform: translateY(-1px); }
     .btn-primary:active { transform: translateY(0); }
@@ -246,6 +256,47 @@
     .field-label { @apply block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1; }
     .field-error { @apply text-sm mt-1; color: var(--error); }
     .field-hint { @apply text-xs text-stone-500 dark:text-stone-400 mt-1; }
+
+    /* Selector personalizado (pedido explícito del 30/08/2026): un <select>
+       nativo no se puede diseñar cuando está desplegado — esa lista la
+       dibuja el sistema operativo, no el navegador, así que ni un buen
+       diseño ni el vidrio le llegan. Se reemplaza el aspecto visual por
+       este botón + panel con Alpine, manteniendo el <select> real oculto
+       (sr-only) detrás como fuente de verdad — el panel solo le cambia el
+       valor y dispara "change", nunca duplica el estado en otra parte.
+       Así el <select> real sigue siendo accesible por teclado como
+       respaldo, y el resto del sitio (HTMX incluido) seguimos escuchando
+       el mismo evento de siempre. Usado en el filtro del catálogo y en el
+       selector de especie de "Registrar avistamiento". */
+    .selector-trigger {
+        @apply w-full rounded-lg border border-stone-300 dark:border-stone-700 px-3 py-2 text-[0.95rem] text-left flex items-center justify-between gap-2 transition-colors;
+        background-color: var(--blanco);
+        min-height: 42px;
+    }
+    .selector-trigger:hover { border-color: var(--brillo-difuminado); }
+    .selector-trigger:focus-visible {
+        @apply outline-none ring-2 ring-offset-1 dark:ring-offset-stone-950;
+        --tw-ring-color: var(--azul-medio);
+        border-color: var(--azul-medio);
+    }
+    .selector-panel {
+        @apply absolute z-30 mt-1.5 w-full max-h-64 overflow-y-auto rounded-xl py-1.5;
+        background-color: color-mix(in srgb, var(--blanco) 78%, transparent);
+        background-image: linear-gradient(165deg, color-mix(in srgb, white 22%, transparent), transparent 45%);
+        backdrop-filter: blur(16px) saturate(180%);
+        -webkit-backdrop-filter: blur(16px) saturate(180%);
+        border: 1px solid color-mix(in srgb, var(--borde) 70%, transparent);
+        box-shadow: var(--sombra-elevada), inset 0 1px 0 rgba(255, 255, 255, .5);
+    }
+    [data-tema="oscuro"] .selector-panel {
+        box-shadow: var(--sombra-elevada), inset 0 1px 0 rgba(255, 255, 255, .12);
+    }
+    .selector-opcion {
+        @apply w-full text-left px-3 py-2 text-sm transition-colors;
+        color: var(--texto);
+    }
+    .selector-opcion:hover, .selector-opcion:focus-visible { background-color: color-mix(in srgb, var(--brillo-difuminado) 16%, transparent); outline: none; }
+    .selector-opcion[aria-selected="true"] { font-weight: 600; color: var(--brillo-difuminado); }
 
     .page { @apply max-w-3xl mx-auto px-4 py-8; }
     .page-narrow { @apply max-w-md mx-auto px-4 py-10; }

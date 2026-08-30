@@ -31,21 +31,66 @@
         <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
             <div>
                 <label class="field-label" for="filtro-familia">{% translate "Familia" %}</label>
-                <select id="filtro-familia" name="familia" class="!text-sm">
-                    <option value="">{% translate "Todas" %}</option>
-                    {% for opcion in familias %}
-                    <option value="{{ opcion }}" {% if opcion == familia %}selected{% endif %}>{{ opcion }}</option>
-                    {% endfor %}
-                </select>
+                {% comment %}
+                etiqueta como dato propio de Alpine, no leído en vivo del
+                <select> (bug real encontrado el 30/08/2026): $refs.sel no
+                es reactivo para Alpine, así que un x-text que lo lee
+                directo nunca se vuelve a evaluar cuando cambia — el botón
+                se quedaba pegado en "Todas" para siempre. x-init la deja
+                lista desde el primer render (por si vuelve con un filtro
+                ya puesto en la URL); cada opción la actualiza a mano.
+                {% endcomment %}
+                <div x-data="{ abierto: false, etiqueta: '' }" x-init="etiqueta = $refs.sel.options[$refs.sel.selectedIndex].text" class="relative">
+                    <select x-ref="sel" id="filtro-familia" name="familia" class="sr-only" tabindex="-1" aria-hidden="true">
+                        <option value="">{% translate "Todas" %}</option>
+                        {% for opcion in familias %}
+                        <option value="{{ opcion }}" {% if opcion == familia %}selected{% endif %}>{{ opcion }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="button" class="selector-trigger !text-sm" @click="abierto = !abierto" @keydown.escape="abierto = false" :aria-expanded="abierto.toString()">
+                        <span x-text="etiqueta" class="truncate"></span>
+                        {% icono "flecha-abajo" clase="w-4 h-4 text-stone-400 flex-shrink-0 transition-transform" %}
+                    </button>
+                    <div x-show="abierto" x-cloak @click.outside="abierto = false" class="selector-panel">
+                        <button type="button" class="selector-opcion" :aria-selected="$refs.sel.value === ''"
+                                @click="$refs.sel.value = ''; $refs.sel.dispatchEvent(new Event('change', {bubbles: true})); etiqueta = '{% translate "Todas" %}'; abierto = false">
+                            {% translate "Todas" %}
+                        </button>
+                        {% for opcion in familias %}
+                        <button type="button" class="selector-opcion" :aria-selected="$refs.sel.value === '{{ opcion|escapejs }}'"
+                                @click="$refs.sel.value = '{{ opcion|escapejs }}'; $refs.sel.dispatchEvent(new Event('change', {bubbles: true})); etiqueta = '{{ opcion|escapejs }}'; abierto = false">
+                            {{ opcion }}
+                        </button>
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
             <div>
                 <label class="field-label" for="filtro-orden">{% translate "Orden" %}</label>
-                <select id="filtro-orden" name="orden" class="!text-sm">
-                    <option value="">{% translate "Todos" %}</option>
-                    {% for opcion in ordenes %}
-                    <option value="{{ opcion }}" {% if opcion == orden %}selected{% endif %}>{{ opcion }}</option>
-                    {% endfor %}
-                </select>
+                <div x-data="{ abierto: false, etiqueta: '' }" x-init="etiqueta = $refs.sel.options[$refs.sel.selectedIndex].text" class="relative">
+                    <select x-ref="sel" id="filtro-orden" name="orden" class="sr-only" tabindex="-1" aria-hidden="true">
+                        <option value="">{% translate "Todos" %}</option>
+                        {% for opcion in ordenes %}
+                        <option value="{{ opcion }}" {% if opcion == orden %}selected{% endif %}>{{ opcion }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="button" class="selector-trigger !text-sm" @click="abierto = !abierto" @keydown.escape="abierto = false" :aria-expanded="abierto.toString()">
+                        <span x-text="etiqueta" class="truncate"></span>
+                        {% icono "flecha-abajo" clase="w-4 h-4 text-stone-400 flex-shrink-0 transition-transform" %}
+                    </button>
+                    <div x-show="abierto" x-cloak @click.outside="abierto = false" class="selector-panel">
+                        <button type="button" class="selector-opcion" :aria-selected="$refs.sel.value === ''"
+                                @click="$refs.sel.value = ''; $refs.sel.dispatchEvent(new Event('change', {bubbles: true})); etiqueta = '{% translate "Todos" %}'; abierto = false">
+                            {% translate "Todos" %}
+                        </button>
+                        {% for opcion in ordenes %}
+                        <button type="button" class="selector-opcion" :aria-selected="$refs.sel.value === '{{ opcion|escapejs }}'"
+                                @click="$refs.sel.value = '{{ opcion|escapejs }}'; $refs.sel.dispatchEvent(new Event('change', {bubbles: true})); etiqueta = '{{ opcion|escapejs }}'; abierto = false">
+                            {{ opcion }}
+                        </button>
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
             <div>
                 <label class="field-label" for="filtro-tamano-min">{% translate "Tamaño mín. (cm)" %}</label>
@@ -59,12 +104,36 @@
             </div>
             <div>
                 <label class="field-label" for="filtro-ordenar">{% translate "Ordenar por" %}</label>
-                <select id="filtro-ordenar" name="ordenar" class="!text-sm">
-                    <option value="nombre" {% if ordenar == 'nombre' %}selected{% endif %}>{% translate "Nombre" %}</option>
-                    <option value="recientes" {% if ordenar == 'recientes' %}selected{% endif %}>{% translate "Más recientes" %}</option>
-                    <option value="tamano_asc" {% if ordenar == 'tamano_asc' %}selected{% endif %}>{% translate "Tamaño: menor a mayor" %}</option>
-                    <option value="tamano_desc" {% if ordenar == 'tamano_desc' %}selected{% endif %}>{% translate "Tamaño: mayor a menor" %}</option>
-                </select>
+                <div x-data="{ abierto: false, etiqueta: '' }" x-init="etiqueta = $refs.sel.options[$refs.sel.selectedIndex].text" class="relative">
+                    <select x-ref="sel" id="filtro-ordenar" name="ordenar" class="sr-only" tabindex="-1" aria-hidden="true">
+                        <option value="nombre" {% if ordenar == 'nombre' %}selected{% endif %}>{% translate "Nombre" %}</option>
+                        <option value="recientes" {% if ordenar == 'recientes' %}selected{% endif %}>{% translate "Más recientes" %}</option>
+                        <option value="tamano_asc" {% if ordenar == 'tamano_asc' %}selected{% endif %}>{% translate "Tamaño: menor a mayor" %}</option>
+                        <option value="tamano_desc" {% if ordenar == 'tamano_desc' %}selected{% endif %}>{% translate "Tamaño: mayor a menor" %}</option>
+                    </select>
+                    <button type="button" class="selector-trigger !text-sm" @click="abierto = !abierto" @keydown.escape="abierto = false" :aria-expanded="abierto.toString()">
+                        <span x-text="etiqueta" class="truncate"></span>
+                        {% icono "flecha-abajo" clase="w-4 h-4 text-stone-400 flex-shrink-0 transition-transform" %}
+                    </button>
+                    <div x-show="abierto" x-cloak @click.outside="abierto = false" class="selector-panel">
+                        <button type="button" class="selector-opcion" :aria-selected="$refs.sel.value === 'nombre'"
+                                @click="$refs.sel.value = 'nombre'; $refs.sel.dispatchEvent(new Event('change', {bubbles: true})); etiqueta = '{% translate "Nombre" %}'; abierto = false">
+                            {% translate "Nombre" %}
+                        </button>
+                        <button type="button" class="selector-opcion" :aria-selected="$refs.sel.value === 'recientes'"
+                                @click="$refs.sel.value = 'recientes'; $refs.sel.dispatchEvent(new Event('change', {bubbles: true})); etiqueta = '{% translate "Más recientes" %}'; abierto = false">
+                            {% translate "Más recientes" %}
+                        </button>
+                        <button type="button" class="selector-opcion" :aria-selected="$refs.sel.value === 'tamano_asc'"
+                                @click="$refs.sel.value = 'tamano_asc'; $refs.sel.dispatchEvent(new Event('change', {bubbles: true})); etiqueta = '{% translate "Tamaño: menor a mayor" %}'; abierto = false">
+                            {% translate "Tamaño: menor a mayor" %}
+                        </button>
+                        <button type="button" class="selector-opcion" :aria-selected="$refs.sel.value === 'tamano_desc'"
+                                @click="$refs.sel.value = 'tamano_desc'; $refs.sel.dispatchEvent(new Event('change', {bubbles: true})); etiqueta = '{% translate "Tamaño: mayor a menor" %}'; abierto = false">
+                            {% translate "Tamaño: mayor a menor" %}
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
 

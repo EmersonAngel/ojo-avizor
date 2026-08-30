@@ -47,7 +47,44 @@
 
         <div class="card p-5 sm:p-6 space-y-4">
             <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400">{% translate "¿Qué viste?" %}</h2>
-            {% include "_campo.html" with field=form.especie %}
+            {% comment %}
+            Selector personalizado, no _campo.html (pedido explícito del
+            30/08/2026, mismo diseño que el filtro del catálogo): un
+            <select> nativo no se puede diseñar ni vestir de vidrio cuando
+            está desplegado. Ver el mismo patrón, comentado más a fondo,
+            en templates/catalogo/publico_listado.html.
+            {% endcomment %}
+            <div>
+                <label class="field-label" for="{{ form.especie.id_for_label }}">{{ form.especie.label }}</label>
+                {% comment %}
+                etiqueta como dato propio de Alpine, no leído en vivo del
+                <select> (bug real encontrado el 30/08/2026, mismo que en
+                el filtro del catálogo): $refs.sel no es reactivo para
+                Alpine, un x-text que lo lee directo nunca se actualiza.
+                {% endcomment %}
+                <div x-data="{ abierto: false, etiqueta: '' }" x-init="etiqueta = $refs.sel.options[$refs.sel.selectedIndex].text" class="relative">
+                    <select x-ref="sel" id="{{ form.especie.id_for_label }}" name="{{ form.especie.html_name }}" class="sr-only" tabindex="-1" aria-hidden="true">
+                        {% for valor, opcion_texto in form.especie.field.choices %}
+                        <option value="{{ valor }}" {% if valor|stringformat:"s" == form.especie.value|stringformat:"s" %}selected{% endif %}>{{ opcion_texto }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="button" class="selector-trigger" @click="abierto = !abierto" @keydown.escape="abierto = false" :aria-expanded="abierto.toString()">
+                        <span x-text="etiqueta" class="truncate"></span>
+                        {% icono "flecha-abajo" clase="w-4 h-4 text-stone-400 flex-shrink-0 transition-transform" %}
+                    </button>
+                    <div x-show="abierto" x-cloak @click.outside="abierto = false" class="selector-panel">
+                        {% for valor, opcion_texto in form.especie.field.choices %}
+                        <button type="button" class="selector-opcion" :aria-selected="$refs.sel.value === '{{ valor|escapejs }}'"
+                                @click="$refs.sel.value = '{{ valor|escapejs }}'; $refs.sel.dispatchEvent(new Event('change', {bubbles: true})); etiqueta = '{{ opcion_texto|escapejs }}'; abierto = false">
+                            {{ opcion_texto }}
+                        </button>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% for error in form.especie.errors %}
+                <p class="field-error">{{ error }}</p>
+                {% endfor %}
+            </div>
             <div>
                 <label class="flex items-center gap-2 text-sm text-stone-700 dark:text-stone-300">
                     {{ form.sin_identificar }} {{ form.sin_identificar.label }}
@@ -60,7 +97,31 @@
         <div class="card p-5 sm:p-6 space-y-4">
             <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400">{% translate "¿Dónde y cuándo?" %}</h2>
             <div class="grid grid-cols-2 gap-4">
-                {% include "_campo.html" with field=form.departamento %}
+                <div>
+                    <label class="field-label" for="{{ form.departamento.id_for_label }}">{{ form.departamento.label }}</label>
+                    <div x-data="{ abierto: false, etiqueta: '' }" x-init="etiqueta = $refs.sel.options[$refs.sel.selectedIndex].text" class="relative">
+                        <select x-ref="sel" id="{{ form.departamento.id_for_label }}" name="{{ form.departamento.html_name }}" class="sr-only" tabindex="-1" aria-hidden="true">
+                            {% for valor, opcion_texto in form.departamento.field.choices %}
+                            <option value="{{ valor }}" {% if valor|stringformat:"s" == form.departamento.value|stringformat:"s" %}selected{% endif %}>{{ opcion_texto }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="button" class="selector-trigger" @click="abierto = !abierto" @keydown.escape="abierto = false" :aria-expanded="abierto.toString()">
+                            <span x-text="etiqueta" class="truncate"></span>
+                            {% icono "flecha-abajo" clase="w-4 h-4 text-stone-400 flex-shrink-0 transition-transform" %}
+                        </button>
+                        <div x-show="abierto" x-cloak @click.outside="abierto = false" class="selector-panel">
+                            {% for valor, opcion_texto in form.departamento.field.choices %}
+                            <button type="button" class="selector-opcion" :aria-selected="$refs.sel.value === '{{ valor|escapejs }}'"
+                                    @click="$refs.sel.value = '{{ valor|escapejs }}'; $refs.sel.dispatchEvent(new Event('change', {bubbles: true})); etiqueta = '{{ opcion_texto|escapejs }}'; abierto = false">
+                                {{ opcion_texto }}
+                            </button>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% for error in form.departamento.errors %}
+                    <p class="field-error">{{ error }}</p>
+                    {% endfor %}
+                </div>
                 {% include "_campo.html" with field=form.municipio %}
             </div>
             {% include "_campo.html" with field=form.lugar %}

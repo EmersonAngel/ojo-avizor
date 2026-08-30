@@ -49,14 +49,23 @@
             {% endif %}
 
             {% if fotos %}
-            <div>
+            {% comment %}
+            Antes cada foto abría el archivo crudo en una pestaña aparte
+            (target="_blank"). Pedido explícito del 30/08/2026: que abra
+            ahí mismo, con navegación entre fotos y la descripción abajo
+            — un visor ("lightbox") propio con Alpine, en vez de la
+            navegación por defecto del navegador. fotoAbierta guarda el
+            índice de la foto abierta (null = cerrado); total, para que
+            el siguiente/anterior dé la vuelta sin salirse del álbum.
+            {% endcomment %}
+            <div x-data="{ fotoAbierta: null, total: {{ fotos|length }} }">
                 <h2 class="titulo-pagina !text-xl mb-1">{% translate "Álbum de fotos" %}</h2>
                 <p class="text-sm text-stone-500 dark:text-stone-400 mb-3">
                     {% translate "Aportadas por la comunidad en sus avistamientos aprobados." %}
                 </p>
                 <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
                     {% for foto in fotos %}
-                    <a href="{{ foto.archivo.url }}" target="_blank" rel="noopener" class="group block">
+                    <button type="button" @click="fotoAbierta = {{ forloop.counter0 }}" class="group block text-left w-full">
                         <div class="aspect-square rounded-xl overflow-hidden border border-stone-200 dark:border-stone-800">
                             <img src="{{ foto.archivo.url }}" alt="{{ especie.nombre_cientifico }}" loading="lazy"
                                  class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.04]">
@@ -64,8 +73,59 @@
                         <p class="text-xs text-stone-500 dark:text-stone-400 mt-1 truncate">
                             {{ foto.registro.usuario.seudonimo }} · {{ foto.registro.fecha_avistamiento }}
                         </p>
-                    </a>
+                    </button>
                     {% endfor %}
+                </div>
+
+                {% comment %}
+                Vidrio en los tres controles y en el panel de descripción
+                (mismo pedido del 30/08/2026, extendido acá): fondo oscuro
+                translúcido + desenfoque, no un negro plano — coherente
+                con el resto del sistema de vidrio del sitio.
+                {% endcomment %}
+                <div x-show="fotoAbierta !== null" x-cloak
+                     class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8"
+                     style="background-color: rgba(8, 12, 22, .88); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);"
+                     @keydown.escape.window="fotoAbierta = null"
+                     @keydown.arrow-right.window="if (fotoAbierta !== null) fotoAbierta = (fotoAbierta + 1) % total"
+                     @keydown.arrow-left.window="if (fotoAbierta !== null) fotoAbierta = (fotoAbierta - 1 + total) % total"
+                     @click="fotoAbierta = null"
+                     role="dialog" aria-modal="true" :aria-label="'{% translate "Foto ampliada" %}'">
+                    <button type="button" @click.stop="fotoAbierta = null" aria-label="{% translate 'Cerrar' %}"
+                            class="absolute top-4 right-4 sm:top-6 sm:right-6 w-10 h-10 rounded-full flex items-center justify-center text-white"
+                            style="background-color: rgba(255,255,255,.12); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,.2);">
+                        {% icono "cerrar" clase="w-5 h-5" %}
+                    </button>
+                    {% if fotos|length > 1 %}
+                    <button type="button" @click.stop="fotoAbierta = (fotoAbierta - 1 + total) % total" aria-label="{% translate 'Foto anterior' %}"
+                            class="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full flex items-center justify-center text-white"
+                            style="background-color: rgba(255,255,255,.12); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,.2);">
+                        {% icono "flecha-izquierda" clase="w-5 h-5" %}
+                    </button>
+                    <button type="button" @click.stop="fotoAbierta = (fotoAbierta + 1) % total" aria-label="{% translate 'Foto siguiente' %}"
+                            class="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full flex items-center justify-center text-white rotate-180"
+                            style="background-color: rgba(255,255,255,.12); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,.2);">
+                        {% icono "flecha-izquierda" clase="w-5 h-5" %}
+                    </button>
+                    {% endif %}
+
+                    <div class="w-full max-w-2xl" @click.stop>
+                        {% for foto in fotos %}
+                        <div x-show="fotoAbierta === {{ forloop.counter0 }}" x-cloak>
+                            <img src="{{ foto.archivo.url }}" alt="{{ especie.nombre_cientifico }}"
+                                 class="w-full max-h-[65vh] object-contain rounded-xl">
+                            <div class="mt-3 p-4 rounded-xl text-white"
+                                 style="background-color: rgba(255,255,255,.1); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,.16);">
+                                <p class="font-semibold">
+                                    <a href="{% url 'registros:observador_perfil' foto.registro.usuario_id %}" class="hover:underline" @click.stop>
+                                        {{ foto.registro.usuario.seudonimo }}
+                                    </a>
+                                </p>
+                                <p class="text-sm opacity-80 mt-0.5">{{ foto.registro.lugar }} · {{ foto.registro.fecha_avistamiento }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
             {% endif %}

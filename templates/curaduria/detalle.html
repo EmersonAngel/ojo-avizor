@@ -99,16 +99,63 @@
         {% endif %}
 
         {% if registro.fotografias.all %}
-        <div class="mt-5 pt-5 border-t border-stone-100 dark:border-stone-800">
+        {% comment %}
+        Visor propio en vez de abrir el archivo en pestaña aparte (pedido
+        explícito del 30/08/2026) — mismo patrón que en
+        templates/registros/identificar_detalle.html y
+        templates/catalogo/publico_detalle.html.
+        {% endcomment %}
+        <div class="mt-5 pt-5 border-t border-stone-100 dark:border-stone-800"
+             x-data="{ fotoAbierta: null, total: {{ registro.fotografias.all|length }} }">
             <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400 mb-3">
                 {% translate "Fotografías" %}
             </h2>
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {% for foto in registro.fotografias.all %}
-                <a href="{{ foto.archivo.url }}" target="_blank" rel="noopener" class="block aspect-square rounded-xl overflow-hidden border border-stone-200 dark:border-stone-800">
+                <button type="button" @click="fotoAbierta = {{ forloop.counter0 }}" class="block aspect-square rounded-xl overflow-hidden border border-stone-200 dark:border-stone-800">
                     <img src="{{ foto.archivo.url }}" alt="" class="w-full h-full object-cover">
-                </a>
+                </button>
                 {% endfor %}
+            </div>
+
+            <div x-show="fotoAbierta !== null" x-cloak
+                 class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8"
+                 style="background-color: rgba(8, 12, 22, .88); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);"
+                 @keydown.escape.window="fotoAbierta = null"
+                 @keydown.arrow-right.window="if (fotoAbierta !== null) fotoAbierta = (fotoAbierta + 1) % total"
+                 @keydown.arrow-left.window="if (fotoAbierta !== null) fotoAbierta = (fotoAbierta - 1 + total) % total"
+                 @click="fotoAbierta = null"
+                 role="dialog" aria-modal="true">
+                <button type="button" @click.stop="fotoAbierta = null" aria-label="{% translate 'Cerrar' %}"
+                        class="absolute top-4 right-4 sm:top-6 sm:right-6 w-10 h-10 rounded-full flex items-center justify-center text-white"
+                        style="background-color: rgba(255,255,255,.12); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,.2);">
+                    {% icono "cerrar" clase="w-5 h-5" %}
+                </button>
+                {% if registro.fotografias.all|length > 1 %}
+                <button type="button" @click.stop="fotoAbierta = (fotoAbierta - 1 + total) % total" aria-label="{% translate 'Foto anterior' %}"
+                        class="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full flex items-center justify-center text-white"
+                        style="background-color: rgba(255,255,255,.12); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,.2);">
+                    {% icono "flecha-izquierda" clase="w-5 h-5" %}
+                </button>
+                <button type="button" @click.stop="fotoAbierta = (fotoAbierta + 1) % total" aria-label="{% translate 'Foto siguiente' %}"
+                        class="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full flex items-center justify-center text-white rotate-180"
+                        style="background-color: rgba(255,255,255,.12); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,.2);">
+                    {% icono "flecha-izquierda" clase="w-5 h-5" %}
+                </button>
+                {% endif %}
+
+                <div class="w-full max-w-2xl" @click.stop>
+                    {% for foto in registro.fotografias.all %}
+                    <div x-show="fotoAbierta === {{ forloop.counter0 }}" x-cloak>
+                        <img src="{{ foto.archivo.url }}" alt="" class="w-full max-h-[65vh] object-contain rounded-xl">
+                        <div class="mt-3 p-4 rounded-xl text-white"
+                             style="background-color: rgba(255,255,255,.1); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,.16);">
+                            <p class="font-semibold">{{ registro.usuario.seudonimo }}</p>
+                            <p class="text-sm opacity-80 mt-0.5">{{ registro.lugar }} · {{ registro.fecha_avistamiento }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
             </div>
         </div>
         {% endif %}
