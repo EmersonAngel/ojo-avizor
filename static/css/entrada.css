@@ -213,6 +213,13 @@
     justify-content: center;
     background-color: var(--azul-profundo);
     animation: intro-marca-salida .5s ease .95s forwards;
+    /* Sin esto, cualquier clic en CUALQUIER parte de la página durante los
+       ~1.5s que dura la animación se pierde en silencio — el usuario ve el
+       botón, hace clic, y no pasa nada, porque en realidad le hizo clic a
+       esta placa decorativa por encima (bug real encontrado el 30/08/2026,
+       reportado como "el botón de inglés dejó de funcionar"). Es puramente
+       decorativa, no necesita capturar nada. */
+    pointer-events: none;
 }
 .intro-marca img {
     width: 160px;
