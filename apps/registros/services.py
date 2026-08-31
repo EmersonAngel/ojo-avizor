@@ -92,11 +92,16 @@ def enviar_registro(registro):
 
 
 @transaction.atomic
-def crear_registro(*, usuario, especie, lugar, fecha_avistamiento, latitud=None, longitud=None,
-                    comportamiento='', sustrato='', info_adicional='', sin_identificar=False,
+def crear_registro(*, usuario, especie, lugar, fecha_avistamiento, cantidad_individuos=1, latitud=None,
+                    longitud=None, comportamiento='', sustrato='', info_adicional='', sin_identificar=False,
                     nombre_comun_propuesto='', departamento=DEPARTAMENTO_POR_DEFECTO,
                     municipio=MUNICIPIO_POR_DEFECTO, fotos=()):
-    """Crea un avistamiento y lo envía a revisión de inmediato (RF-01, RF-11)."""
+    """Crea un avistamiento y lo envía a revisión de inmediato (RF-01, RF-11).
+
+    cantidad_individuos tiene un valor por defecto acá (a diferencia del
+    formulario web, donde es obligatorio — ver forms.py) para no romper a
+    quien ya llama este servicio sin ese dato, como buena parte de los
+    tests existentes."""
     _validar_pedido_de_ayuda(
         sin_identificar=sin_identificar, comportamiento=comportamiento, sustrato=sustrato,
         info_adicional=info_adicional, cantidad_fotos=len(fotos),
@@ -108,6 +113,7 @@ def crear_registro(*, usuario, especie, lugar, fecha_avistamiento, latitud=None,
         departamento=departamento,
         municipio=municipio,
         fecha_avistamiento=fecha_avistamiento,
+        cantidad_individuos=cantidad_individuos,
         latitud=latitud,
         longitud=longitud,
         comportamiento=comportamiento,
@@ -125,8 +131,8 @@ def crear_registro(*, usuario, especie, lugar, fecha_avistamiento, latitud=None,
 
 
 @transaction.atomic
-def corregir_registro(registro, *, especie, lugar, fecha_avistamiento, latitud=None, longitud=None,
-                       comportamiento='', sustrato='', info_adicional='', sin_identificar=False,
+def corregir_registro(registro, *, especie, lugar, fecha_avistamiento, cantidad_individuos=1, latitud=None,
+                       longitud=None, comportamiento='', sustrato='', info_adicional='', sin_identificar=False,
                        nombre_comun_propuesto='', departamento=DEPARTAMENTO_POR_DEFECTO,
                        municipio=MUNICIPIO_POR_DEFECTO, fotos=()):
     """DEVUELTO → PENDIENTE tras la corrección de su autor (RF-08)."""
@@ -143,6 +149,7 @@ def corregir_registro(registro, *, especie, lugar, fecha_avistamiento, latitud=N
     registro.departamento = departamento
     registro.municipio = municipio
     registro.fecha_avistamiento = fecha_avistamiento
+    registro.cantidad_individuos = cantidad_individuos
     registro.latitud = latitud
     registro.longitud = longitud
     registro.comportamiento = comportamiento

@@ -60,40 +60,84 @@
         <div class="card p-5 sm:p-6 space-y-4 relative z-20">
             <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400">{% translate "¿Qué viste?" %}</h2>
             {% comment %}
-            Selector personalizado, no _campo.html (pedido explícito del
-            30/08/2026, mismo diseño que el filtro del catálogo): un
-            <select> nativo no se puede diseñar ni vestir de vidrio cuando
-            está desplegado. Ver el mismo patrón, comentado más a fondo,
-            en templates/catalogo/publico_listado.html.
+            Buscador tipo eBird, no un desplegable de lista completa (pedido
+            explícito del 30/08/2026): a medida que se escribe, HTMX pide
+            sugerencias a especie_autocompletar (busca por nombre científico
+            y por nombres comunes) y las muestra acá abajo — ver
+            templates/registros/_especie_opciones.html. El campo real del
+            formulario (`especie`) va oculto (widgets en forms.py): lo único
+            que hace seleccionar() es ponerle el id de la especie elegida.
+            hx-params="q" evita que HTMX arrastre el resto del formulario
+            (fotos incluidas) en cada tecla — sin eso, al estar este input
+            dentro de <form>, HTMX serializa todo el formulario por defecto.
+            {% endcomment %}
+            {% with especie_actual=form.instance.especie %}
+            {% comment %}
+            this.consulta / this.abierto, no bare (bug real encontrado el
+            31/08/2026): $refs SÍ funciona sin "this." dentro de un método de
+            x-data porque Alpine lo inyecta como "mágico" en cualquier
+            expresión que evalúa, pero las propiedades hermanas del mismo
+            x-data (consulta, abierto) son JS común y corriente — un método
+            normal necesita "this." para tocarlas. Sin el prefijo, el id
+            oculto sí quedaba puesto pero el texto visible del buscador se
+            quedaba pegado en lo que se había escrito.
+            {% endcomment %}
+            <div x-data="{
+                    abierto: false,
+                    consulta: '{% if especie_actual %}{{ especie_actual.nombre_cientifico|escapejs }}{% for nombre in especie_actual.nombres_comunes.all %}{% if forloop.first %} — {% endif %}{{ nombre.nombre|escapejs }}{% if not forloop.last %}, {% endif %}{% endfor %}{% endif %}',
+                    seleccionar(pk, etiqueta) { this.$refs.especieId.value = pk; this.consulta = etiqueta; this.abierto = false; },
+                    limpiar() { this.$refs.especieId.value = ''; this.consulta = ''; this.abierto = false; this.$refs.buscador.focus(); },
+                 }" class="relative">
+                <label class="field-label" for="buscador-especie">{{ form.especie.label }}</label>
+                {{ form.especie }}
+                <div class="relative">
+                    <input type="text" id="buscador-especie" name="q" x-ref="buscador" x-model="consulta"
+                           @focus="abierto = true" @keydown.escape="abierto = false"
+                           autocomplete="off"
+                           placeholder="{% translate 'Escribe el nombre científico o común…' %}"
+                           hx-get="{% url 'registros:especie_autocompletar' %}"
+                           hx-trigger="input changed delay:300ms, focus"
+                           hx-target="#panel-especie-opciones"
+                           hx-swap="innerHTML"
+                           hx-params="q"
+                           class="!pr-9">
+                    <button type="button" x-show="consulta" x-cloak @click="limpiar()"
+                            aria-label="{% translate 'Quitar especie elegida' %}"
+                            class="absolute right-2.5 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600 dark:hover:text-stone-300">
+                        {% icono "cerrar" clase="w-4 h-4" %}
+                    </button>
+                </div>
+                <div id="panel-especie-opciones" x-show="abierto" x-cloak @click.outside="abierto = false" class="selector-panel">
+                    <p class="px-3 py-2 text-sm text-stone-400 dark:text-stone-500">{% translate "Escribe para buscar…" %}</p>
+                </div>
+            </div>
+            {% endwith %}
+            {% for error in form.especie.errors %}
+            <p class="field-error">{{ error }}</p>
+            {% endfor %}
+            {% comment %}
+            Cantidad de individuos (fuera del MVP original, pedido explícito
+            del 30/08/2026, al estilo eBird): mismo contador -/+ que ya se
+            usa en el filtro del catálogo (ver .contador-numero en
+            entrada.css), pero acá conectado a un campo real del formulario.
+            Es obligatorio: forms.py no lo marca blank=True.
             {% endcomment %}
             <div>
-                <label class="field-label" for="{{ form.especie.id_for_label }}">{{ form.especie.label }}</label>
-                {% comment %}
-                etiqueta como dato propio de Alpine, no leído en vivo del
-                <select> (bug real encontrado el 30/08/2026, mismo que en
-                el filtro del catálogo): $refs.sel no es reactivo para
-                Alpine, un x-text que lo lee directo nunca se actualiza.
-                {% endcomment %}
-                <div x-data="{ abierto: false, etiqueta: '' }" x-init="etiqueta = $refs.sel.options[$refs.sel.selectedIndex].text" class="relative">
-                    <select x-ref="sel" id="{{ form.especie.id_for_label }}" name="{{ form.especie.html_name }}" class="sr-only" tabindex="-1" aria-hidden="true">
-                        {% for valor, opcion_texto in form.especie.field.choices %}
-                        <option value="{{ valor }}" {% if valor|stringformat:"s" == form.especie.value|stringformat:"s" %}selected{% endif %}>{{ opcion_texto }}</option>
-                        {% endfor %}
-                    </select>
-                    <button type="button" class="selector-trigger" @click="abierto = !abierto" @keydown.escape="abierto = false" :aria-expanded="abierto.toString()">
-                        <span x-text="etiqueta" class="truncate"></span>
-                        {% icono "flecha-abajo" clase="w-4 h-4 text-stone-400 flex-shrink-0 transition-transform" %}
+                <label class="field-label" for="{{ form.cantidad_individuos.id_for_label }}">{{ form.cantidad_individuos.label }}</label>
+                <div class="contador-numero !w-32" x-data>
+                    <button type="button" class="contador-numero-btn" aria-label="{% translate 'Disminuir' %}"
+                            @click="$refs.campo.stepDown(); $refs.campo.dispatchEvent(new Event('input', { bubbles: true }))">
+                        {% icono "menos" clase="w-3.5 h-3.5" %}
                     </button>
-                    <div x-show="abierto" x-cloak @click.outside="abierto = false" class="selector-panel">
-                        {% for valor, opcion_texto in form.especie.field.choices %}
-                        <button type="button" class="selector-opcion" :aria-selected="$refs.sel.value === '{{ valor|escapejs }}'"
-                                @click="$refs.sel.value = '{{ valor|escapejs }}'; $refs.sel.dispatchEvent(new Event('change', {bubbles: true})); etiqueta = '{{ opcion_texto|escapejs }}'; abierto = false">
-                            {{ opcion_texto }}
-                        </button>
-                        {% endfor %}
-                    </div>
+                    <input type="number" x-ref="campo" id="{{ form.cantidad_individuos.id_for_label }}"
+                           name="{{ form.cantidad_individuos.html_name }}" min="1" step="1"
+                           value="{{ form.cantidad_individuos.value|default:1 }}" inputmode="numeric" class="!text-sm">
+                    <button type="button" class="contador-numero-btn" aria-label="{% translate 'Aumentar' %}"
+                            @click="$refs.campo.stepUp(); $refs.campo.dispatchEvent(new Event('input', { bubbles: true }))">
+                        {% icono "mas" clase="w-3.5 h-3.5" %}
+                    </button>
                 </div>
-                {% for error in form.especie.errors %}
+                {% for error in form.cantidad_individuos.errors %}
                 <p class="field-error">{{ error }}</p>
                 {% endfor %}
             </div>
@@ -165,7 +209,46 @@
 
         <div class="card p-5 sm:p-6 space-y-4">
             <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400">{% translate "Detalles (opcional)" %}</h2>
-            {% include "_campo.html" with field=form.comportamiento %}
+            {% comment %}
+            Recuadro de códigos reproductivos (fuera del MVP original, pedido
+            explícito del 30/08/2026): x-data envuelve el campo y el
+            recuadro para que agregarCodigo() llegue al textarea por
+            $refs.comportamiento (x-ref puesto en el widget, en forms.py).
+            <details> cerrado por defecto — es opcional, no debe ocupar
+            espacio en la vista normal del formulario.
+            {% endcomment %}
+            <div x-data="{
+                    agregarCodigo(codigo) {
+                        const campo = $refs.comportamiento;
+                        const partes = campo.value.trim() ? campo.value.trim().split(/\s+/) : [];
+                        if (!partes.includes(codigo)) {
+                            campo.value = partes.length ? campo.value.trim() + ' ' + codigo : codigo;
+                            campo.dispatchEvent(new Event('input', { bubbles: true }));
+                        }
+                        campo.focus();
+                    },
+                 }">
+                {% include "_campo.html" with field=form.comportamiento %}
+                <details class="mt-2 rounded-lg border border-stone-200 dark:border-stone-800 px-3 py-2">
+                    <summary class="cursor-pointer select-none text-xs font-medium text-stone-500 dark:text-stone-400">
+                        {% translate "Códigos reproductivos (opcional) — tócalos para agregarlos" %}
+                    </summary>
+                    <div class="mt-2.5 space-y-3">
+                        {% for categoria, codigos in codigos_reproductivos %}
+                        <div>
+                            <p class="uppercase text-[10px] font-semibold tracking-wide text-stone-400 mb-1.5">{{ categoria }}</p>
+                            <div class="flex flex-wrap gap-1.5">
+                                {% for codigo, nombre in codigos %}
+                                <button type="button" class="chip-codigo" @click="agregarCodigo('{{ codigo }}')">
+                                    {{ codigo }} <span class="opacity-60">({{ nombre }})</span>
+                                </button>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </details>
+            </div>
             {% include "_campo.html" with field=form.sustrato %}
             {% include "_campo.html" with field=form.info_adicional %}
             <div>

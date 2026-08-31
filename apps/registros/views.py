@@ -5,12 +5,16 @@ from django.core.paginator import Paginator
 from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404, redirect, render
 
+from apps.catalogo.repositories import buscar_especies
 from apps.cuentas.models import Usuario
 from apps.cuentas.services import requiere_rol
 
 from . import repositories, services
+from .codigos_reproductivos import CODIGOS_REPRODUCTIVOS
 from .forms import ComentarioIdentificacionForm, RegistroForm
 from .models import ComentarioIdentificacion, Registro, VotoComentario
+
+CANTIDAD_SUGERENCIAS_ESPECIE = 8
 
 _ROLES_APORTAR = (Usuario.Rol.OBSERVADOR, Usuario.Rol.REVISOR, Usuario.Rol.ADMINISTRADOR)
 _ROLES_VOTAR = (Usuario.Rol.REVISOR, Usuario.Rol.ADMINISTRADOR)
@@ -67,6 +71,17 @@ def exportar_avistamientos_csv(request):
     return respuesta
 
 
+def especie_autocompletar(request):
+    """Sugerencias del buscador de especie tipo eBird (fuera del MVP original,
+    pedido explícito del 30/08/2026): HTMX pide esto en cada tecla, con
+    debounce, y responde un fragmento HTML con hasta 8 especies que calcen
+    por nombre científico o nombre común. Público — es la misma información
+    que ya se ve sin cuenta en /catalogo/, solo que en formato de sugerencia."""
+    texto = request.GET.get('q', '').strip()
+    especies = buscar_especies(texto)[:CANTIDAD_SUGERENCIAS_ESPECIE] if texto else []
+    return render(request, 'registros/_especie_opciones.html', {'especies': especies, 'texto': texto})
+
+
 @requiere_rol(*_ROLES_APORTAR)
 def registro_crear(request):
     if request.method == 'POST':
@@ -83,7 +98,9 @@ def registro_crear(request):
                 form.add_error(None, error)
     else:
         form = RegistroForm()
-    return render(request, 'registros/registro_crear.html', {'form': form})
+    return render(request, 'registros/registro_crear.html', {
+        'form': form, 'codigos_reproductivos': CODIGOS_REPRODUCTIVOS,
+    })
 
 
 @requiere_rol(*_ROLES_APORTAR)
@@ -132,6 +149,7 @@ def registro_corregir(request, pk):
     ultima_revision = registro.revisiones.first()
     return render(request, 'registros/registro_crear.html', {
         'form': form, 'corrigiendo': True, 'ultima_revision': ultima_revision,
+        'codigos_reproductivos': CODIGOS_REPRODUCTIVOS,
     })
 
 

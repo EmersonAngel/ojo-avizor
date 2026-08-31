@@ -392,6 +392,20 @@
     }
     .contador-numero-btn:active { @apply scale-90; }
 
+    /* Chip de código reproductivo (recuadro de "Comportamiento" en
+       registro_crear.html, pedido explícito del 30/08/2026): tocarlo
+       agrega el código al texto libre, ver el x-data del contenedor. */
+    .chip-codigo {
+        @apply inline-flex items-center gap-1 rounded-full border border-stone-300 dark:border-stone-700 px-2.5 py-1 text-[0.7rem] transition-colors;
+        background-color: var(--blanco);
+    }
+    .chip-codigo:hover, .chip-codigo:focus-visible {
+        border-color: var(--brillo-difuminado);
+        background-color: color-mix(in srgb, var(--brillo-difuminado) 12%, transparent);
+        outline: none;
+    }
+    .chip-codigo:active { @apply scale-95; }
+
     .page { @apply max-w-3xl mx-auto px-4 py-8; }
     .page-narrow { @apply max-w-md mx-auto px-4 py-10; }
     .page-wide { @apply max-w-5xl mx-auto px-4 py-8; }

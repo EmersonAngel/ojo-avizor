@@ -9,13 +9,22 @@ class RegistroForm(forms.ModelForm):
     class Meta:
         model = Registro
         fields = [
-            'especie', 'sin_identificar', 'departamento', 'municipio', 'lugar', 'fecha_avistamiento',
-            'latitud', 'longitud', 'comportamiento', 'sustrato', 'info_adicional',
+            'especie', 'cantidad_individuos', 'sin_identificar', 'departamento', 'municipio', 'lugar',
+            'fecha_avistamiento', 'latitud', 'longitud', 'comportamiento', 'sustrato', 'info_adicional',
             'nombre_comun_propuesto',
         ]
         widgets = {
+            # El buscador tipo eBird de registro_crear.html maneja este campo
+            # como un combobox propio (texto + panel de sugerencias por
+            # HTMX): el widget real solo necesita viajar oculto en el POST
+            # con el id de la especie elegida.
+            'especie': forms.HiddenInput(attrs={'x-ref': 'especieId'}),
+            'cantidad_individuos': forms.NumberInput(attrs={'min': 1, 'step': 1}),
             'fecha_avistamiento': forms.DateInput(attrs={'type': 'date'}, format='%Y-%m-%d'),
-            'comportamiento': forms.Textarea(attrs={'rows': 2}),
+            # x-ref conecta este campo con el recuadro de códigos
+            # reproductivos: cada chip inserta su código acá (ver
+            # registro_crear.html).
+            'comportamiento': forms.Textarea(attrs={'rows': 2, 'x-ref': 'comportamiento'}),
             'info_adicional': forms.Textarea(attrs={'rows': 2}),
             'municipio': forms.TextInput(attrs={'placeholder': _('Por ejemplo: Pijao')}),
             # x-model conecta estos campos con el mapa de mapa-ubicacion.js:
@@ -35,6 +44,7 @@ class RegistroForm(forms.ModelForm):
         }
         labels = {
             'especie': _('Especie (si la identificas)'),
+            'cantidad_individuos': _('¿Cuántos viste?'),
             'sin_identificar': _('Pido ayuda para identificarla'),
             'departamento': _('Departamento'),
             'municipio': _('Municipio'),

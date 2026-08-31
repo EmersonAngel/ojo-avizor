@@ -57,6 +57,11 @@ class Registro(models.Model):
     latitud = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     longitud = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     fecha_avistamiento = models.DateField(validators=[validar_fecha_no_futura])
+    # Cuántas aves de la especie se vieron (fuera del MVP original, pedido
+    # explícito del 30/08/2026, al estilo eBird). El default=1 es solo para
+    # que la migración no falle en filas ya existentes — el formulario web
+    # lo exige igual (ver forms.py), no depende de este valor por defecto.
+    cantidad_individuos = models.PositiveIntegerField(default=1)
     fecha_envio = models.DateTimeField(auto_now_add=True)
     estado = models.CharField(max_length=20, choices=Estado.choices, default=Estado.BORRADOR, db_index=True)
     comportamiento = models.TextField(blank=True)

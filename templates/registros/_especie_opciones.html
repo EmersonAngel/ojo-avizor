@@ -1,0 +1,24 @@
+{% load i18n %}
+{% comment %}
+Fragmento que HTMX intercambia dentro del panel del buscador de especie
+(registro_crear.html). `seleccionar(pk, etiqueta)` es un método del x-data
+del contenedor que lo incluye — ver el comentario ahí para el porqué del
+patrón (input oculto + texto visible, en vez de un <select>).
+{% endcomment %}
+{% if especies %}
+    {% for especie in especies %}
+    <button type="button" class="selector-opcion"
+            @click="seleccionar('{{ especie.pk }}', '{{ especie.nombre_cientifico|escapejs }}{% for nombre in especie.nombres_comunes.all %}{% if forloop.first %} — {% endif %}{{ nombre.nombre|escapejs }}{% if not forloop.last %}, {% endif %}{% endfor %}')">
+        <span class="italic">{{ especie.nombre_cientifico }}</span>
+        {% if especie.nombres_comunes.all %}
+        <span class="text-stone-400 dark:text-stone-500"> — {% for nombre in especie.nombres_comunes.all %}{{ nombre.nombre }}{% if not forloop.last %}, {% endif %}{% endfor %}</span>
+        {% endif %}
+    </button>
+    {% endfor %}
+{% elif texto %}
+    <p class="px-3 py-2 text-sm text-stone-400 dark:text-stone-500">
+        {% blocktranslate %}No encontramos "{{ texto }}" — puedes pedir ayuda para identificarla más abajo.{% endblocktranslate %}
+    </p>
+{% else %}
+    <p class="px-3 py-2 text-sm text-stone-400 dark:text-stone-500">{% translate "Escribe para buscar…" %}</p>
+{% endif %}
