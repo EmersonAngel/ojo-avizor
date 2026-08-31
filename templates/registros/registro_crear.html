@@ -46,15 +46,18 @@
         {% csrf_token %}
 
         {% comment %}
-        relative z-10 acá (bug real encontrado el 30/08/2026, "el panel
-        queda por debajo de las fichas" — mismo motivo comentado en
+        relative z-20 acá (bug real encontrado el 30/08/2026, "la lista de
+        especies queda por debajo" — mismo motivo comentado en
         templates/catalogo/publico_listado.html): .card tiene
-        backdrop-filter (el vidrio), y eso crea un contexto de
-        apilamiento propio en CSS, así que el z-index del panel
-        desplegable de acá adentro no compite con la tarjeta de "¿Dónde y
-        cuándo?" que viene después en el documento.
+        backdrop-filter (el vidrio), y eso crea un contexto de apilamiento
+        propio en CSS. La ficha de abajo ("¿Dónde y cuándo?") también es
+        z-10, y con el mismo z-index empata por orden en el documento: la
+        de abajo, al venir después, gana y tapa el panel desplegable de
+        especies. Por eso esta ficha va un nivel más arriba (z-20), no
+        igual — así su panel desplegado siempre queda encima de lo que
+        viene después, sin importar el orden del documento.
         {% endcomment %}
-        <div class="card p-5 sm:p-6 space-y-4 relative z-10">
+        <div class="card p-5 sm:p-6 space-y-4 relative z-20">
             <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400">{% translate "¿Qué viste?" %}</h2>
             {% comment %}
             Selector personalizado, no _campo.html (pedido explícito del

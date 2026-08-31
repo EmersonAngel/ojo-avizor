@@ -106,13 +106,40 @@
             </div>
             <div>
                 <label class="field-label" for="filtro-tamano-min">{% translate "Tamaño mín. (cm)" %}</label>
-                <input type="number" id="filtro-tamano-min" name="tamano_min" min="0" step="0.1"
-                       value="{{ tamano_min }}" class="!text-sm">
+                {% comment %}
+                Contador propio en vez de las flechitas nativas del input
+                number (pedido explícito del 30/08/2026): los botones
+                llaman a stepUp()/stepDown() del input real vía $refs, así
+                que min/step los sigue validando el navegador — solo
+                cambia la apariencia. Ver .contador-numero en entrada.css.
+                {% endcomment %}
+                <div class="contador-numero" x-data>
+                    <button type="button" class="contador-numero-btn" aria-label="{% translate 'Disminuir' %}"
+                            @click="if ($refs.campo.value === '') { $refs.campo.value = '0'; } else { $refs.campo.stepDown(); } $refs.campo.dispatchEvent(new Event('input', { bubbles: true }))">
+                        {% icono "menos" clase="w-3.5 h-3.5" %}
+                    </button>
+                    <input type="number" x-ref="campo" id="filtro-tamano-min" name="tamano_min" min="0" step="0.1"
+                           value="{{ tamano_min }}" inputmode="decimal" class="!text-sm">
+                    <button type="button" class="contador-numero-btn" aria-label="{% translate 'Aumentar' %}"
+                            @click="if ($refs.campo.value === '') { $refs.campo.value = '0'; } else { $refs.campo.stepUp(); } $refs.campo.dispatchEvent(new Event('input', { bubbles: true }))">
+                        {% icono "mas" clase="w-3.5 h-3.5" %}
+                    </button>
+                </div>
             </div>
             <div>
                 <label class="field-label" for="filtro-tamano-max">{% translate "Tamaño máx. (cm)" %}</label>
-                <input type="number" id="filtro-tamano-max" name="tamano_max" min="0" step="0.1"
-                       value="{{ tamano_max }}" class="!text-sm">
+                <div class="contador-numero" x-data>
+                    <button type="button" class="contador-numero-btn" aria-label="{% translate 'Disminuir' %}"
+                            @click="if ($refs.campo.value === '') { $refs.campo.value = '0'; } else { $refs.campo.stepDown(); } $refs.campo.dispatchEvent(new Event('input', { bubbles: true }))">
+                        {% icono "menos" clase="w-3.5 h-3.5" %}
+                    </button>
+                    <input type="number" x-ref="campo" id="filtro-tamano-max" name="tamano_max" min="0" step="0.1"
+                           value="{{ tamano_max }}" inputmode="decimal" class="!text-sm">
+                    <button type="button" class="contador-numero-btn" aria-label="{% translate 'Aumentar' %}"
+                            @click="if ($refs.campo.value === '') { $refs.campo.value = '0'; } else { $refs.campo.stepUp(); } $refs.campo.dispatchEvent(new Event('input', { bubbles: true }))">
+                        {% icono "mas" clase="w-3.5 h-3.5" %}
+                    </button>
+                </div>
             </div>
             <div>
                 <label class="field-label" for="filtro-ordenar">{% translate "Ordenar por" %}</label>

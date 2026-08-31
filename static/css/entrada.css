@@ -352,6 +352,46 @@
     .selector-opcion:hover, .selector-opcion:focus-visible { background-color: color-mix(in srgb, var(--brillo-difuminado) 16%, transparent); outline: none; }
     .selector-opcion[aria-selected="true"] { font-weight: 600; color: var(--brillo-difuminado); }
 
+    /* Contador para inputs numéricos (ej. tamaño mín./máx. del filtro del
+       catálogo): reemplaza las flechitas nativas del navegador (pedido
+       explícito del 30/08/2026, "cámbialas por unas mejores") por dos
+       botones propios que llaman a stepUp()/stepDown() del input real —
+       el navegador sigue validando min/step, esto solo cambia cómo se ve
+       y se toca. El input nativo se queda sin bordes propios: el borde y
+       el fondo los pone el contenedor, para que se lea como un solo
+       control y no como tres piezas pegadas. */
+    .contador-numero {
+        @apply w-full rounded-lg border border-stone-300 dark:border-stone-700 flex items-stretch overflow-hidden transition-colors;
+        background-color: var(--blanco);
+        min-height: 42px;
+    }
+    .contador-numero:hover { border-color: var(--brillo-difuminado); }
+    .contador-numero:focus-within {
+        @apply ring-2 ring-offset-1 dark:ring-offset-stone-950;
+        --tw-ring-color: var(--azul-medio);
+        border-color: var(--azul-medio);
+    }
+    .contador-numero input[type="number"] {
+        @apply flex-1 min-w-0 border-0 text-center px-1;
+        background-color: transparent;
+        -moz-appearance: textfield;
+    }
+    .contador-numero input[type="number"]:focus { @apply outline-none ring-0; }
+    .contador-numero input[type="number"]::-webkit-outer-spin-button,
+    .contador-numero input[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    .contador-numero-btn {
+        @apply flex items-center justify-center w-9 flex-shrink-0 text-stone-500 dark:text-stone-400 transition-colors;
+    }
+    .contador-numero-btn:hover, .contador-numero-btn:focus-visible {
+        background-color: color-mix(in srgb, var(--brillo-difuminado) 16%, transparent);
+        color: var(--brillo-difuminado);
+        outline: none;
+    }
+    .contador-numero-btn:active { @apply scale-90; }
+
     .page { @apply max-w-3xl mx-auto px-4 py-8; }
     .page-narrow { @apply max-w-md mx-auto px-4 py-10; }
     .page-wide { @apply max-w-5xl mx-auto px-4 py-8; }

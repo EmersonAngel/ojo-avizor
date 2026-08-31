@@ -320,11 +320,18 @@
         /* El ícono del selector de fecha (input type="date") lo dibuja el
            navegador, no el CSS del sitio: en modo oscuro seguía saliendo
            oscuro sobre un campo oscuro y casi no se veía. color-scheme
-           adapta los controles nativos que lo soportan (Firefox incluido);
-           el filtro cubre Chrome/Edge/Safari, que ignoran color-scheme para
-           este ícono en particular. */
+           adapta los controles nativos que lo soportan.
+
+           Antes también llevaba un filter: invert(1) sobre
+           ::-webkit-calendar-picker-indicator, agregado porque en su
+           momento Chrome/Edge ignoraban color-scheme para este ícono en
+           particular. Se quita (pedido explícito del 30/08/2026, "el
+           ícono debe ser blanco" — no lo estaba siendo): los navegadores
+           actuales sí pintan el ícono nativo en blanco solos con
+           color-scheme: dark, así que ese filtro estaba invirtiendo un
+           ícono que ya era claro de vuelta a oscuro — una doble
+           inversión, el motivo real de que no se viera. */
         [data-tema="oscuro"] input[type="date"] { color-scheme: dark; }
-        [data-tema="oscuro"] input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); }
     </style>
     {% block extra_head %}{% endblock %}
 </head>

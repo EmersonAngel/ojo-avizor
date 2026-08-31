@@ -52,6 +52,7 @@ _ICONOS = {
     'destello': '<path d="M12 3l1.8 5.4L19 10l-5.2 1.6L12 17l-1.8-5.4L5 10l5.2-1.6L12 3z"/>',
     'grafico': '<path d="M4 21V10M10 21V4M16 21v-8M2 21h20"/>',
     'mas': '<path d="M12 4.5v15M4.5 12h15"/>',
+    'menos': '<path d="M4.5 12h15"/>',
     'flecha-izquierda': '<path d="M19 12H5M11 18l-6-6 6-6"/>',
     'flecha-abajo': '<path d="M6 9l6 6 6-6"/>',
     'comentario': '<path d="M4 5.5A1.5 1.5 0 015.5 4h13A1.5 1.5 0 0120 5.5v9a1.5 1.5 0 01-1.5 1.5H10l-4.5 4v-4H5.5A1.5 1.5 0 014 14.5v-9z"/>',
