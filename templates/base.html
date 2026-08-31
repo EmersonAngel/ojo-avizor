@@ -412,7 +412,17 @@ Los comentarios de esta lógica viven aquí afuera, no adentro.
       }"
       x-init="ultimoScrollY = window.scrollY; window.addEventListener('scroll', () => { const y = window.scrollY; barraElevada = y > 8; if (!menuAbierto && !menuUsuario) { if (y <= 8) { barraOculta = false; ultimoScrollY = y; } else { const delta = y - ultimoScrollY; if (delta > 6) { barraOculta = true; ultimoScrollY = y; } else if (delta < -6 && esTactil) { barraOculta = false; ultimoScrollY = y; } else if (delta < -6) { ultimoScrollY = y; } } } }, { passive: true }); window.addEventListener('mousemove', (evento) => { if (!menuAbierto && !menuUsuario && evento.clientY < 120) { barraOculta = false; } }, { passive: true });">
 
-    <header class="sticky top-0 z-20 barra-superior"
+    {% comment %}
+    z-40, no z-20 (bug real encontrado el 30/08/2026, "la barra queda por
+    debajo del recuadro de registro"): la barra es sticky, así que compite
+    en el mismo contexto de apilamiento de nivel superior que las tarjetas
+    .card de la página. La ficha "¿Qué viste?" de registro_crear.html
+    también quedó en z-20 (ver comentario ahí) y, al empatar con la barra,
+    ganaba ella por venir después en el documento. La barra tiene que
+    quedar siempre por encima de cualquier tarjeta de la página, así que
+    lleva el número más alto de los dos en vez de bajar el de la ficha.
+    {% endcomment %}
+    <header class="sticky top-0 z-40 barra-superior"
             :class="barraElevada ? 'barra-superior--elevada' : ''"
             :style="(barraOculta ? 'transform: translateY(-100%); opacity: 0; ' : 'transform: translateY(0); opacity: 1; ') + (prefiereMenosMovimiento ? 'transition: none;' : (barraOculta ? 'transition: box-shadow .2s ease, transform .28s cubic-bezier(.4,0,.6,1), opacity .2s ease-in;' : 'transition: box-shadow .2s ease, transform .5s cubic-bezier(.16,1,.3,1), opacity .35s ease-out;'))">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 h-20 sm:h-28 flex justify-between items-center">
