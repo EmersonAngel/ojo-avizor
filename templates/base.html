@@ -1,4 +1,4 @@
-{% load i18n static iconos %}<!DOCTYPE html>
+{% load i18n static iconos estaticos %}<!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}" data-tema="claro">
 <head>
     <meta charset="utf-8">
@@ -57,10 +57,19 @@
          utilidad se generaba — los íconos y el layout quedaban sin ningún tamaño
          ni posición, rotos. El build compilado no depende de que ese motor corra
          correctamente en cada visita. Ver README.md, sección "Estilos (Tailwind CSS)". -->
-    <link rel="stylesheet" href="{% static 'css/tailwind.css' %}">
+    {% comment %}
+    estatico_v, no static a secas (causa real de una sesión larga de "no
+    veo los cambios" el 31/08/2026): sin versión en la URL, el navegador
+    puede reusar una copia vieja de tailwind.css incluso en una recarga
+    normal — runserver no manda Cache-Control al servir estáticos, y su
+    manejo automático de estáticos intercepta la petición antes de que
+    llegue a cualquier middleware, así que un middleware no lo puede
+    arreglar (se probó). Ver apps/catalogo/templatetags/estaticos.py.
+    {% endcomment %}
+    <link rel="stylesheet" href="{% estatico_v 'css/tailwind.css' %}">
     <script src="https://unpkg.com/htmx.org@2.0.4" defer></script>
-    <script src="{% static 'js/mapa-distribucion.js' %}" defer></script>
-    <script src="{% static 'js/scroll-reveal.js' %}" defer></script>
+    <script src="{% estatico_v 'js/mapa-distribucion.js' %}" defer></script>
+    <script src="{% estatico_v 'js/scroll-reveal.js' %}" defer></script>
     {% block scripts_antes_de_alpine %}{% endblock %}
     <script src="https://unpkg.com/alpinejs@3.x.x" defer></script>
 
@@ -604,7 +613,7 @@ Los comentarios de esta lógica viven aquí afuera, no adentro.
     <script>
         window.OJO_AVIZOR_URL_REGISTRO_CREAR = "{% url 'registros:crear' %}";
     </script>
-    <script src="{% static 'js/registro-offline.js' %}" defer></script>
+    <script src="{% estatico_v 'js/registro-offline.js' %}" defer></script>
     {% endif %}
     <script>
         if ('serviceWorker' in navigator) {

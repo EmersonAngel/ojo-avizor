@@ -71,3 +71,46 @@ class CantidadIndividuosFormularioTests(TestCase):
         from apps.registros.models import Registro
         registro = Registro.objects.get()
         self.assertEqual(registro.cantidad_individuos, 3)
+
+
+class CodigosReproductivosFormularioTests(TestCase):
+    """Se clasifican aparte, no se mezclan con el texto de comportamiento
+    (pedido explícito del 31/08/2026, corrige el diseño anterior)."""
+
+    def setUp(self):
+        self.observador = Usuario.objects.create_user(
+            username='obs1', correo='obs1@example.com', nombre_real='Observador de Prueba',
+            seudonimo='seudo1', password='clave-segura-123',
+        )
+        self.client.force_login(self.observador)
+
+    def _datos_minimos(self, **overrides):
+        datos = {
+            'lugar': 'Vereda X', 'fecha_avistamiento': date.today().isoformat(),
+            'departamento': 'Quindío', 'municipio': 'Pijao', 'cantidad_individuos': '1',
+        }
+        datos.update(overrides)
+        return datos
+
+    def test_codigos_elegidos_quedan_en_su_propio_campo(self):
+        respuesta = self.client.post(
+            reverse('registros:crear'),
+            self._datos_minimos(codigos_reproductivos=['NY', 'FY'], comportamiento='Posado en una rama.'),
+        )
+        self.assertRedirects(respuesta, reverse('registros:enviado'))
+        from apps.registros.models import Registro
+        registro = Registro.objects.get()
+        self.assertEqual(sorted(registro.codigos_reproductivos), ['FY', 'NY'])
+        self.assertEqual(registro.comportamiento, 'Posado en una rama.')
+        self.assertNotIn('NY', registro.comportamiento)
+
+    def test_codigo_no_reconocido_es_invalido(self):
+        respuesta = self.client.post(
+            reverse('registros:crear'), self._datos_minimos(codigos_reproductivos=['ZZ']),
+        )
+        self.assertEqual(respuesta.status_code, 200)
+        self.assertTrue(respuesta.context['form'].has_error('codigos_reproductivos'))
+
+    def test_sin_codigos_es_valido(self):
+        respuesta = self.client.post(reverse('registros:crear'), self._datos_minimos())
+        self.assertRedirects(respuesta, reverse('registros:enviado'))

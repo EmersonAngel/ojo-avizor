@@ -10,12 +10,22 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+from .codigos_reproductivos import CODIGOS_VALIDOS
 from .colombia import DEPARTAMENTO_POR_DEFECTO, DEPARTAMENTOS, MUNICIPIO_POR_DEFECTO
 
 
 def validar_fecha_no_futura(valor):
     if valor > timezone.localdate():
         raise ValidationError(_('La fecha de avistamiento no puede ser futura.'))
+
+
+def validar_codigos_reproductivos(valor):
+    invalidos = set(valor) - CODIGOS_VALIDOS
+    if invalidos:
+        raise ValidationError(
+            _('Código reproductivo no reconocido: %(codigos)s.'),
+            params={'codigos': ', '.join(sorted(invalidos))},
+        )
 
 
 class RegistroPublicadoManager(models.Manager):
@@ -65,6 +75,12 @@ class Registro(models.Model):
     fecha_envio = models.DateTimeField(auto_now_add=True)
     estado = models.CharField(max_length=20, choices=Estado.choices, default=Estado.BORRADOR, db_index=True)
     comportamiento = models.TextField(blank=True)
+    # Códigos reproductivos de eBird que aplican (fuera del MVP original,
+    # pedido explícito del 30/08/2026, ajustado el 31/08/2026: se clasifican
+    # en su propio campo, no se mezclan con el texto libre de arriba). Mismo
+    # patrón que Especie.paises_distribucion: lista de siglas cortas contra
+    # una lista cerrada — ver apps/registros/codigos_reproductivos.py.
+    codigos_reproductivos = models.JSONField(default=list, blank=True, validators=[validar_codigos_reproductivos])
     sustrato = models.CharField(max_length=150, blank=True)
     info_adicional = models.TextField(blank=True)
     sin_identificar = models.BooleanField(default=False)

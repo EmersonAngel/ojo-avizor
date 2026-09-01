@@ -93,8 +93,8 @@ def enviar_registro(registro):
 
 @transaction.atomic
 def crear_registro(*, usuario, especie, lugar, fecha_avistamiento, cantidad_individuos=1, latitud=None,
-                    longitud=None, comportamiento='', sustrato='', info_adicional='', sin_identificar=False,
-                    nombre_comun_propuesto='', departamento=DEPARTAMENTO_POR_DEFECTO,
+                    longitud=None, comportamiento='', codigos_reproductivos=(), sustrato='', info_adicional='',
+                    sin_identificar=False, nombre_comun_propuesto='', departamento=DEPARTAMENTO_POR_DEFECTO,
                     municipio=MUNICIPIO_POR_DEFECTO, fotos=()):
     """Crea un avistamiento y lo envía a revisión de inmediato (RF-01, RF-11).
 
@@ -117,6 +117,7 @@ def crear_registro(*, usuario, especie, lugar, fecha_avistamiento, cantidad_indi
         latitud=latitud,
         longitud=longitud,
         comportamiento=comportamiento,
+        codigos_reproductivos=list(codigos_reproductivos),
         sustrato=sustrato,
         info_adicional=info_adicional,
         sin_identificar=sin_identificar,
@@ -132,8 +133,8 @@ def crear_registro(*, usuario, especie, lugar, fecha_avistamiento, cantidad_indi
 
 @transaction.atomic
 def corregir_registro(registro, *, especie, lugar, fecha_avistamiento, cantidad_individuos=1, latitud=None,
-                       longitud=None, comportamiento='', sustrato='', info_adicional='', sin_identificar=False,
-                       nombre_comun_propuesto='', departamento=DEPARTAMENTO_POR_DEFECTO,
+                       longitud=None, comportamiento='', codigos_reproductivos=(), sustrato='', info_adicional='',
+                       sin_identificar=False, nombre_comun_propuesto='', departamento=DEPARTAMENTO_POR_DEFECTO,
                        municipio=MUNICIPIO_POR_DEFECTO, fotos=()):
     """DEVUELTO → PENDIENTE tras la corrección de su autor (RF-08)."""
     if registro.estado != Registro.Estado.DEVUELTO:
@@ -153,6 +154,7 @@ def corregir_registro(registro, *, especie, lugar, fecha_avistamiento, cantidad_
     registro.latitud = latitud
     registro.longitud = longitud
     registro.comportamiento = comportamiento
+    registro.codigos_reproductivos = list(codigos_reproductivos)
     registro.sustrato = sustrato
     registro.info_adicional = info_adicional
     registro.sin_identificar = sin_identificar

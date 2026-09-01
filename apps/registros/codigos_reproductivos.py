@@ -1,10 +1,8 @@
-"""Códigos reproductivos de eBird, para el recuadro de referencia del campo
-"Comportamiento" (fuera del MVP original, pedido explícito del 30/08/2026).
-
-Es contenido de referencia, no un dato del dominio: no se guarda en ningún
-modelo, solo se muestra en la plantilla para que el observador pueda tocar
-un código y agregarlo al texto libre que sí se guarda. Por eso vive en un
-módulo aparte y no en forms.py ni en el modelo.
+"""Códigos reproductivos de eBird, para el recuadro de clasificación junto al
+campo "Comportamiento" (fuera del MVP original, pedido explícito del
+30/08/2026 y ajustado el 31/08/2026: se clasifican aparte, no se insertan en
+el texto libre de comportamiento — Registro.codigos_reproductivos, un
+JSONField con la misma idea que Especie.paises_distribucion).
 
 La lista y las siglas son las oficiales de eBird — se verificaron contra
 https://support.ebird.org/en/support/solutions/articles/48000837520-ebird-breeding-and-behavior-codes
@@ -47,4 +45,8 @@ CODIGOS_REPRODUCTIVOS = (
     (_('Observado'), (
         ('F', _('Vuelo de paso, sin posarse')),
     )),
+)
+
+CODIGOS_VALIDOS = frozenset(
+    codigo for _categoria, codigos in CODIGOS_REPRODUCTIVOS for codigo, _nombre in codigos
 )

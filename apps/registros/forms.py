@@ -2,16 +2,32 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
+from .codigos_reproductivos import CODIGOS_VALIDOS
 from .models import Registro
+
+# choices de un MultipleChoiceField no necesita las etiquetas legibles: el
+# recuadro de registro_crear.html arma su propio texto (sigla + significado)
+# a mano, esto solo existe para que Django valide contra la lista cerrada.
+_CODIGOS_CHOICES = tuple((codigo, codigo) for codigo in sorted(CODIGOS_VALIDOS))
 
 
 class RegistroForm(forms.ModelForm):
+    # Declarado a mano, no autogenerado por ModelForm (un JSONField no tiene
+    # un form field por defecto que sirva acá): MultipleChoiceField valida
+    # que lo que llegue del POST sean códigos reales, aunque el widget real
+    # en la plantilla son casillas ocultas + chips de Alpine, no lo que
+    # Django dibujaría solo.
+    codigos_reproductivos = forms.MultipleChoiceField(
+        choices=_CODIGOS_CHOICES, required=False, widget=forms.CheckboxSelectMultiple,
+        label=_('Códigos reproductivos'),
+    )
+
     class Meta:
         model = Registro
         fields = [
             'especie', 'cantidad_individuos', 'sin_identificar', 'departamento', 'municipio', 'lugar',
-            'fecha_avistamiento', 'latitud', 'longitud', 'comportamiento', 'sustrato', 'info_adicional',
-            'nombre_comun_propuesto',
+            'fecha_avistamiento', 'latitud', 'longitud', 'comportamiento', 'codigos_reproductivos',
+            'sustrato', 'info_adicional', 'nombre_comun_propuesto',
         ]
         widgets = {
             # El buscador tipo eBird de registro_crear.html maneja este campo
@@ -21,10 +37,7 @@ class RegistroForm(forms.ModelForm):
             'especie': forms.HiddenInput(attrs={'x-ref': 'especieId'}),
             'cantidad_individuos': forms.NumberInput(attrs={'min': 1, 'step': 1}),
             'fecha_avistamiento': forms.DateInput(attrs={'type': 'date'}, format='%Y-%m-%d'),
-            # x-ref conecta este campo con el recuadro de códigos
-            # reproductivos: cada chip inserta su código acá (ver
-            # registro_crear.html).
-            'comportamiento': forms.Textarea(attrs={'rows': 2, 'x-ref': 'comportamiento'}),
+            'comportamiento': forms.Textarea(attrs={'rows': 2}),
             'info_adicional': forms.Textarea(attrs={'rows': 2}),
             'municipio': forms.TextInput(attrs={'placeholder': _('Por ejemplo: Pijao')}),
             # x-model conecta estos campos con el mapa de mapa-ubicacion.js:

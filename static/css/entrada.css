@@ -391,20 +391,34 @@
         outline: none;
     }
     .contador-numero-btn:active { @apply scale-90; }
+    /* Variante chica y cuadrada (pedido explícito del 31/08/2026, "cantidad
+       de individuos" en registro_crear.html): la de arriba está pensada
+       para un campo de filtro que puede estirarse; acá va suelta, junto a
+       una etiqueta corta, y se ve mejor compacta. */
+    .contador-numero--chico { @apply !w-24; min-height: 34px; }
+    .contador-numero--chico .contador-numero-btn { @apply w-7; }
+    .contador-numero--chico input[type="number"] { @apply !text-sm !px-0; }
 
-    /* Chip de código reproductivo (recuadro de "Comportamiento" en
-       registro_crear.html, pedido explícito del 30/08/2026): tocarlo
-       agrega el código al texto libre, ver el x-data del contenedor. */
+    /* Chip de código reproductivo (recuadro de clasificación junto a
+       "Comportamiento" en registro_crear.html, pedido explícito del
+       30/08/2026, ajustado el 31/08/2026): es el <label> de una casilla
+       real oculta (sr-only) — togglea sola, sin JS a mano, vía x-model en
+       el grupo de casillas. .chip-codigo-activo marca las tocadas. */
     .chip-codigo {
-        @apply inline-flex items-center gap-1 rounded-full border border-stone-300 dark:border-stone-700 px-2.5 py-1 text-[0.7rem] transition-colors;
+        @apply inline-flex items-center gap-1 rounded-full border border-stone-300 dark:border-stone-700 px-2.5 py-1 text-[0.7rem] transition-colors cursor-pointer select-none;
         background-color: var(--blanco);
     }
-    .chip-codigo:hover, .chip-codigo:focus-visible {
+    .chip-codigo:hover {
         border-color: var(--brillo-difuminado);
         background-color: color-mix(in srgb, var(--brillo-difuminado) 12%, transparent);
-        outline: none;
     }
+    .chip-codigo:has(input:focus-visible) { outline: 2px solid var(--azul-medio); outline-offset: 1px; }
     .chip-codigo:active { @apply scale-95; }
+    .chip-codigo-activo, .chip-codigo-activo:hover {
+        background-color: var(--azul-medio);
+        border-color: var(--azul-medio);
+        color: white;
+    }
 
     .page { @apply max-w-3xl mx-auto px-4 py-8; }
     .page-narrow { @apply max-w-md mx-auto px-4 py-10; }

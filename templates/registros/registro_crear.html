@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n static iconos %}
+{% load i18n static iconos estaticos %}
 
 {% block titulo %}{% if corrigiendo %}{% translate "Corregir avistamiento" %}{% else %}{% translate "Registrar avistamiento" %}{% endif %} — Ojo Avizor{% endblock %}
 
@@ -12,7 +12,7 @@
      observador que ya visitó esta página antes debe poder volver a abrirla
      (el service worker la cachea) y que la librería del mapa cargue igual. -->
 <script src="{% static 'vendor/leaflet/leaflet.js' %}" defer></script>
-<script src="{% static 'js/mapa-ubicacion.js' %}" defer></script>
+<script src="{% estatico_v 'js/mapa-ubicacion.js' %}" defer></script>
 {% endblock %}
 
 {% block contenido %}
@@ -91,6 +91,17 @@
                 <label class="field-label" for="buscador-especie">{{ form.especie.label }}</label>
                 {{ form.especie }}
                 <div class="relative">
+                    {% comment %}
+                    hx-sync="this:replace" (bug real encontrado el
+                    31/08/2026, "se pierden las opciones al escribir"): con
+                    dos disparadores en el mismo input (input y focus), cada
+                    tecla dispara una petición nueva sin esperar a que
+                    termine la anterior — si una respuesta vieja (de una
+                    letra ya superada) llegaba después que la más nueva, la
+                    pisaba y el panel volvía a "Escribe para buscar…" en
+                    pleno tecleo. replace cancela la petición en curso apenas
+                    hay una más nueva, así solo la última puede ganar.
+                    {% endcomment %}
                     <input type="text" id="buscador-especie" name="q" x-ref="buscador" x-model="consulta"
                            @focus="abierto = true" @keydown.escape="abierto = false"
                            autocomplete="off"
@@ -100,6 +111,7 @@
                            hx-target="#panel-especie-opciones"
                            hx-swap="innerHTML"
                            hx-params="q"
+                           hx-sync="this:replace"
                            class="!pr-9">
                     <button type="button" x-show="consulta" x-cloak @click="limpiar()"
                             aria-label="{% translate 'Quitar especie elegida' %}"
@@ -117,14 +129,15 @@
             {% endfor %}
             {% comment %}
             Cantidad de individuos (fuera del MVP original, pedido explícito
-            del 30/08/2026, al estilo eBird): mismo contador -/+ que ya se
-            usa en el filtro del catálogo (ver .contador-numero en
-            entrada.css), pero acá conectado a un campo real del formulario.
-            Es obligatorio: forms.py no lo marca blank=True.
+            del 30/08/2026, al estilo eBird; tamaño ajustado el 31/08/2026 a
+            "cuadrado pequeño"): mismo contador -/+ que ya se usa en el
+            filtro del catálogo (ver .contador-numero en entrada.css), con
+            el modificador --chico y conectado a un campo real del
+            formulario. Es obligatorio: forms.py no lo marca blank=True.
             {% endcomment %}
             <div>
                 <label class="field-label" for="{{ form.cantidad_individuos.id_for_label }}">{{ form.cantidad_individuos.label }}</label>
-                <div class="contador-numero !w-32" x-data>
+                <div class="contador-numero contador-numero--chico" x-data>
                     <button type="button" class="contador-numero-btn" aria-label="{% translate 'Disminuir' %}"
                             @click="$refs.campo.stepDown(); $refs.campo.dispatchEvent(new Event('input', { bubbles: true }))">
                         {% icono "menos" clase="w-3.5 h-3.5" %}
@@ -209,29 +222,32 @@
 
         <div class="card p-5 sm:p-6 space-y-4">
             <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400">{% translate "Detalles (opcional)" %}</h2>
+            {% include "_campo.html" with field=form.comportamiento %}
             {% comment %}
-            Recuadro de códigos reproductivos (fuera del MVP original, pedido
-            explícito del 30/08/2026): x-data envuelve el campo y el
-            recuadro para que agregarCodigo() llegue al textarea por
-            $refs.comportamiento (x-ref puesto en el widget, en forms.py).
-            <details> cerrado por defecto — es opcional, no debe ocupar
-            espacio en la vista normal del formulario.
+            Recuadro de clasificación de códigos reproductivos (fuera del
+            MVP original, pedido explícito del 30/08/2026; ajustado el
+            31/08/2026: se clasifican en su propio campo, ya NO se insertan
+            en el texto de "Comportamiento" de arriba — quedan
+            independientes). Cada código es una casilla real oculta
+            (sr-only): el chip es su <label>, así que tocar el chip togglea
+            la casilla sin JS a mano — x-model en un grupo de casillas con
+            el mismo nombre arma solo el arreglo de las que están
+            marcadas, es soporte nativo de Alpine. <details> cerrado por
+            defecto — es opcional, no debe ocupar espacio en la vista
+            normal del formulario.
             {% endcomment %}
-            <div x-data="{
-                    agregarCodigo(codigo) {
-                        const campo = $refs.comportamiento;
-                        const partes = campo.value.trim() ? campo.value.trim().split(/\s+/) : [];
-                        if (!partes.includes(codigo)) {
-                            campo.value = partes.length ? campo.value.trim() + ' ' + codigo : codigo;
-                            campo.dispatchEvent(new Event('input', { bubbles: true }));
-                        }
-                        campo.focus();
-                    },
-                 }">
-                {% include "_campo.html" with field=form.comportamiento %}
-                <details class="mt-2 rounded-lg border border-stone-200 dark:border-stone-800 px-3 py-2">
+            {% comment %}
+            json_script, no interpolar la lista directo en x-data (sería
+            confiar en que el repr de Python de una lista de strings
+            coincide por casualidad con la sintaxis de un arreglo de JS):
+            escapa y serializa como JSON de verdad, sin importar qué llegue
+            en form.codigos_reproductivos.value.
+            {% endcomment %}
+            {{ form.codigos_reproductivos.value|json_script:"codigos-repro-iniciales" }}
+            <div x-data="{ seleccionados: JSON.parse(document.getElementById('codigos-repro-iniciales').textContent) || [] }">
+                <details class="rounded-lg border border-stone-200 dark:border-stone-800 px-3 py-2">
                     <summary class="cursor-pointer select-none text-xs font-medium text-stone-500 dark:text-stone-400">
-                        {% translate "Códigos reproductivos (opcional) — tócalos para agregarlos" %}
+                        {% translate "Códigos reproductivos (opcional)" %}
                     </summary>
                     <div class="mt-2.5 space-y-3">
                         {% for categoria, codigos in codigos_reproductivos %}
@@ -239,9 +255,10 @@
                             <p class="uppercase text-[10px] font-semibold tracking-wide text-stone-400 mb-1.5">{{ categoria }}</p>
                             <div class="flex flex-wrap gap-1.5">
                                 {% for codigo, nombre in codigos %}
-                                <button type="button" class="chip-codigo" @click="agregarCodigo('{{ codigo }}')">
+                                <label class="chip-codigo" :class="seleccionados.includes('{{ codigo }}') ? 'chip-codigo-activo' : ''">
+                                    <input type="checkbox" name="codigos_reproductivos" value="{{ codigo }}" x-model="seleccionados" class="sr-only">
                                     {{ codigo }} <span class="opacity-60">({{ nombre }})</span>
-                                </button>
+                                </label>
                                 {% endfor %}
                             </div>
                         </div>
