@@ -114,9 +114,22 @@
                     recuadro"): @click.outside no alcanza a cubrir salir del
                     campo sin hacer clic — con Tab, por ejemplo — así que el
                     panel se quedaba abierto.
+
+                    @input="abierto = true", no solo @focus (bug real
+                    encontrado el 31/08/2026, "debe aparecer... desde la
+                    primera letra"): Alpine carga con `defer`, así que hay
+                    una ventana real, sobre todo en celulares de gama media
+                    o con conexión lenta (el público del proyecto), en la
+                    que el campo ya se puede tocar pero Alpine todavía no
+                    terminó de engancharse — si el toque cae justo ahí, ese
+                    focus() nunca lo escucha nadie, y como nada más abría
+                    el panel, quedaba cerrado aunque la persona ya hubiera
+                    empezado a escribir. Con @input también abriéndolo,
+                    cualquier letra lo garantiza, sin depender de haber
+                    cachado el foco a tiempo.
                     {% endcomment %}
                     <input type="text" id="buscador-especie" name="q" x-ref="buscador" x-model="consulta"
-                           @focus="abierto = true" @keydown.escape="abierto = false"
+                           @focus="abierto = true" @input="abierto = true" @keydown.escape="abierto = false"
                            @blur="abierto = false"
                            autocomplete="off"
                            placeholder="{% translate 'Escribe el nombre científico o común…' %}"
