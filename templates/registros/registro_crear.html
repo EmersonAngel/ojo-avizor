@@ -269,27 +269,26 @@
             Recuadro de clasificación de códigos reproductivos (fuera del
             MVP original, pedido explícito del 30/08/2026; ajustado el
             31/08/2026: se clasifican en su propio campo, ya NO se insertan
-            en el texto de "Comportamiento" de arriba — quedan
-            independientes). Cada código es una casilla real oculta
-            (sr-only): el chip es su <label>, así que tocar el chip togglea
-            la casilla sin JS a mano — x-model en un grupo de casillas con
-            el mismo nombre arma solo el arreglo de las que están
-            marcadas, es soporte nativo de Alpine. <details> cerrado por
-            defecto — es opcional, no debe ocupar espacio en la vista
-            normal del formulario.
+            en el texto de "Comportamiento" de arriba; y otra vez el
+            01/09/2026: UN SOLO código, no varios — la guía oficial de eBird
+            es explícita: "choose the highest-ranking code that you
+            observed", nunca se combinan. No es que unos códigos sean
+            compatibles entre sí y otros no: el método simplemente no junta
+            dos. Por eso acá es un grupo de radios (selección única), no
+            casillas — el chip es el <label> de un radio real oculto
+            (sr-only), togglear entre ellos es soporte nativo de Alpine
+            (x-model compartido por todo el grupo). "Quitar" limpia la
+            elección, porque un radio nativo no se puede desmarcar solo
+            tocándolo de nuevo. <details> cerrado por defecto — es
+            opcional, no debe ocupar espacio en la vista normal del
+            formulario.
             {% endcomment %}
-            {% comment %}
-            json_script, no interpolar la lista directo en x-data (sería
-            confiar en que el repr de Python de una lista de strings
-            coincide por casualidad con la sintaxis de un arreglo de JS):
-            escapa y serializa como JSON de verdad, sin importar qué llegue
-            en form.codigos_reproductivos.value.
-            {% endcomment %}
-            {{ form.codigos_reproductivos.value|json_script:"codigos-repro-iniciales" }}
-            <div x-data="{ seleccionados: JSON.parse(document.getElementById('codigos-repro-iniciales').textContent) || [] }">
-                <details class="rounded-lg border border-stone-200 dark:border-stone-800 px-3 py-2">
-                    <summary class="cursor-pointer select-none text-xs font-medium text-stone-500 dark:text-stone-400">
-                        {% translate "Códigos reproductivos (opcional)" %}
+            <div x-data="{ seleccionado: '{{ form.codigo_reproductivo.value|default:""|escapejs }}' }">
+                <details class="rounded-lg border border-stone-200 dark:border-stone-800 px-3 py-2" {% if form.codigo_reproductivo.value %}open{% endif %}>
+                    <summary class="cursor-pointer select-none text-xs font-medium text-stone-500 dark:text-stone-400 flex items-center gap-2">
+                        {% translate "Código reproductivo (opcional)" %}
+                        <button type="button" x-show="seleccionado" x-cloak @click.stop="seleccionado = ''"
+                                class="btn-link !text-xs !font-normal">{% translate "Quitar" %}</button>
                     </summary>
                     <div class="mt-2.5 space-y-3">
                         {% for categoria, codigos in codigos_reproductivos %}
@@ -297,8 +296,8 @@
                             <p class="uppercase text-[10px] font-semibold tracking-wide text-stone-400 mb-1.5">{{ categoria }}</p>
                             <div class="flex flex-wrap gap-1.5">
                                 {% for codigo, nombre in codigos %}
-                                <label class="chip-codigo" :class="seleccionados.includes('{{ codigo }}') ? 'chip-codigo-activo' : ''">
-                                    <input type="checkbox" name="codigos_reproductivos" value="{{ codigo }}" x-model="seleccionados" class="sr-only">
+                                <label class="chip-codigo" :class="seleccionado === '{{ codigo }}' ? 'chip-codigo-activo' : ''">
+                                    <input type="radio" name="codigo_reproductivo" value="{{ codigo }}" x-model="seleccionado" class="sr-only">
                                     {{ codigo }} <span class="opacity-60">({{ nombre }})</span>
                                 </label>
                                 {% endfor %}

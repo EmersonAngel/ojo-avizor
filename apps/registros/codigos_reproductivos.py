@@ -1,8 +1,7 @@
 """Códigos reproductivos de eBird, para el recuadro de clasificación junto al
 campo "Comportamiento" (fuera del MVP original, pedido explícito del
 30/08/2026 y ajustado el 31/08/2026: se clasifican aparte, no se insertan en
-el texto libre de comportamiento — Registro.codigos_reproductivos, un
-JSONField con la misma idea que Especie.paises_distribucion).
+el texto libre de comportamiento).
 
 La lista y las siglas son las oficiales de eBird — se verificaron contra
 https://support.ebird.org/en/support/solutions/articles/48000837520-ebird-breeding-and-behavior-codes
@@ -10,6 +9,15 @@ el 31/08/2026, no de memoria. Los nombres y definiciones están traducidos
 al español para el público del semillero; las siglas se dejan tal como las
 usa eBird, porque son el estándar que ya conocen los observadores con más
 experiencia.
+
+Un solo código por avistamiento, no varios (pedido explícito del
+01/09/2026, "cuáles son compatibles entre sí"): la guía oficial de eBird
+es tajante — "choose the highest-ranking code that you observed for that
+species on this checklist" (mismo artículo de arriba). No es que unos
+códigos combinen entre sí y otros no: el método nunca junta dos, siempre
+se reporta el de mayor jerarquía. Por eso las categorías de acá abajo van
+ordenadas de mayor a menor certeza (Confirmada > Probable > Posible >
+Observado) y Registro.codigo_reproductivo es un solo valor, no una lista.
 """
 from django.utils.translation import gettext_lazy as _
 
@@ -49,4 +57,9 @@ CODIGOS_REPRODUCTIVOS = (
 
 CODIGOS_VALIDOS = frozenset(
     codigo for _categoria, codigos in CODIGOS_REPRODUCTIVOS for codigo, _nombre in codigos
+)
+
+# choices planas para el CharField del modelo y el ChoiceField del formulario.
+CODIGOS_CHOICES = tuple(
+    (codigo, codigo) for _categoria, codigos in CODIGOS_REPRODUCTIVOS for codigo, _nombre in codigos
 )

@@ -2,31 +2,15 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
-from .codigos_reproductivos import CODIGOS_VALIDOS
 from .models import Registro
-
-# choices de un MultipleChoiceField no necesita las etiquetas legibles: el
-# recuadro de registro_crear.html arma su propio texto (sigla + significado)
-# a mano, esto solo existe para que Django valide contra la lista cerrada.
-_CODIGOS_CHOICES = tuple((codigo, codigo) for codigo in sorted(CODIGOS_VALIDOS))
 
 
 class RegistroForm(forms.ModelForm):
-    # Declarado a mano, no autogenerado por ModelForm (un JSONField no tiene
-    # un form field por defecto que sirva acá): MultipleChoiceField valida
-    # que lo que llegue del POST sean códigos reales, aunque el widget real
-    # en la plantilla son casillas ocultas + chips de Alpine, no lo que
-    # Django dibujaría solo.
-    codigos_reproductivos = forms.MultipleChoiceField(
-        choices=_CODIGOS_CHOICES, required=False, widget=forms.CheckboxSelectMultiple,
-        label=_('Códigos reproductivos'),
-    )
-
     class Meta:
         model = Registro
         fields = [
             'especie', 'cantidad_individuos', 'sin_identificar', 'departamento', 'municipio', 'lugar',
-            'fecha_avistamiento', 'latitud', 'longitud', 'comportamiento', 'codigos_reproductivos',
+            'fecha_avistamiento', 'latitud', 'longitud', 'comportamiento', 'codigo_reproductivo',
             'sustrato', 'info_adicional', 'nombre_comun_propuesto',
         ]
         widgets = {
@@ -37,6 +21,10 @@ class RegistroForm(forms.ModelForm):
             'especie': forms.HiddenInput(attrs={'x-ref': 'especieId'}),
             'cantidad_individuos': forms.NumberInput(attrs={'min': 1, 'step': 1}),
             'fecha_avistamiento': forms.DateInput(attrs={'type': 'date'}, format='%Y-%m-%d'),
+            # El campo real es un <select> oculto (choices=CODIGOS_CHOICES ya
+            # los genera el ModelForm solo): registro_crear.html lo maneja
+            # como un grupo de chips de Alpine, no lo dibuja Django.
+            'codigo_reproductivo': forms.Select(attrs={'class': 'sr-only', 'x-ref': 'codigoReproductivo'}),
             'comportamiento': forms.Textarea(attrs={'rows': 2}),
             'info_adicional': forms.Textarea(attrs={'rows': 2}),
             'municipio': forms.TextInput(attrs={'placeholder': _('Por ejemplo: Pijao')}),
@@ -64,6 +52,7 @@ class RegistroForm(forms.ModelForm):
             'latitud': _('Latitud (opcional, no se publica)'),
             'longitud': _('Longitud (opcional, no se publica)'),
             'nombre_comun_propuesto': _('¿Conoces un nombre local para esta ave? (opcional)'),
+            'codigo_reproductivo': _('Código reproductivo'),
         }
 
 
