@@ -113,17 +113,11 @@
                     "quiero que aparezca hasta que se deje de seleccionar el
                     recuadro"): @click.outside no alcanza a cubrir salir del
                     campo sin hacer clic — con Tab, por ejemplo — así que el
-                    panel se quedaba abierto. El setTimeout es a propósito:
-                    tocar una sugerencia también dispara blur (el foco sale
-                    del campo antes de que el clic en el botón termine de
-                    procesarse), así que hay que darle un instante al clic
-                    para que alcance a registrarse antes de esconder el
-                    panel — si se cierra en el mismo tick, el toque a la
-                    sugerencia se pierde.
+                    panel se quedaba abierto.
                     {% endcomment %}
                     <input type="text" id="buscador-especie" name="q" x-ref="buscador" x-model="consulta"
                            @focus="abierto = true" @keydown.escape="abierto = false"
-                           @blur="setTimeout(() => abierto = false, 150)"
+                           @blur="abierto = false"
                            autocomplete="off"
                            placeholder="{% translate 'Escribe el nombre científico o común…' %}"
                            hx-get="{% url 'registros:especie_autocompletar' %}"
@@ -133,13 +127,28 @@
                            hx-params="q"
                            hx-sync="this:replace"
                            class="!pr-9">
-                    <button type="button" x-show="consulta" x-cloak @click="limpiar()"
+                    <button type="button" x-show="consulta" x-cloak @mousedown.prevent @click="limpiar()"
                             aria-label="{% translate 'Quitar especie elegida' %}"
                             class="absolute right-2.5 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600 dark:hover:text-stone-300">
                         {% icono "cerrar" clase="w-4 h-4" %}
                     </button>
                 </div>
-                <div id="panel-especie-opciones" x-show="abierto" x-cloak @click.outside="abierto = false" class="selector-panel">
+                {% comment %}
+                mousedown.prevent acá (bug real encontrado el 31/08/2026,
+                "el botón de opción debe funcionar para asignar la
+                especie"): sin esto, tocar una sugerencia primero le
+                quitaba el foco al campo de texto (@blur de arriba cerraba
+                el panel) y RECIÉN DESPUÉS llegaba el click — en el celular
+                (touch), donde apunta el público real del proyecto, esa
+                carrera se pierde casi siempre y el toque no alcanzaba a
+                seleccionar nada. preventDefault en mousedown evita que el
+                navegador le quite el foco al campo al tocar el panel, así
+                que el blur nunca llega a dispararse y el click de la
+                sugerencia (seleccionar(), más abajo) siempre alcanza a
+                correr. Sigue siendo <button>, no <a>: no navega a ningún
+                lado, solo cambia estado.
+                {% endcomment %}
+                <div id="panel-especie-opciones" x-show="abierto" x-cloak @mousedown.prevent @click.outside="abierto = false" class="selector-panel">
                     <p class="px-3 py-2 text-sm text-stone-400 dark:text-stone-500">{% translate "Escribe para buscar…" %}</p>
                 </div>
             </div>
