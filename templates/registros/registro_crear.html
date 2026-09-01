@@ -92,22 +92,28 @@
                 {{ form.especie }}
                 <div class="relative">
                     {% comment %}
-                    hx-sync="this:replace" (bug real encontrado el
-                    31/08/2026, "se pierden las opciones al escribir"): con
-                    dos disparadores en el mismo input (input y focus), cada
-                    tecla dispara una petición nueva sin esperar a que
-                    termine la anterior — si una respuesta vieja (de una
-                    letra ya superada) llegaba después que la más nueva, la
-                    pisaba y el panel volvía a "Escribe para buscar…" en
-                    pleno tecleo. replace cancela la petición en curso apenas
-                    hay una más nueva, así solo la última puede ganar.
+                    Un solo disparador, no "input changed delay:300ms,
+                    focus" (bug real encontrado el 31/08/2026 y el
+                    31/08/2026 otra vez, "se pierden las opciones al
+                    escribir" — el primer intento con hx-sync="this:replace"
+                    no alcanzó): con DOS disparadores en el mismo elemento,
+                    htmx no coordina bien el "delay" de uno con el otro —
+                    confirmado con la red real: cada tecla mandaba su propia
+                    petición sin esperar los 300ms, más una petición vacía
+                    de más (del disparador "focus") intercalada entre medio,
+                    y cualquiera de esas respuestas podía llegar después y
+                    pisar la buena. Con un solo disparador ("input"), htmx
+                    sí debounce correctamente — el panel ya se abre solo (y
+                    ya tiene el contenido del último tecleo) con
+                    @focus="abierto = true" de Alpine, así que no hace falta
+                    que HTMX también reaccione al foco.
                     {% endcomment %}
                     <input type="text" id="buscador-especie" name="q" x-ref="buscador" x-model="consulta"
                            @focus="abierto = true" @keydown.escape="abierto = false"
                            autocomplete="off"
                            placeholder="{% translate 'Escribe el nombre científico o común…' %}"
                            hx-get="{% url 'registros:especie_autocompletar' %}"
-                           hx-trigger="input changed delay:300ms, focus"
+                           hx-trigger="input changed delay:300ms"
                            hx-target="#panel-especie-opciones"
                            hx-swap="innerHTML"
                            hx-params="q"
