@@ -108,8 +108,22 @@
                     @focus="abierto = true" de Alpine, así que no hace falta
                     que HTMX también reaccione al foco.
                     {% endcomment %}
+                    {% comment %}
+                    @blur cierra el panel (pedido explícito del 31/08/2026,
+                    "quiero que aparezca hasta que se deje de seleccionar el
+                    recuadro"): @click.outside no alcanza a cubrir salir del
+                    campo sin hacer clic — con Tab, por ejemplo — así que el
+                    panel se quedaba abierto. El setTimeout es a propósito:
+                    tocar una sugerencia también dispara blur (el foco sale
+                    del campo antes de que el clic en el botón termine de
+                    procesarse), así que hay que darle un instante al clic
+                    para que alcance a registrarse antes de esconder el
+                    panel — si se cierra en el mismo tick, el toque a la
+                    sugerencia se pierde.
+                    {% endcomment %}
                     <input type="text" id="buscador-especie" name="q" x-ref="buscador" x-model="consulta"
                            @focus="abierto = true" @keydown.escape="abierto = false"
+                           @blur="setTimeout(() => abierto = false, 150)"
                            autocomplete="off"
                            placeholder="{% translate 'Escribe el nombre científico o común…' %}"
                            hx-get="{% url 'registros:especie_autocompletar' %}"
