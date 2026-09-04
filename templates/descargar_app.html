@@ -15,14 +15,14 @@
     <div class="card p-6 sm:p-8 text-center">
         {% if url_apk %}
         <a href="{{ url_apk }}" class="btn-primary inline-flex items-center gap-2 !px-6 !py-3 !text-base">
-            {% icono "flecha-abajo" clase="w-5 h-5" %}
+            {% icono "descarga" clase="w-5 h-5" %}
             {% translate "Descargar para Android" %}
         </a>
         <p class="text-xs text-stone-500 dark:text-stone-400 mt-3">
             {% translate "Archivo .apk — no pasa por Google Play." %}
         </p>
 
-        <div class="w-40 h-40 mx-auto mt-6 p-2 bg-white rounded-xl">
+        <div class="w-40 h-40 mx-auto mt-6 p-3 bg-white rounded-xl shadow-md flex items-center justify-center">
             {{ qr_svg|safe }}
         </div>
         <p class="text-xs text-stone-500 dark:text-stone-400 mt-2">

@@ -51,6 +51,7 @@ _ICONOS = {
     'regla': '<rect x="3" y="9" width="18" height="6" rx="1"/><path d="M7 9v3M11 9v3M15 9v3M19 9v3"/>',
     'destello': '<path d="M12 3l1.8 5.4L19 10l-5.2 1.6L12 17l-1.8-5.4L5 10l5.2-1.6L12 3z"/>',
     'grafico': '<path d="M4 21V10M10 21V4M16 21v-8M2 21h20"/>',
+    'descarga': '<path d="M12 3v12m-4-4l4 4 4-4"/><path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/>',
     'mas': '<path d="M12 4.5v15M4.5 12h15"/>',
     'menos': '<path d="M4.5 12h15"/>',
     'flecha-izquierda': '<path d="M19 12H5M11 18l-6-6 6-6"/>',

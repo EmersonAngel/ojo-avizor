@@ -7,7 +7,7 @@
     {% icono "grafico" clase="w-[18px] h-[18px]" %} {% translate "Inventario" %}
 </a>
 <a class="nav-link {% if vista == 'descargar_app' %}nav-link-activo{% endif %}" href="{% url 'descargar_app' %}">
-    {% icono "flecha-abajo" clase="w-[18px] h-[18px]" %} {% translate "Descargar app" %}
+    {% icono "descarga" clase="w-[18px] h-[18px]" %} {% translate "Descargar app" %}
 </a>
 {% if user.is_authenticated %}
 <a class="nav-link {% if vista == 'mis_registros' %}nav-link-activo{% endif %}" href="{% url 'registros:mis_registros' %}">
