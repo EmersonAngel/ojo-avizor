@@ -23,9 +23,14 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-# collectstatic no necesita conexión a la base de datos ni un
-# DJANGO_SECRET_KEY real (config/settings/base.py trae un valor de
-# respaldo para este caso); sí necesita que las apps sean importables.
+# collectstatic no necesita conexión a la base de datos, pero sí carga
+# config/settings/produccion.py completo, que exige una DJANGO_SECRET_KEY
+# real y distinta de la de desarrollo (revisión de seguridad del
+# 25/08/2026) — sin ninguna, este paso del build falla. El valor de abajo
+# es solo un marcador para que el build pase; nunca se usa de verdad,
+# porque la DJANGO_SECRET_KEY real que Render inyecta como variable de
+# entorno al arrancar el contenedor pisa a esta.
+ENV DJANGO_SECRET_KEY=clave-temporal-solo-para-el-build-nunca-se-usa-en-produccion
 RUN python manage.py collectstatic --noinput
 
 RUN useradd --create-home --uid 1000 ojo_avizor \
