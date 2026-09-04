@@ -52,6 +52,17 @@ MIDDLEWARE = [MIDDLEWARE[0], 'whitenoise.middleware.WhiteNoiseMiddleware', *MIDD
 # cobre nada dentro de lo gratis — pedido explícito de evitar eso. B2 es
 # compatible con la misma API de S3, así que el cambio es solo de
 # credenciales, no de mecanismo.
+#
+# El bucket queda Privado, no Público (mismo día, hallazgo del usuario
+# probando de verdad): Backblaze también pide tarjeta para verificar la
+# cuenta en el momento de hacer un bucket público — justo lo que se
+# quería evitar con el cambio de arriba. Con el bucket privado, Django
+# genera una URL firmada (con vencimiento) cada vez que arma la página,
+# en vez de una URL pública fija — como esa URL se genera de nuevo en
+# cada visita, el vencimiento no se nota nunca desde el sitio; solo
+# importaría si alguien guarda el enlace directo de una foto y lo abre
+# días después. 7 días (604800 segundos) es el máximo que permite el
+# esquema de firma que usa S3/B2 — no tiene sentido pedir menos.
 if env('B2_BUCKET_NAME'):
     STORAGES = {
         'default': {
@@ -66,14 +77,8 @@ if env('B2_BUCKET_NAME'):
                 # aparece en B2_ENDPOINT_URL (ej. "us-west-004").
                 'region_name': env('B2_REGION'),
                 'signature_version': 's3v4',
-                # El endpoint de la API (B2_ENDPOINT_URL) no sirve para ver
-                # las fotos desde el navegador — hace falta el dominio
-                # público del bucket (bucket.s3.region.backblazeb2.com).
-                'custom_domain': env('B2_PUBLIC_DOMAIN'),
-                # Con dominio público la URL no necesita firma con
-                # vencimiento: son fotos de un catálogo público, no
-                # archivos privados — que el enlace no caduque nunca.
-                'querystring_auth': False,
+                'querystring_auth': True,
+                'querystring_expire': 60 * 60 * 24 * 7,
                 'file_overwrite': False,
             },
         },

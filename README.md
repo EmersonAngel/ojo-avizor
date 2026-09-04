@@ -266,21 +266,20 @@ Sin tarjeta ni gasto real — pero, a diferencia del despliegue de arriba, ning�
 | --- | --- | --- |
 | [Render](https://render.com) | corre Django | El servicio "duerme" a los 15 minutos sin visitas; la primera persona que entra después espera ~30-60 segundos mientras arranca de nuevo. |
 | [Neon](https://neon.tech) | PostgreSQL | Los datos **no** se borran ni caducan (a diferencia del Postgres gratis del propio Render, que sí se borra a los 30 días) — solo el cómputo se pausa solo tras 5 minutos sin consultas, y se reactiva solo en la siguiente. |
-| [Backblaze B2](https://www.backblaze.com/cloud-storage) | fotos de avistamientos | 10 GB gratis al mes, sin pedir tarjeta en ningún momento (a diferencia de Cloudflare R2, que sí la pide para activarse — por eso se eligió esta). Compatible con la misma API de S3 que usan Render/AWS, así que el resto del código no cambia. |
+| [Backblaze B2](https://www.backblaze.com/cloud-storage) | fotos de avistamientos | 10 GB gratis al mes. No pide tarjeta si el bucket queda **Privado** (sí la pide, igual que Cloudflare R2, si se lo hace Público — por eso el bucket de este proyecto queda privado, con URLs firmadas en vez de un dominio público fijo, ver el paso 1). Compatible con la misma API de S3 que usan Render/AWS, así que el resto del código no cambia. |
 
 Sin disco propio persistente (a diferencia del despliegue con Docker/VPS de arriba), las fotos subidas por la gente **tienen que** vivir en un lugar aparte — de ahí la tercera pieza. `config/settings/produccion.py` ya está preparado: si detecta credenciales de Backblaze B2 en el entorno, las usa; si no, sigue guardando en disco local (el otro despliegue no necesita tocar nada de esto).
 
 ### 1. Backblaze B2 (fotos)
 
 1. Crear cuenta en [backblaze.com/sign-up/cloud-storage](https://www.backblaze.com/sign-up/cloud-storage) — no pide tarjeta.
-2. **B2 Cloud Storage** → **Create a Bucket** → nombre único (por ejemplo `ojo-avizor-fotos-tunombre`, tiene que ser único entre todos los usuarios de Backblaze, no solo los propios) → **Files in Bucket are**: elegir **Public** (si queda en Private, las fotos no se van a poder ver desde el sitio).
+2. **B2 Cloud Storage** → **Create a Bucket** → nombre único (por ejemplo `ojo-avizor-fotos-tunombre`, tiene que ser único entre todos los usuarios de Backblaze, no solo los propios) → **Files in Bucket are**: dejar en **Private** (poner **Public** pide una tarjeta para verificar la cuenta, lo mismo que pasaba con Cloudflare R2 — con el bucket privado no la pide en ningún momento). No hace falta que sea público: `config/settings/produccion.py` ya está preparado para armar una URL firmada cada vez que se muestra una foto, en vez de depender de un dominio público fijo.
 3. En la lista de buckets, el propio bucket recién creado muestra su **Endpoint** — algo como `s3.us-west-004.backblazeb2.com`. De ahí salen dos valores:
    ```bash
    B2_ENDPOINT_URL=https://s3.us-west-004.backblazeb2.com
    B2_REGION=us-west-004
    ```
 4. **Account** → **App Keys** → **Add a New Application Key** → **Allow access to Bucket(s)**: elegir el bucket recién creado (no "All") → permisos de lectura y escritura → **Create New Key**. Copiar el **keyID** (`B2_ACCESS_KEY_ID`) y la **applicationKey** (`B2_SECRET_ACCESS_KEY`) que muestra — una sola vez, si se pierden hay que crear otra.
-5. La URL pública del bucket es `B2_PUBLIC_DOMAIN=<nombre-del-bucket>.s3.<region>.backblazeb2.com` (mismos datos del paso 3 y el nombre del paso 2, sin `https://` acá).
 
 ### 2. Neon (base de datos)
 
