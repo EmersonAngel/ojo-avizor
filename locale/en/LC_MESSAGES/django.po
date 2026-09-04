@@ -904,6 +904,46 @@ msgstr[1] "%(contador)s species recorded in Pijao."
 msgid "Buscar por nombre científico, común, familia u orden…"
 msgstr "Search by scientific name, common name, family or order…"
 
+#: ./templates/catalogo/publico_listado.html:57
+msgid "Todas"
+msgstr "All"
+
+#: ./templates/catalogo/publico_listado.html:108
+msgid "Tamaño mín. (cm)"
+msgstr "Min. size (cm)"
+
+#: ./templates/catalogo/publico_listado.html:117
+msgid "Disminuir"
+msgstr "Decrease"
+
+#: ./templates/catalogo/publico_listado.html:123
+msgid "Aumentar"
+msgstr "Increase"
+
+#: ./templates/catalogo/publico_listado.html:130
+msgid "Tamaño máx. (cm)"
+msgstr "Max. size (cm)"
+
+#: ./templates/catalogo/publico_listado.html:145
+msgid "Ordenar por"
+msgstr "Sort by"
+
+#: ./templates/catalogo/publico_listado.html:149
+msgid "Más recientes"
+msgstr "Most recent"
+
+#: ./templates/catalogo/publico_listado.html:150
+msgid "Tamaño: menor a mayor"
+msgstr "Size: smallest to largest"
+
+#: ./templates/catalogo/publico_listado.html:151
+msgid "Tamaño: mayor a menor"
+msgstr "Size: largest to smallest"
+
+#: ./templates/catalogo/publico_listado.html:181
+msgid "Quitar filtros"
+msgstr "Clear filters"
+
 #: ./templates/condiciones_uso.html:10
 msgid "En palabras simples: qué pasa con lo que aportas a Ojo Avizor."
 msgstr "In plain terms: what happens to what you contribute to Ojo Avizor."
