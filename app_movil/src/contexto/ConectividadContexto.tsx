@@ -20,7 +20,11 @@ export function ConectividadProveedor({ children }: { children: React.ReactNode 
     const cancelarSuscripcion = NetInfo.addEventListener((estado) => {
       const hayConexion = Boolean(estado.isConnected && estado.isInternetReachable !== false);
       setConectado(hayConexion);
-      if (hayConexion) sincronizarPendientes();
+      // Sin esperar el resultado (no debe bloquear la UI) ni dejar la
+      // promesa suelta sin atrapar: esto se dispara apenas abre la app,
+      // incluso antes de iniciar sesión, así que un fallo acá (base de
+      // datos local, red) nunca debe tirar abajo el arranque.
+      if (hayConexion) sincronizarPendientes().catch((error) => console.warn('Fallo la sincronización automática:', error));
     });
     return cancelarSuscripcion;
   }, []);
