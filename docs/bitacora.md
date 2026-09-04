@@ -319,6 +319,121 @@ Cambios de código para que esto funcione, todos condicionales — el despliegue
 
 Guía completa en `README.md`, sección "Despliegue gratuito (Render + Neon + Backblaze B2)" — misma estructura que la de AWS, que se deja documentada y en pausa (no se borra: sirve tal cual el día que haya presupuesto o créditos de nuevo, sección marcada como tal). `manage.py check` se corrió con y sin las variables de B2 puestas, para confirmar que las dos ramas del `STORAGES` condicional cargan bien.
 
+## 4 de septiembre (continuación) — el despliegue gratuito queda en vivo
+
+Misma jornada, segundo bloque: se ejecutó de punta a punta lo que la entrada
+anterior dejó preparado. El sitio queda publicado en
+`https://ojo-avizor.onrender.com`, verificado en vivo con navegador real, no
+solo con `manage.py check`.
+
+**Neon.** El usuario pegó la cadena de conexión real de su proyecto. Traía un
+parámetro nuevo, `channel_binding=require`, junto al ya conocido
+`sslmode=require`, que `config/settings/base.py` todavía no contemplaba —
+`DATABASES` solo sabía leer `DB_SSLMODE`. Se agrega `DB_CHANNEL_BINDING` con
+el mismo patrón condicional. Verificado no solo con `manage.py check`, sino
+con una conexión real contra la base de Neon del usuario (`SELECT version()`)
+antes de dar por buena la corrección — la única forma de confirmar que
+psycopg2 realmente acepta ese parámetro de SCRAM channel binding sin error,
+en vez de asumirlo.
+
+**Decisión del usuario: el entorno local deja de ser local.** Pidió
+explícitamente que su `.env` de desarrollo apuntara a los mismos servicios
+reales del despliegue (Neon, Backblaze B2, Gmail) en vez de a un Postgres y
+un disco local — "que quede todo desplegado, nada en local". Esto tiene un
+efecto en cadena que no es obvio: el almacenamiento de fotos en Backblaze B2
+solo se activa en `config/settings/produccion.py`, no en `desarrollo.py`, así
+que tener las credenciales de B2 en el `.env` no alcanza — hubo que cambiar
+también `DJANGO_SETTINGS_MODULE` a `produccion` en local. Eso arrastra
+`SECURE_SSL_REDIRECT=True` por defecto, que en un `runserver` sin HTTPS deja
+`http://localhost:8000` en loop de redirección; se fija
+`DJANGO_SECURE_SSL_REDIRECT=False` solo en el `.env` local para evitarlo, sin
+tocar el valor real que usa Render. También exige correr `collectstatic` a
+mano en local (WhiteNoise necesita el manifiesto, y con `DEBUG=False` el
+`runserver` ya no sirve estáticos solo). Verificado sirviendo el sitio local
+con estas condiciones antes de seguir.
+
+**Cuenta de administrador.** Se creó el superusuario en Neon
+(`createsuperuser --noinput`, único modo viable porque Render en el plan
+gratis no siempre da una terminal). El campo `rol` propio del proyecto
+(distinto de `is_staff`/`is_superuser`, que sí pone Django) quedó en
+`OBSERVADOR` por defecto — `createsuperuser` no lo toca. Existe un servicio,
+`cambiar_rol` (`apps/cuentas/services.py`), pero bloquea a propósito que
+alguien se cambie el rol a sí mismo (pensado para el panel, donde un admin
+cambia el rol de otra persona) — como esta era la primera cuenta del sistema,
+no había quién más lo autorizara. Se asignó `ADMINISTRADOR` por asignación
+directa del campo, mismo tipo de bootstrapping inicial que ya hace
+`createsuperuser` con sus propios campos, no una vía nueva para saltarse la
+regla en el uso normal del panel.
+
+**Backblaze B2 y Gmail, credenciales reales.** Bucket `Ojo-Avizor` creado
+Privado (confirma lo ya aprendido el mismo día: Público pide tarjeta,
+Privado no). Para el correo saliente, generar la contraseña de aplicación de
+Gmail tomó tres intentos — las dos primeras, copiadas a mano en el chat,
+fallaron con `BadCredentials` contra el servidor SMTP real; la tercera, con
+más cuidado al copiarla, funcionó. Se verificó con una autenticación SMTP
+directa (`smtplib`, sin mandar ningún correo) antes de dar por buena la
+contraseña, en vez de confiar en que el formato de 16 caracteres alcanzara.
+
+**El build de Docker en Render fallaba — dos bugs reales, no de
+configuración del usuario.** `collectstatic` corre durante la construcción
+de la imagen, antes de que Render inyecte las variables de entorno del
+dashboard. Desde la revisión de seguridad del 25 de agosto,
+`produccion.py` exige una `DJANGO_SECRET_KEY` real y falla fuerte si no la
+encuentra — nadie había ajustado el paso de build para tenerlo en cuenta, así
+que el build fallaba siempre, sin importar qué tan bien configurado
+estuviera Render. Se agrega una clave de marcador solo para ese paso del
+`Dockerfile`; la real, la de Render, la pisa en tiempo de ejecución. Al
+corregir eso, apareció un segundo problema: `leaflet.css`/`leaflet.js`
+(vendorizados en `static/vendor/leaflet/`) referencian `layers.png`,
+`layers-2x.png` y `leaflet.js.map` que nunca se habían copiado al
+vendorizar la librería originalmente — invisibles en desarrollo porque
+`runserver` no valida que esas referencias resuelvan a un archivo real, pero
+WhiteNoise (`CompressedManifestStaticFilesStorage`) sí lo exige en el build.
+Se agregan los tres archivos oficiales de Leaflet 1.9.4 (misma versión ya
+vendorizada). Sin Docker Desktop disponible en esta máquina para probar el
+build completo, se verificó el paso exacto que fallaba —`collectstatic` con
+las mismas condiciones del build de Render (sin `.env`, sin base de datos,
+solo la clave de marcador)— hasta confirmarlo limpio.
+
+**Login con Google en el dominio nuevo.** Mismo patrón ya anotado el 27 de
+agosto (el redirect de OAuth es específico por origen): hubo que agregar
+`https://ojo-avizor.onrender.com/accounts/google/login/callback/` a los URI
+de redirección autorizados en Google Cloud Console. El usuario reemplazó por
+error el de `localhost` en vez de agregar el nuevo al lado — Google permite
+varios URI en el mismo cliente OAuth, así que se repuso el de desarrollo
+junto al de producción. Confirmado en vivo: el flujo llega hasta la pantalla
+real de Google ("Ir a ojo-avizor.onrender.com") sin `redirect_uri_mismatch`.
+
+**Las 399 fichas de especie no se habían perdido — nunca se habían
+migrado.** El usuario notó que el catálogo en Neon estaba vacío pese a tener
+399 fichas ya curadas. Estaban intactas en el Postgres local (nunca se tocó
+ni se borró esa base al cambiar el `.env`, solo se dejó de apuntar ahí):
+`migrate` sobre Neon crea el esquema, no copia datos. Se migraron con
+`dumpdata`/`loaddata` (399 `Especie` + 399 `NombreComun`, más la cuenta de
+prueba `obs.prueba@example.com` que figuraba como autora de todas, para no
+perder esa referencia). En el camino, un bug de codificación propio de
+Windows: `dumpdata --output archivo.json` escribió el archivo en `cp1252`
+por defecto en vez de UTF-8, y `loaddata` rompía con `UnicodeDecodeError` en
+cualquier nombre con tilde — se resolvió forzando `PYTHONUTF8=1` al volcar
+de nuevo. Después de cargar con PK explícito, se corrió
+`sqlsequencereset` sobre `catalogo` y `cuentas` para que el próximo usuario o
+especie creados en Neon no choquen de ID con los recién importados.
+Efecto colateral de probar la suite de pruebas completa con el `.env` ya
+apuntando a Neon: al cortarla a mitad de camino quedó una base de datos de
+prueba huérfana (`test_ojo_avizor`) en el proyecto real — Django la crea y
+la borra sola si la corrida termina completa, pero interrumpida a mitad no
+llegó a limpiarla. Se borró con confirmación explícita del usuario (acción
+destructiva sobre un recurso real, no se hizo por cuenta propia). Queda
+anotado como algo a tener presente de ahora en más: con el entorno local
+apuntando a la base real, correr `manage.py test` sin querer tiene ese
+costo — antes no lo tenía.
+
+Verificado en vivo con navegador real, no solo con comandos: portada carga
+con las 399 especies visibles, login por correo/contraseña funciona con
+cookies seguras sobre HTTPS real, el panel de administrador confirma que el
+rol quedó bien asignado, y el flujo de Google OAuth llega limpio hasta la
+pantalla de consentimiento de Google.
+
 ---
 
 ## Dónde queda el proyecto
@@ -335,10 +450,18 @@ RF-24, RNF-12.
 Al 27 de agosto no había evidencia en el repositorio de un despliegue en un
 lugar público y accesible. El 1 de septiembre se preparó uno completo sobre
 AWS Lightsail con créditos institucionales, pero esos créditos finalmente no
-quedaron disponibles (ver la entrada del 4 de septiembre) — esa ruta se deja
-documentada y en pausa, no se descarta. **El despliegue activo, listo para
-ejecutar, es el gratuito con Render + Neon + Backblaze B2** (`README.md`,
-misma sección con el paso a paso). Pendiente en los dos casos, por la misma
-razón: ningún paso de consola/dashboard de terceros se puede ejecutar desde
-acá — le corresponde al usuario, con las credenciales de sus propias
-cuentas.
+quedaron disponibles — esa ruta se deja documentada y en pausa, no se
+descarta.
+
+**El despliegue gratuito con Render + Neon + Backblaze B2 ya está en vivo**,
+no solo preparado: `https://ojo-avizor.onrender.com`, con las 399 fichas de
+especie ya curadas, cuenta de administrador funcionando, login con Google
+verificado en el dominio real y correo saliente por Gmail configurado. El 4
+de septiembre queda registrado en dos entradas porque fue justo la frontera
+entre "listo para ejecutar" y "ejecutado y confirmado en vivo": la primera
+prepara el código y la investigación, la segunda corre cada paso contra los
+servicios reales y corrige lo que solo se ve al hacerlo de verdad (el build
+de Docker, la migración de datos, el redirect de OAuth). Sigue pendiente,
+por la misma razón de siempre: cualquier ajuste futuro de dashboard de
+terceros (Render, Neon, Google Cloud Console) le corresponde al usuario, con
+las credenciales de sus propias cuentas.
