@@ -287,16 +287,17 @@ Sin disco propio persistente (a diferencia del despliegue con Docker/VPS de arri
 2. **Create a project** → nombre, región (la más cercana disponible).
 3. Neon muestra una cadena de conexión con esta forma:
    ```
-   postgresql://usuario:contraseña@ep-algo-12345.region.aws.neon.tech/nombrebasededatos?sslmode=require
+   postgresql://usuario:contraseña@ep-algo-12345-pooler.region.aws.neon.tech/nombrebasededatos?sslmode=require&channel_binding=require
    ```
-   Repartirla en las variables de siempre (`DATABASES` en `config/settings/base.py` las espera separadas, no como una sola cadena):
+   Repartirla en las variables de siempre (`DATABASES` en `config/settings/base.py` las espera separadas, no como una sola cadena) — los dos parámetros del final (`sslmode` y `channel_binding`) van cada uno en su propia variable:
    ```bash
    DB_NAME=nombrebasededatos
    DB_USER=usuario
    DB_PASSWORD=contraseña
-   DB_HOST=ep-algo-12345.region.aws.neon.tech
+   DB_HOST=ep-algo-12345-pooler.region.aws.neon.tech
    DB_PORT=5432
    DB_SSLMODE=require
+   DB_CHANNEL_BINDING=require
    ```
 
 ### 3. Render (la app)

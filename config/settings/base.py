@@ -93,6 +93,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
+# DB_SSLMODE y DB_CHANNEL_BINDING quedan sin poner en desarrollo y en el
+# despliegue con Docker/VPS (Postgres corre al lado, sin necesidad de TLS
+# entre contenedores) — Neon (despliegue gratuito, ver README.md) sí los
+# exige: la cadena de conexión que da Neon trae "sslmode=require" y
+# "channel_binding=require" al final, hay que copiar los dos valores al
+# .env por separado, no como una sola cadena (ver README.md, sección
+# "Despliegue gratuito", donde se explica cómo repartirla).
+_opciones_bd = {}
+if env('DB_SSLMODE'):
+    _opciones_bd['sslmode'] = env('DB_SSLMODE')
+if env('DB_CHANNEL_BINDING'):
+    _opciones_bd['channel_binding'] = env('DB_CHANNEL_BINDING')
+
 # Base de datos: PostgreSQL vía variables de entorno.
 DATABASES = {
     'default': {
@@ -102,11 +115,7 @@ DATABASES = {
         'PASSWORD': env('DB_PASSWORD', ''),
         'HOST': env('DB_HOST', 'localhost'),
         'PORT': env('DB_PORT', '5432'),
-        # DB_SSLMODE queda sin poner en desarrollo y en el despliegue con
-        # Docker/VPS (Postgres corre al lado, sin necesidad de TLS entre
-        # contenedores) — Neon (despliegue gratuito, ver README.md) sí lo
-        # exige: hay que poner DB_SSLMODE=require en ese .env.
-        **({'OPTIONS': {'sslmode': env('DB_SSLMODE')}} if env('DB_SSLMODE') else {}),
+        **({'OPTIONS': _opciones_bd} if _opciones_bd else {}),
     }
 }
 
