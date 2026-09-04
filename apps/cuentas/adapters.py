@@ -5,27 +5,14 @@ la primera vez que se crea la cuenta (RF-27, RF-10). El resto del flujo
 (verificación de correo, conexión con una cuenta existente del mismo
 correo) lo maneja allauth con la configuración de config/settings/base.py.
 """
-import re
-
-from .models import Usuario
 from .repositories import existe_seudonimo, existe_username
+from .services import generar_valor_unico
+from .models import Usuario
 
 try:
     from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 except ImportError:  # pragma: no cover - solo si algún día se quita la dependencia
     DefaultSocialAccountAdapter = object
-
-
-def _generar_valor_unico(base, existe_fn):
-    """Recorta a un largo razonable y agrega un número si ya existe (seudónimo y
-    username son unique=True en el modelo)."""
-    base = base[:40] or 'observador'
-    candidato = base
-    sufijo = 1
-    while existe_fn(candidato):
-        sufijo += 1
-        candidato = f'{base}{sufijo}'
-    return candidato
 
 
 class AdaptadorCuentasSociales(DefaultSocialAccountAdapter):
@@ -35,9 +22,9 @@ class AdaptadorCuentasSociales(DefaultSocialAccountAdapter):
         nombre = data.get('name') or usuario.correo
         usuario.nombre_real = nombre[:150]
 
-        base = re.sub(r'[^a-zA-Z0-9_]', '', (usuario.correo or '').split('@')[0]) or 'observador'
-        usuario.username = _generar_valor_unico(base, existe_username)
-        usuario.seudonimo = _generar_valor_unico(base, existe_seudonimo)
+        base = (usuario.correo or '').split('@')[0]
+        usuario.username = generar_valor_unico(base, existe_username)
+        usuario.seudonimo = generar_valor_unico(base, existe_seudonimo)
 
         usuario.rol = Usuario.Rol.OBSERVADOR
         return usuario

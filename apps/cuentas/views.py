@@ -23,14 +23,17 @@ def registrar(request):
         form = RegistroForm(request.POST)
         if form.is_valid():
             usuario = services.registrar_usuario(
-                username=form.cleaned_data['username'],
                 correo=form.cleaned_data['correo'],
                 nombre_real=form.cleaned_data['nombre_real'],
                 seudonimo=form.cleaned_data['seudonimo'],
                 password=form.cleaned_data['password1'],
                 acepta_notificaciones_correo=form.cleaned_data['acepta_notificaciones_correo'],
             )
-            login(request, usuario)
+            # Explícito porque hay dos backends en AUTHENTICATION_BACKENDS
+            # (propio + el de Google/allauth) — sin esto, login() no sabe
+            # cuál usó y tira ValueError; esta cuenta siempre se autentica
+            # con la propia (correo/contraseña), nunca con la de Google.
+            login(request, usuario, backend='django.contrib.auth.backends.ModelBackend')
             return redirect('/')
     else:
         form = RegistroForm()

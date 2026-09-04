@@ -7,7 +7,10 @@ from . import repositories
 
 
 class RegistroForm(forms.Form):
-    username = forms.CharField(max_length=150, label=_('Usuario'))
+    # Sin campo de "usuario" aparte: para quien se registra es el mismo dato
+    # que el seudónimo (pedido explícito, no se veía la diferencia). El
+    # nombre de usuario técnico que exige el modelo se deriva solo del
+    # seudónimo en apps/cuentas/services.py:registrar_usuario.
     correo = forms.EmailField(label=_('Correo'))
     nombre_real = forms.CharField(max_length=150, label=_('Nombre real'))
     seudonimo = forms.CharField(max_length=50, label=_('Seudónimo'))
@@ -17,12 +20,6 @@ class RegistroForm(forms.Form):
         required=False,
         label=_('Quiero recibir correos con notificaciones de la plataforma (por ejemplo, cuando aprueben o devuelvan uno de mis avistamientos).'),
     )
-
-    def clean_username(self):
-        username = self.cleaned_data['username']
-        if repositories.existe_username(username):
-            raise forms.ValidationError(_('Ya existe una cuenta con este nombre de usuario.'))
-        return username
 
     def clean_correo(self):
         correo = self.cleaned_data['correo']

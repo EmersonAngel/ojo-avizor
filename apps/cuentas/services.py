@@ -1,4 +1,5 @@
 """Servicios de dominio de la app cuentas (RF-09, RF-10)."""
+import re
 from functools import wraps
 
 from django.conf import settings
@@ -8,6 +9,7 @@ from django.core.mail import send_mail
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+from . import repositories
 from .models import SolicitudRevisor, Usuario
 
 
@@ -19,10 +21,31 @@ class SolicitudRevisorInvalida(Exception):
     pass
 
 
-def registrar_usuario(*, username, correo, nombre_real, seudonimo, password, acepta_notificaciones_correo=False):
-    """Crea una cuenta nueva con rol Observador (RF-09, RF-27)."""
+def generar_valor_unico(base, existe_fn):
+    """Recorta a un largo razonable y agrega un número si ya existe (username
+    y seudónimo son unique=True en el modelo). Compartido entre el registro
+    manual (deriva el username del seudónimo elegido) y el inicio de sesión
+    con Google (adapters.py: deriva username y seudónimo del correo, que no
+    manda ninguno de los dos)."""
+    limpio = re.sub(r'[^a-zA-Z0-9_]', '', base)[:40] or 'observador'
+    candidato = limpio
+    sufijo = 1
+    while existe_fn(candidato):
+        sufijo += 1
+        candidato = f'{limpio}{sufijo}'
+    return candidato
+
+
+def registrar_usuario(*, correo, nombre_real, seudonimo, password, acepta_notificaciones_correo=False):
+    """Crea una cuenta nueva con rol Observador (RF-09, RF-27).
+
+    Sin un campo de "usuario" aparte en el formulario: para quien se
+    registra es el mismo dato que el seudónimo, no hay forma de distinguirlos
+    a simple vista. El nombre de usuario técnico que exige AbstractUser (sin
+    espacios, uso interno, nunca se muestra) se deriva del seudónimo acá.
+    """
     usuario = Usuario(
-        username=username,
+        username=generar_valor_unico(seudonimo, repositories.existe_username),
         correo=correo,
         nombre_real=nombre_real,
         seudonimo=seudonimo,
