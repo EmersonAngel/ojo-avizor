@@ -39,4 +39,11 @@ EXPOSE 8000
 # docker-compose monta el código del host sobre /app y ese bit no
 # siempre sobrevive un checkout en Windows.
 ENTRYPOINT ["sh", "entrypoint.sh"]
-CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3"]
+# Forma shell a propósito, no la de lista/exec (ver README.md, "Despliegue
+# gratuito"): Render le asigna el puerto real al contenedor por la
+# variable de entorno PORT (no siempre 8000), y solo se puede leer una
+# variable de entorno en el comando si Docker lo pasa por una shell. El
+# despliegue con Docker/VPS no define PORT, así que cae en el 8000 de
+# siempre — este mismo Dockerfile sirve para los dos despliegues sin
+# cambiar nada más.
+CMD gunicorn config.wsgi:application --bind 0.0.0.0:${PORT:-8000} --workers 3

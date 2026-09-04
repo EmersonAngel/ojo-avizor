@@ -129,6 +129,8 @@ Cualquier comando de `manage.py` de este README funciona igual, anteponiendo `do
 
 ## Despliegue en producción (AWS Lightsail)
 
+> **En pausa** (4 de septiembre): los créditos institucionales de AWS con los que se pensó este camino finalmente no quedaron disponibles. Se deja documentado igual — reutiliza el mismo `docker-compose.prod.yml`/`Caddyfile` que ya están en el repositorio, así que sirve tal cual el día que haya presupuesto o créditos de nuevo. Mientras tanto, el despliegue activo es el de la sección siguiente, "Despliegue gratuito".
+
 Un solo servidor con `docker-compose.prod.yml` (la misma imagen de arriba + PostgreSQL + [Caddy](https://caddyserver.com/) como proxy — Caddy consigue y renueva el certificado HTTPS de Let's Encrypt solo, sin `certbot` ni tareas programadas que alguien tenga que recordar). Es la misma arquitectura de "todo en una máquina" que ya corre en desarrollo con Docker, apta para el tráfico de este proyecto (RNF-01: 10 usuarios simultáneos) sin necesitar balanceador de carga ni base de datos administrada aparte — ver `docs/bitacora.md`, entrada del 1 de septiembre, para la comparación completa de alternativas de hosting y por qué se descartaron.
 
 Esta guía asume créditos de AWS ya activos en la cuenta y **nada más de infraestructura previa** — se crea todo desde cero. Ningún paso de acá se puede automatizar desde este repositorio: cada uno se hace a mano, una sola vez, en la consola de AWS o por SSH en el servidor.
@@ -253,6 +255,78 @@ Las migraciones corren solas al arrancar (`entrypoint.sh`); no hace falta ningú
 ### Antes de que venzan los créditos
 
 Revisar **Billing → Cost Explorer** en la consola de AWS para ver cuánto crédito institucional queda, y confirmar con quien lo administre qué pasa el 13 de septiembre si vence sin renovarse — si no se renueva ni se migra a otra cuenta/plan de pago antes de esa fecha, el servidor puede quedar suspendido o empezar a facturar a una tarjeta real. Vale la pena dejarlo anotado con tiempo, no descubrirlo el mismo día.
+
+---
+
+## Despliegue gratuito (Render + Neon + Cloudflare R2)
+
+Sin tarjeta ni gasto real — pero, a diferencia del despliegue de arriba, ningún proveedor gratis da "todo en un solo lugar" de forma confiable, así que son **tres cuentas separadas**, una por cada pieza:
+
+| Pieza | Para qué | La salvedad de usarla gratis |
+| --- | --- | --- |
+| [Render](https://render.com) | corre Django | El servicio "duerme" a los 15 minutos sin visitas; la primera persona que entra después espera ~30-60 segundos mientras arranca de nuevo. |
+| [Neon](https://neon.tech) | PostgreSQL | Los datos **no** se borran ni caducan (a diferencia del Postgres gratis del propio Render, que sí se borra a los 30 días) — solo el cómputo se pausa solo tras 5 minutos sin consultas, y se reactiva solo en la siguiente. |
+| [Cloudflare R2](https://developers.cloudflare.com/r2/) | fotos de avistamientos | Activarlo pide una tarjeta para verificar la cuenta, aunque no cobra nada dentro de los 10 GB gratis al mes — es la única de las tres piezas que la pide. Si eso es un problema, avisar antes de seguir: hay alternativas (guardar las fotos en el propio Render, asumiendo que se pierden en cada reinicio, o mudar esta pieza sola a otro proveedor de almacenamiento). |
+
+Sin disco propio persistente (a diferencia del despliegue con Docker/VPS de arriba), las fotos subidas por la gente **tienen que** vivir en un lugar aparte — de ahí la tercera pieza. `config/settings/produccion.py` ya está preparado: si detecta credenciales de Cloudflare R2 en el entorno, las usa; si no, sigue guardando en disco local (el otro despliegue no necesita tocar nada de esto).
+
+### 1. Cloudflare R2 (fotos)
+
+1. Crear cuenta en [dash.cloudflare.com](https://dash.cloudflare.com/sign-up) (gratis, sin tarjeta para la cuenta en sí).
+2. En el menú lateral, **R2 Object Storage** → activar R2 (acá sí pide una tarjeta, ver la salvedad de la tabla de arriba).
+3. **Create bucket** → nombre, por ejemplo `ojo-avizor-fotos`.
+4. Dentro del bucket: **Settings** → **Public access** → habilitar el subdominio `r2.dev` → copiar la URL pública que da (`pub-xxxxxxxx.r2.dev`) — es el valor de `R2_PUBLIC_DOMAIN`.
+5. **Manage R2 API tokens** → **Create API token** → permisos **Object Read & Write**, con alcance solo a este bucket → copiar el **Access Key ID** y el **Secret Access Key** que muestra (una sola vez — si se pierden, hay que crear otro token).
+6. El **Account ID** de Cloudflare (visible en la barra lateral derecha del dashboard) arma la URL del endpoint: `R2_ENDPOINT_URL=https://<ACCOUNT_ID>.r2.cloudflarestorage.com`.
+
+### 2. Neon (base de datos)
+
+1. Crear cuenta en [neon.tech](https://neon.tech) (con GitHub o correo, sin tarjeta).
+2. **Create a project** → nombre, región (la más cercana disponible).
+3. Neon muestra una cadena de conexión con esta forma:
+   ```
+   postgresql://usuario:contraseña@ep-algo-12345.region.aws.neon.tech/nombrebasededatos?sslmode=require
+   ```
+   Repartirla en las variables de siempre (`DATABASES` en `config/settings/base.py` las espera separadas, no como una sola cadena):
+   ```bash
+   DB_NAME=nombrebasededatos
+   DB_USER=usuario
+   DB_PASSWORD=contraseña
+   DB_HOST=ep-algo-12345.region.aws.neon.tech
+   DB_PORT=5432
+   DB_SSLMODE=require
+   ```
+
+### 3. Render (la app)
+
+1. Crear cuenta en [render.com](https://render.com) (con GitHub, sin tarjeta).
+2. **New +** → **Web Service** → conectar el repositorio `ojo-avizor` de GitHub.
+3. Render detecta el `Dockerfile` solo y ofrece **Docker** como entorno — dejarlo así (no hace falta indicar build/start command a mano). En **Name**, poner algo memorable como `ojo-avizor`: ese nombre define de una vez la URL final (`ojo-avizor.onrender.com`), así no hay que volver después a corregir nada.
+4. Plan: **Free**.
+5. En **Environment** → **Environment Variables**, agregar todas las de `.env.example` con valores reales, más las de Cloudflare R2 y Neon de los pasos anteriores, más:
+   ```bash
+   DJANGO_SETTINGS_MODULE=config.settings.produccion
+   DJANGO_SECRET_KEY=  # generar una nueva — ver la sección de AWS de arriba para el comando
+   DJANGO_ALLOWED_HOSTS=ojo-avizor.onrender.com  # el nombre elegido en el paso 3
+   # Para que se cree solo un superusuario al arrancar — Render (plan gratis)
+   # no siempre da una terminal para correr createsuperuser a mano:
+   DJANGO_SUPERUSER_CORREO=tu-correo@ejemplo.com
+   DJANGO_SUPERUSER_USERNAME=admin
+   DJANGO_SUPERUSER_NOMBRE_REAL=Tu Nombre
+   DJANGO_SUPERUSER_SEUDONIMO=admin
+   DJANGO_SUPERUSER_PASSWORD=  # una contraseña fuerte y nueva
+   ```
+6. **Create Web Service** → Render construye la imagen y la despliega — tarda varios minutos la primera vez. Cuando termine, el sitio queda en `https://ojo-avizor.onrender.com` (o el nombre que se haya puesto), con HTTPS automático y sin dominio propio necesario.
+
+Si se va a usar el inicio de sesión con Google en este despliegue, agregar `https://ojo-avizor.onrender.com/accounts/google/login/callback/` a los URI de redirección en Google Cloud Console (ver la sección "Inicio de sesión con Google" más abajo) **antes** del primer intento de usarlo — si no, ese botón en particular falla, el resto del sitio funciona igual.
+
+### 4. Verificar
+
+Visitar la URL de Render. Puede tardar hasta un minuto en la primera carga (el servicio recién está despertando). Iniciar sesión con el correo/contraseña de `DJANGO_SUPERUSER_*` para entrar como administrador.
+
+### 5. Actualizar el código más adelante
+
+Cada `git push` a la rama conectada dispara un despliegue solo en Render — no hace falta ningún paso manual.
 
 ---
 

@@ -300,6 +300,21 @@ Se agregan `docker-compose.prod.yml` (Postgres + la imagen existente + Caddy) y 
 
 **Queda pendiente, no se puede hacer desde acá**: ningún paso de la consola de AWS (crear la instancia, la IP estática, elegir/registrar el dominio) se puede ejecutar sin las credenciales de la cuenta — eso lo tiene que hacer el usuario siguiendo la guía. Tampoco está confirmado si el registro de dominio en Route 53 queda cubierto por los créditos de cómputo o es un cargo aparte, ni qué pasa con el servidor si los créditos vencen el 13 de septiembre sin haberse renovado — ambas cosas quedaron anotadas en el README para confirmar antes de esa fecha.
 
+## 4 de septiembre — los créditos de AWS no quedaron disponibles: despliegue gratuito
+
+Los créditos institucionales de AWS de la entrada anterior finalmente no se pudieron usar. Se preparó una ruta alternativa con **cero costo real**, pedida explícitamente así — sin tarjeta de por medio en la medida de lo posible.
+
+Ningún proveedor gratis resuelve todo el stack (app + base de datos + almacenamiento de archivos) de forma confiable en un solo lugar, así que la solución queda repartida en tres servicios: **Render** (corre Django, plan gratis — se duerme a los 15 minutos sin visitas), **Neon** (PostgreSQL, plan gratis permanente — a diferencia del propio Postgres gratis de Render, que se borra a los 30 días) y **Cloudflare R2** (las fotos de avistamientos). Esta última pieza fue la decisión menos obvia: el disco del contenedor de Render **no es persistente** — cualquier foto guardada ahí se perdería en el siguiente reinicio o despliegue —, así que hacía falta un almacenamiento de archivos aparte. Se investigaron alternativas (Supabase se descartó: su Postgres gratis se pausa a los 7 días sin uso y hay que reactivarlo a mano, peor que el de Neon, que se reactiva solo; Oracle Cloud "Always Free" también, porque desde este año pide tarjeta de crédito de verificación a casi todo el mundo, justo lo que se quería evitar) — R2 quedó como la única de las tres piezas que sí pide una tarjeta para activarse (no cobra dentro de los 10 GB gratis), y se dejó documentada esa salvedad en el README en vez de ocultarla.
+
+Cambios de código para que esto funcione, todos condicionales — el despliegue con Docker/VPS de la entrada anterior sigue funcionando exactamente igual, sin tocar nada:
+
+- `config/settings/produccion.py`: si hay credenciales de Cloudflare R2 en el entorno, las fotos se guardan ahí (`django-storages`, backend S3 — R2 es compatible con la API de S3); si no las hay, sigue siendo disco local como hasta ahora.
+- `config/settings/base.py`: `DATABASES` acepta un `DB_SSLMODE` opcional — Neon exige TLS para conectarse, el Postgres de Docker no.
+- `Dockerfile`: el `CMD` de gunicorn pasa de forma exec a forma shell para poder leer `${PORT:-8000}` en tiempo de arranque — Render le asigna el puerto real al contenedor por una variable de entorno que no siempre es 8000; sin este cambio, el despliegue en Render fallaría en silencio.
+- `entrypoint.sh`: crea un superusuario solo al arrancar si están puestas las variables `DJANGO_SUPERUSER_*` — Render, en el plan gratis, puede no dar una terminal para correr `createsuperuser` a mano como sí se puede con `docker compose exec` en el despliegue con Docker/VPS.
+
+Guía completa en `README.md`, sección "Despliegue gratuito (Render + Neon + Cloudflare R2)" — misma estructura que la de AWS, que se deja documentada y en pausa (no se borra: sirve tal cual el día que haya presupuesto o créditos de nuevo, sección marcada como tal). `manage.py check` se corrió con y sin las variables de R2 puestas, para confirmar que las dos ramas del `STORAGES` condicional cargan bien.
+
 ---
 
 ## Dónde queda el proyecto
@@ -314,9 +329,12 @@ la entrega original**, RF-19/RF-29, RF-21 y RF-18 ya se construyeron (ver
 RF-24, RNF-12.
 
 Al 27 de agosto no había evidencia en el repositorio de un despliegue en un
-lugar público y accesible. Eso cambió el 1 de septiembre: preparación
-completa para desplegar en AWS Lightsail con créditos institucionales
-(`docker-compose.prod.yml`, `Caddyfile`, guía paso a paso en `README.md`) —
-ver la entrada de esa fecha para el detalle y lo que sigue pendiente
-(ejecutar los pasos en la consola de AWS, algo que solo puede hacer quien
-tiene las credenciales de la cuenta).
+lugar público y accesible. El 1 de septiembre se preparó uno completo sobre
+AWS Lightsail con créditos institucionales, pero esos créditos finalmente no
+quedaron disponibles (ver la entrada del 4 de septiembre) — esa ruta se deja
+documentada y en pausa, no se descarta. **El despliegue activo, listo para
+ejecutar, es el gratuito con Render + Neon + Cloudflare R2** (`README.md`,
+misma sección con el paso a paso). Pendiente en los dos casos, por la misma
+razón: ningún paso de consola/dashboard de terceros se puede ejecutar desde
+acá — le corresponde al usuario, con las credenciales de sus propias
+cuentas.

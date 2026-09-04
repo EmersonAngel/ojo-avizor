@@ -21,4 +21,15 @@ echo "Base de datos disponible."
 
 python manage.py migrate --noinput
 
+# Solo para el despliegue gratuito (README.md, "Despliegue gratuito"):
+# Render, al menos en el plan gratis, puede no dar una terminal para
+# correr createsuperuser a mano como sí se puede con
+# "docker compose exec" en el despliegue con Docker/VPS. Si
+# DJANGO_SUPERUSER_PASSWORD está puesta, se crea solo al arrancar —
+# --noinput no falla si el usuario ya existe, así que es seguro que esto
+# corra en cada reinicio del contenedor.
+if [ -n "$DJANGO_SUPERUSER_PASSWORD" ]; then
+    python manage.py createsuperuser --noinput || true
+fi
+
 exec "$@"
