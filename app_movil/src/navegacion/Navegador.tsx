@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { NavigationContainer } from '@react-navigation/native';
+import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import React from 'react';
 import { Pressable, Text, View } from 'react-native';
 
@@ -18,7 +18,7 @@ const Tab = createBottomTabNavigator();
 function TituloConRacha({ seudonimo, racha }: { seudonimo: string; racha: number | null }) {
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-      <Text style={{ fontSize: 17, fontWeight: '600' }}>Hola, {seudonimo}</Text>
+      <Text style={{ fontSize: 17, fontWeight: '600', color: '#111' }}>Hola, {seudonimo}</Text>
       {racha !== null && racha > 0 && (
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 2 }}>
           <Ionicons name="flame" size={16} color="#E8460F" />
@@ -33,7 +33,12 @@ export default function Navegador() {
   const { sesion, racha, cerrarSesion } = useSesion();
 
   return (
-    <NavigationContainer>
+    // theme fijo en claro, sin importar el modo del sistema del celular:
+    // toda la app está pensada en fondo claro (ver PantallaLogin.tsx,
+    // PantallaRegistrarAvistamiento.tsx, etc.) — sin esto, la cabecera y la
+    // barra de pestañas podían pasar a oscuro solas en un celular con tema
+    // oscuro del sistema, mientras el resto de la pantalla se queda claro.
+    <NavigationContainer theme={DefaultTheme}>
       <Tab.Navigator
         screenOptions={{
           tabBarActiveTintColor: '#1B2D55',
@@ -44,7 +49,11 @@ export default function Navegador() {
             </Pressable>
           ),
           headerTitle: () =>
-            sesion ? <TituloConRacha seudonimo={sesion.seudonimo} racha={racha} /> : <Text>Ojo Avizor</Text>,
+            sesion ? (
+              <TituloConRacha seudonimo={sesion.seudonimo} racha={racha} />
+            ) : (
+              <Text style={{ fontSize: 17, fontWeight: '600', color: '#111' }}>Ojo Avizor</Text>
+            ),
         }}
       >
         <Tab.Screen

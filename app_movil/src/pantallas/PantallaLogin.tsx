@@ -44,6 +44,7 @@ export default function PantallaLogin() {
       <TextInput
         style={estilos.campo}
         placeholder="Correo"
+        placeholderTextColor="#999"
         autoCapitalize="none"
         keyboardType="email-address"
         value={correo}
@@ -52,6 +53,7 @@ export default function PantallaLogin() {
       <TextInput
         style={estilos.campo}
         placeholder="Contraseña"
+        placeholderTextColor="#999"
         secureTextEntry
         value={password}
         onChangeText={setPassword}
@@ -77,6 +79,8 @@ const estilos = StyleSheet.create({
     borderRadius: 8,
     padding: 12,
     marginBottom: 12,
+    color: '#111',
+    backgroundColor: '#fff',
   },
   error: { color: '#B3261E', marginBottom: 12, textAlign: 'center' },
   boton: {

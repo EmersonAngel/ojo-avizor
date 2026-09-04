@@ -38,6 +38,7 @@ export default function SelectorEspecie({ especies, especieId, nombreEspecie, on
           <TextInput
             style={estilos.buscador}
             placeholder="Buscar por nombre…"
+            placeholderTextColor="#999"
             value={busqueda}
             onChangeText={setBusqueda}
             autoFocus
@@ -111,13 +112,15 @@ const estilos = StyleSheet.create({
   textoCampo: { flex: 1 },
   textoElegido: { fontStyle: 'italic', color: '#111' },
   textoPlaceholder: { color: '#888' },
-  contenedorModal: { flex: 1, paddingTop: 60, paddingHorizontal: 16 },
+  contenedorModal: { flex: 1, paddingTop: 60, paddingHorizontal: 16, backgroundColor: '#fff' },
   buscador: {
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 8,
     padding: 10,
     marginBottom: 12,
+    color: '#111',
+    backgroundColor: '#fff',
   },
   vacio: { textAlign: 'center', color: '#888', marginTop: 24 },
   fila: {
@@ -131,7 +134,7 @@ const estilos = StyleSheet.create({
   miniatura: { width: 48, height: 48, borderRadius: 8, backgroundColor: '#eee' },
   miniaturaVacia: { alignItems: 'center', justifyContent: 'center' },
   textoFila: { flex: 1 },
-  nombreCientifico: { fontStyle: 'italic', fontSize: 16 },
+  nombreCientifico: { fontStyle: 'italic', fontSize: 16, color: '#111' },
   nombresComunes: { color: '#666', marginTop: 2 },
   botonSinIdentificar: {
     flexDirection: 'row',

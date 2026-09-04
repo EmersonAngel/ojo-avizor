@@ -77,7 +77,7 @@ const estilos = StyleSheet.create({
   },
   contenido: { marginBottom: 8 },
   filaTitulo: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  especie: { fontStyle: 'italic', fontSize: 16, fontWeight: '600' },
+  especie: { fontStyle: 'italic', fontSize: 16, fontWeight: '600', color: '#111' },
   filaDetalle: { flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 4 },
   lugar: { color: '#555' },
   estado: { fontSize: 12, color: '#1B2D55', fontWeight: '600' },

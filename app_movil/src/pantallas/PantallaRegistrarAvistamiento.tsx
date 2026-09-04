@@ -186,6 +186,7 @@ export default function PantallaRegistrarAvistamiento() {
         }
       />
       <TextInput
+        placeholderTextColor="#999"
         style={estilos.campo}
         placeholder="¿Conoces un nombre local para esta ave? (opcional)"
         value={datos.nombreComunPropuesto}
@@ -197,6 +198,7 @@ export default function PantallaRegistrarAvistamiento() {
         <Text style={estilos.seccion}>¿Dónde y cuándo?</Text>
       </View>
       <TextInput
+        placeholderTextColor="#999"
         style={estilos.campo}
         placeholder="Lugar"
         value={datos.lugar}
@@ -216,6 +218,7 @@ export default function PantallaRegistrarAvistamiento() {
       <View style={estilos.filaDoble}>
         <TextInput
           style={[estilos.campo, estilos.mitad]}
+          placeholderTextColor="#999"
           placeholder="Latitud (opcional)"
           keyboardType="numbers-and-punctuation"
           value={datos.latitud}
@@ -223,6 +226,7 @@ export default function PantallaRegistrarAvistamiento() {
         />
         <TextInput
           style={[estilos.campo, estilos.mitad]}
+          placeholderTextColor="#999"
           placeholder="Longitud (opcional)"
           keyboardType="numbers-and-punctuation"
           value={datos.longitud}
@@ -235,6 +239,7 @@ export default function PantallaRegistrarAvistamiento() {
         <Text style={estilos.seccion}>Detalles (opcional)</Text>
       </View>
       <TextInput
+        placeholderTextColor="#999"
         style={estilos.campo}
         placeholder="Comportamiento"
         value={datos.comportamiento}
@@ -242,12 +247,14 @@ export default function PantallaRegistrarAvistamiento() {
         multiline
       />
       <TextInput
+        placeholderTextColor="#999"
         style={estilos.campo}
         placeholder="Sustrato"
         value={datos.sustrato}
         onChangeText={(v) => actualizar('sustrato', v)}
       />
       <TextInput
+        placeholderTextColor="#999"
         style={estilos.campo}
         placeholder="Info adicional"
         value={datos.infoAdicional}
@@ -295,6 +302,8 @@ const estilos = StyleSheet.create({
     borderRadius: 8,
     padding: 12,
     marginBottom: 10,
+    color: '#111',
+    backgroundColor: '#fff',
   },
   filaDoble: { flexDirection: 'row', gap: 10 },
   mitad: { flex: 1 },
