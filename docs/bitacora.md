@@ -272,6 +272,34 @@ tomó pedirle al usuario que ejecutara pruebas paso a paso en su propia
 consola, porque las herramientas de navegador automatizadas disponibles no
 podían confirmar el resultado visual final por sí solas.
 
+## 31 de agosto — buscador de especie tipo eBird, cantidad de individuos y códigos reproductivos
+
+Tres extensiones nuevas al formulario de registro, todas fuera del MVP original, pedidas explícitamente por el usuario:
+
+- **Buscador de especie con autocompletar** (reemplaza el desplegable de lista completa): HTMX pide sugerencias a medida que se escribe, filtrando por nombre científico y por nombres comunes — coherente con el modelo de dos capas del proyecto, donde la gente reconoce el ave por como le dicen en la vereda, no por su nombre en latín. Cada sugerencia muestra ambos nombres.
+- **Cantidad de individuos** (`Registro.cantidad_individuos`), obligatoria en el formulario web al estilo eBird.
+- **Código reproductivo**: al principio se dejó marcar varios a la vez (`JSONField`, lista, con chips tipo casilla). El 1 de septiembre se corrigió: la guía oficial de eBird es explícita — *"choose the highest-ranking code that you observed for that species on this checklist"* (verificado contra su Help Center) — nunca se combinan códigos, siempre se reporta uno solo, el de mayor jerarquía. El campo pasa a `CharField` de un solo valor y los chips a un grupo de radios (selección única, se auto-excluyen).
+
+En el camino se encontraron y corrigieron varios bugs reales de Alpine.js e HTMX, vale la pena dejarlos anotados porque no fueron obvios:
+
+- Un método definido dentro de `x-data` necesita `this.` para tocar sus propias propiedades (`this.consulta`, no `consulta` a secas) — sin el prefijo, el cambio nunca se reflejaba en pantalla, aunque `$refs` sí funcionaba sin `this.` (es "mágico", se inyecta distinto). El id oculto de la especie elegida quedaba bien puesto, pero el texto visible del buscador se quedaba pegado en lo que se había escrito.
+- Dos disparadores de HTMX en el mismo campo (`input` y `focus`) rompían el `delay:300ms` del debounce: cada tecla mandaba su propia petición al toque, más una petición vacía de más — confirmado revisando la red real, no adivinando. Se resolvió a un solo disparador.
+- El panel de sugerencias no se cerraba al perder el foco de otra forma que no fuera un clic afuera (con Tab, por ejemplo, se quedaba abierto) — se agrega cierre por `@blur`.
+- Tocar una sugerencia en pantallas táctiles (el público real del proyecto) le quitaba el foco al campo *antes* de que el clic terminara de procesarse, perdiendo la selección casi siempre — se corrige con `@mousedown.prevent` en vez de competir contra un `setTimeout`.
+- El panel debía aparecer también con la primera tecla, no solo al enfocar el campo: Alpine carga con `defer`, y en un celular lento el campo puede ya aceptar toques antes de que Alpine termine de engancharse — si el toque cae justo ahí, el evento de foco no lo escucha nadie.
+
+Causa raíz aparte, encontrada revisando por qué varios cambios de CSS/JS "no se veían" pese a estar bien hechos: `runserver` no manda ninguna instrucción de caché al servir estáticos, así que el navegador podía reusar una copia vieja de `tailwind.css` incluso en una recarga normal. Se probó arreglarlo con un middleware, pero el manejo automático de estáticos de `runserver` intercepta la petición antes de que llegue a cualquier middleware — no funciona. La solución real: un tag de plantilla propio (`{% estatico_v %}`, `apps/catalogo/templatetags/estaticos.py`) le agrega la fecha de modificación del archivo a la URL, así que un cambio de contenido siempre es una URL nueva y fuerza a pedirlo de nuevo.
+
+## 1 de septiembre — investigación de despliegue y preparación para AWS
+
+Con el MVP y las extensiones ya construidas, tocaba decidir dónde publicar la plataforma. Se investigaron seis rutas (Render, un VPS auto-administrado, Railway, Fly.io, PythonAnywhere, y separar la base de datos en un servicio administrado aparte), comparando costo, cuánto mantenimiento humano exige cada una después de que termine la práctica, y qué tan predecible es la factura para pedirle un número concreto a la Fundación. Se recomendó Render como opción principal (sin servidor que mantener) y un VPS propio como alternativa más barata — documentado en un artefacto aparte para presentarle a la Fundación, con presupuesto anual estimado (~US$220 con Render, ~US$92 con VPS) y una nota sobre Google for Nonprofits como recurso adicional a tramitar (Colombia y las fundaciones califican; el crédito específico de Google Cloud para hosting no se pudo confirmar fuera de EE. UU., así que no se dio por hecho).
+
+Ese mismo día cambió el panorama: aparecieron créditos de AWS de la cuenta institucional del usuario, vigentes hasta el **13 de septiembre**. Se preparó el despliegue en consecuencia — mismo principio de "todo en un servidor" ya evaluado (nada de escalado ni base de datos administrada aparte, no hace falta con 10 usuarios simultáneos), pero sobre **AWS Lightsail** en vez de DigitalOcean, aprovechando que ya existía un `Dockerfile` construido y verificado de punta a punta desde el 15-16 de agosto: nada de instalar Gunicorn/Nginx/PostgreSQL a mano, la misma imagen que ya corre en desarrollo.
+
+Se agregan `docker-compose.prod.yml` (Postgres + la imagen existente + Caddy) y `Caddyfile`. La decisión no trivial fue Caddy en vez de Nginx + certbot: consigue y renueva el certificado HTTPS de Let's Encrypt solo, sin una tarea programada que alguien tenga que acordarse de mantener — importante porque después de la práctica no va a quedar nadie de guardia. `docker compose config` valida la sintaxis correctamente; el build completo de la imagen no se pudo confirmar en esta máquina porque el daemon de Docker Desktop no estaba corriendo (arrancarlo tarda cerca de una hora acá, según quedó anotado en la entrada del 15-16 de agosto) — no se justificaba la espera dado el plazo, y el `Dockerfile` no cambió desde la última vez que sí se verificó completo. Se documenta el paso a paso completo en `README.md`, sección "Despliegue en producción (AWS Lightsail)": crear la instancia, IP estática, apuntar el dominio, variables de entorno de producción (incluida la advertencia de agregar el dominio nuevo a las credenciales de Google OAuth, o el login con Google funciona en desarrollo pero falla en producción), y cron en el servidor para los comandos de respaldo y aviso a revisores que ya existían pero nunca se habían programado fuera de desarrollo.
+
+**Queda pendiente, no se puede hacer desde acá**: ningún paso de la consola de AWS (crear la instancia, la IP estática, elegir/registrar el dominio) se puede ejecutar sin las credenciales de la cuenta — eso lo tiene que hacer el usuario siguiendo la guía. Tampoco está confirmado si el registro de dominio en Route 53 queda cubierto por los créditos de cómputo o es un cargo aparte, ni qué pasa con el servidor si los créditos vencen el 13 de septiembre sin haberse renovado — ambas cosas quedaron anotadas en el README para confirmar antes de esa fecha.
+
 ---
 
 ## Dónde queda el proyecto
@@ -285,8 +313,10 @@ la entrega original**, RF-19/RF-29, RF-21 y RF-18 ya se construyeron (ver
 21-22 de agosto); sigue sin tocarse, deliberadamente, el resto: RF-20,
 RF-24, RNF-12.
 
-No hay evidencia en el repositorio de un despliegue en un lugar público y
-accesible — solo configuración de Docker para correr local/self-hosted y
-configuración SMTP para el correo saliente en producción. Ningún archivo de
-plataforma de hosting (Render, Fly, Railway, Heroku, Vercel). Pendiente de
-confirmar directamente con el equipo.
+Al 27 de agosto no había evidencia en el repositorio de un despliegue en un
+lugar público y accesible. Eso cambió el 1 de septiembre: preparación
+completa para desplegar en AWS Lightsail con créditos institucionales
+(`docker-compose.prod.yml`, `Caddyfile`, guía paso a paso en `README.md`) —
+ver la entrada de esa fecha para el detalle y lo que sigue pendiente
+(ejecutar los pasos en la consola de AWS, algo que solo puede hacer quien
+tiene las credenciales de la cuenta).

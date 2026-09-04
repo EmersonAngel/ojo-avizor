@@ -1,0 +1,72 @@
+# Despliegue en producción (servidor único, ej. AWS Lightsail — ver README.md,
+# sección "Despliegue en producción"). Reutiliza el mismo Dockerfile que
+# docker-compose.yml (desarrollo): acá no hay bind-mount del código ni
+# `command:` de runserver, así que corre el CMD por defecto de la imagen
+# (gunicorn) con config/settings/produccion. Caddy es el único servicio
+# que escucha en el exterior (80/443): consigue y renueva el certificado
+# HTTPS solo, sin configurar certbot a mano — coherente con RNF-08 (costos
+# de operación sostenibles, sin depender de que alguien esté pendiente de
+# renovar nada).
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-ojo_avizor}
+      POSTGRES_USER: ${DB_USER:-ojo_avizor}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?falta DB_PASSWORD en .env}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-ojo_avizor} -d ${DB_NAME:-ojo_avizor}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  web:
+    build: .
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings.produccion
+      DB_HOST: db
+      DB_PORT: 5432
+    volumes:
+      # Las fotos subidas (MEDIA_ROOT) tienen que sobrevivir a un
+      # `docker compose up --build` cuando se actualice el código — sin
+      # este volumen, cada rebuild las perdería. Los estáticos NO
+      # necesitan volumen: collectstatic ya corrió al construir la imagen
+      # (ver Dockerfile), quedan dentro de ella.
+      - media_data:/app/media
+      # respaldos/ (manage.py respaldar_datos, RNF-11) también persiste
+      # acá, para poder bajarlos con `docker compose cp` sin entrar al
+      # contenedor — ver README.md, sección de cron de respaldos.
+      - respaldos_data:/app/respaldos
+    depends_on:
+      db:
+        condition: service_healthy
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      # Caddyfile lo lee de acá — un solo lugar para cambiar el dominio,
+      # sin tocar el Caddyfile ni volver a construir nada.
+      DOMINIO: ${DOMINIO:?falta DOMINIO en .env, ej. ojoavizor.co}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - web
+
+volumes:
+  postgres_data:
+  media_data:
+  respaldos_data:
+  caddy_data:
+  caddy_config:

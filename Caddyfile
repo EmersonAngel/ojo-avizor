@@ -1,0 +1,12 @@
+# Caddy consigue y renueva el certificado HTTPS de Let's Encrypt solo, sin
+# certbot ni cron — ver docker-compose.prod.yml. {$DOMINIO} lo pone la
+# variable de entorno del mismo nombre (.env de producción).
+#
+# reverse_proxy ya manda X-Forwarded-Proto (y X-Forwarded-For/-Host) con el
+# esquema real de la petición del navegador — no hace falta ponerlo a mano.
+# config/settings/produccion.py ya trae SECURE_PROXY_SSL_HEADER apuntando a
+# ese encabezado, así que Django sabe que la conexión llegó por HTTPS aunque
+# a Gunicorn le llegue por HTTP desde acá adentro de la red de Docker.
+{$DOMINIO} {
+	reverse_proxy web:8000
+}

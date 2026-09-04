@@ -127,6 +127,135 @@ Cualquier comando de `manage.py` de este README funciona igual, anteponiendo `do
 
 ---
 
+## Despliegue en producción (AWS Lightsail)
+
+Un solo servidor con `docker-compose.prod.yml` (la misma imagen de arriba + PostgreSQL + [Caddy](https://caddyserver.com/) como proxy — Caddy consigue y renueva el certificado HTTPS de Let's Encrypt solo, sin `certbot` ni tareas programadas que alguien tenga que recordar). Es la misma arquitectura de "todo en una máquina" que ya corre en desarrollo con Docker, apta para el tráfico de este proyecto (RNF-01: 10 usuarios simultáneos) sin necesitar balanceador de carga ni base de datos administrada aparte — ver `docs/bitacora.md`, entrada del 1 de septiembre, para la comparación completa de alternativas de hosting y por qué se descartaron.
+
+Esta guía asume créditos de AWS ya activos en la cuenta y **nada más de infraestructura previa** — se crea todo desde cero. Ningún paso de acá se puede automatizar desde este repositorio: cada uno se hace a mano, una sola vez, en la consola de AWS o por SSH en el servidor.
+
+### 1. Elegir el dominio primero
+
+Let's Encrypt (y por lo tanto Caddy) necesita un dominio real apuntando al servidor — no funciona solo con la IP. Hacer esto de primero importa porque la propagación de DNS puede tardar minutos u horas.
+
+- Si ya hay un dominio (o subdominio) disponible, se puede usar directo.
+- Si no, se registra uno — un `.co` cuesta entre US$15 y US$30 al año (ver `docs/bitacora.md`, misma entrada del 1 de septiembre). Esto es un gasto real y aparte de los créditos de cómputo de AWS: **Route 53** (el registrador de dominios de AWS) sí cobra a la tarjeta/facturación de la cuenta — hay que confirmar con quien administra los créditos si ese cargo puntual también queda cubierto, antes de asumir que sí.
+
+### 2. Crear el servidor en Lightsail
+
+1. Consola de AWS → buscar **Lightsail** → **Create instance**.
+2. Plataforma: **Linux/Unix** → **OS Only** → **Ubuntu 24.04 LTS**.
+3. Plan: el de **2 GB de RAM** (unos US$10/mes) — corre Django, PostgreSQL y Caddy a la vez con margen; el plan más chico de 512 MB–1 GB queda muy justo con los tres contenedores arriba al mismo tiempo, sobre todo mientras se construye la imagen.
+4. Nombre de la instancia (ej. `ojo-avizor-produccion`) → **Create instance**.
+5. Con la instancia ya `Running`: pestaña **Networking** → **Create static IP** → asociarla a esta instancia. Sin esto, la IP cambia si el servidor se reinicia y el DNS del paso 1 se rompe.
+
+### 3. Apuntar el dominio a la IP
+
+En el proveedor donde está el dominio (Route 53 u otro registrador), crear un registro **A** que apunte al **static IP** del paso anterior. Confirmar que ya resuelve antes de seguir:
+
+```bash
+nslookup tu-dominio.com
+```
+
+### 4. Conectar al servidor y preparar Docker
+
+Desde la consola de Lightsail, botón **Connect using SSH** (abre una terminal en el navegador, sin manejar llaves a mano):
+
+```bash
+curl -fsSL https://get.docker.com | sh
+sudo usermod -aG docker $USER
+sudo apt-get install -y git
+# cerrar y volver a abrir la terminal SSH para que el grupo "docker" tome efecto
+```
+
+### 5. Traer el código
+
+```bash
+git clone https://github.com/EmersonAngel/ojo-avizor.git
+cd ojo-avizor/07_Codigo_Fuente
+```
+
+### 6. Variables de entorno de producción
+
+```bash
+cp .env.example .env
+nano .env
+```
+
+Adaptar `.env.example` (ver también sus comentarios) con valores reales de producción, no los de desarrollo:
+
+```bash
+DJANGO_SETTINGS_MODULE=config.settings.produccion
+DJANGO_SECRET_KEY=  # generar una nueva, nunca la de desarrollo del repo — ver abajo
+DJANGO_ALLOWED_HOSTS=tu-dominio.com
+DB_PASSWORD=  # una contraseña fuerte y nueva, no la de desarrollo local
+
+# Lo que ya use el proyecto en desarrollo — reutilizar los mismos valores:
+DJANGO_EMAIL_HOST_USER=...
+DJANGO_EMAIL_HOST_PASSWORD=...
+DJANGO_DEFAULT_FROM_EMAIL=...
+GOOGLE_CLIENT_ID=...
+GOOGLE_CLIENT_SECRET=...
+
+# Nueva, la usa Caddyfile — no existe en .env.example porque es propia de este despliegue:
+DOMINIO=tu-dominio.com
+```
+
+Generar una `DJANGO_SECRET_KEY` nueva y exclusiva para este despliegue (el arranque falla a propósito si detecta la de desarrollo — ver `config/settings/produccion.py`):
+
+```bash
+python3 -c "import secrets; print(secrets.token_urlsafe(50))"
+```
+
+**Antes de seguir**, agregar el dominio de producción a las credenciales de Google OAuth ya existentes (ver más arriba, sección "Inicio de sesión con Google"): en Google Cloud Console, sumar `https://tu-dominio.com` a los orígenes autorizados y `https://tu-dominio.com/accounts/google/login/callback/` a los URI de redirección — sin esto, "Continuar con Google" funciona en desarrollo pero falla en producción.
+
+### 7. Levantar todo
+
+```bash
+docker compose -f docker-compose.prod.yml up -d --build
+docker compose -f docker-compose.prod.yml logs -f caddy   # confirmar que consigue el certificado; Ctrl+C para salir del log
+```
+
+Con los contenedores corriendo:
+
+```bash
+docker compose -f docker-compose.prod.yml exec web python manage.py createsuperuser
+docker compose -f docker-compose.prod.yml exec web python manage.py importar_especies datos_ejemplo/especies_ejemplo.csv --usuario correo-del-superusuario
+```
+
+Visitar `https://tu-dominio.com` — debería cargar con el candado de HTTPS puesto.
+
+### 8. Tareas programadas (cron, en el servidor — no dentro del contenedor)
+
+```bash
+crontab -e
+```
+
+```cron
+0 7 * * * cd ~/ojo-avizor/07_Codigo_Fuente && docker compose -f docker-compose.prod.yml exec -T web python manage.py enviar_resumen_revisores
+0 3 * * * cd ~/ojo-avizor/07_Codigo_Fuente && docker compose -f docker-compose.prod.yml exec -T web python manage.py respaldar_datos --destino /app/respaldos
+```
+
+Los respaldos (RNF-11) quedan en el volumen `respaldos_data` — sobreviven a un `docker compose up --build`, pero siguen viviendo solo en este servidor. Bajarlos de vez en cuando a otro lugar (la propia máquina, o donde se prefiera guardarlos):
+
+```bash
+docker compose -f docker-compose.prod.yml cp web:/app/respaldos ./respaldos-descargados
+```
+
+### 9. Actualizar el código más adelante
+
+```bash
+git pull
+docker compose -f docker-compose.prod.yml up -d --build
+```
+
+Las migraciones corren solas al arrancar (`entrypoint.sh`); no hace falta ningún paso manual aparte para eso.
+
+### Antes de que venzan los créditos
+
+Revisar **Billing → Cost Explorer** en la consola de AWS para ver cuánto crédito institucional queda, y confirmar con quien lo administre qué pasa el 13 de septiembre si vence sin renovarse — si no se renueva ni se migra a otra cuenta/plan de pago antes de esa fecha, el servidor puede quedar suspendido o empezar a facturar a una tarjeta real. Vale la pena dejarlo anotado con tiempo, no descubrirlo el mismo día.
+
+---
+
 ## Inicio de sesión con Google
 
 Es opcional: sin configurarlo, el botón "Continuar con Google" aparece en las pantallas de inicio de sesión y registro pero falla al usarse — el resto del sitio (correo/contraseña, recuperar contraseña) funciona exactamente igual. Usa [django-allauth](https://docs.allauth.org/).
