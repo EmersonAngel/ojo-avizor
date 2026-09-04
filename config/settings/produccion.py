@@ -40,27 +40,36 @@ MIDDLEWARE = [MIDDLEWARE[0], 'whitenoise.middleware.WhiteNoiseMiddleware', *MIDD
 # distintos: en el despliegue con Docker/VPS (README.md, "Despliegue en
 # producción — AWS Lightsail") vive un disco propio y persistente, así
 # que el sistema de archivos local alcanza. En el despliegue gratuito
-# (README.md, "Despliegue gratuito — Render + Neon + Cloudflare R2") el
+# (README.md, "Despliegue gratuito — Render + Neon + Backblaze B2") el
 # contenedor de Render NO tiene disco persistente: cualquier foto guardada
 # ahí se perdería en el próximo reinicio o despliegue. Por eso, si hay
-# credenciales de Cloudflare R2 en el entorno, las fotos van ahí en vez de
+# credenciales de Backblaze B2 en el entorno, las fotos van ahí en vez de
 # al disco — si no las hay (el otro despliegue), sigue siendo disco local,
 # sin tocar nada.
-if env('R2_BUCKET_NAME'):
+#
+# Backblaze B2 y no Cloudflare R2 (pensado primero, cambiado el 4 de
+# septiembre): R2 pide una tarjeta de crédito para activarse aunque no
+# cobre nada dentro de lo gratis — pedido explícito de evitar eso. B2 es
+# compatible con la misma API de S3, así que el cambio es solo de
+# credenciales, no de mecanismo.
+if env('B2_BUCKET_NAME'):
     STORAGES = {
         'default': {
             'BACKEND': 'storages.backends.s3.S3Storage',
             'OPTIONS': {
-                'bucket_name': env('R2_BUCKET_NAME'),
-                'endpoint_url': env('R2_ENDPOINT_URL'),
-                'access_key': env('R2_ACCESS_KEY_ID'),
-                'secret_key': env('R2_SECRET_ACCESS_KEY'),
-                'region_name': 'auto',
+                'bucket_name': env('B2_BUCKET_NAME'),
+                'endpoint_url': env('B2_ENDPOINT_URL'),
+                'access_key': env('B2_ACCESS_KEY_ID'),
+                'secret_key': env('B2_SECRET_ACCESS_KEY'),
+                # A diferencia de R2 (que no tiene regiones, "auto" alcanza),
+                # B2 sí exige la región real del bucket — la misma que
+                # aparece en B2_ENDPOINT_URL (ej. "us-west-004").
+                'region_name': env('B2_REGION'),
                 'signature_version': 's3v4',
-                # El endpoint de la API (R2_ENDPOINT_URL) no sirve para ver
+                # El endpoint de la API (B2_ENDPOINT_URL) no sirve para ver
                 # las fotos desde el navegador — hace falta el dominio
-                # público que R2 le da al bucket (r2.dev, o uno propio).
-                'custom_domain': env('R2_PUBLIC_DOMAIN'),
+                # público del bucket (bucket.s3.region.backblazeb2.com).
+                'custom_domain': env('B2_PUBLIC_DOMAIN'),
                 # Con dominio público la URL no necesita firma con
                 # vencimiento: son fotos de un catálogo público, no
                 # archivos privados — que el enlace no caduque nunca.

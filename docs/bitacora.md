@@ -304,16 +304,18 @@ Se agregan `docker-compose.prod.yml` (Postgres + la imagen existente + Caddy) y 
 
 Los créditos institucionales de AWS de la entrada anterior finalmente no se pudieron usar. Se preparó una ruta alternativa con **cero costo real**, pedida explícitamente así — sin tarjeta de por medio en la medida de lo posible.
 
-Ningún proveedor gratis resuelve todo el stack (app + base de datos + almacenamiento de archivos) de forma confiable en un solo lugar, así que la solución queda repartida en tres servicios: **Render** (corre Django, plan gratis — se duerme a los 15 minutos sin visitas), **Neon** (PostgreSQL, plan gratis permanente — a diferencia del propio Postgres gratis de Render, que se borra a los 30 días) y **Cloudflare R2** (las fotos de avistamientos). Esta última pieza fue la decisión menos obvia: el disco del contenedor de Render **no es persistente** — cualquier foto guardada ahí se perdería en el siguiente reinicio o despliegue —, así que hacía falta un almacenamiento de archivos aparte. Se investigaron alternativas (Supabase se descartó: su Postgres gratis se pausa a los 7 días sin uso y hay que reactivarlo a mano, peor que el de Neon, que se reactiva solo; Oracle Cloud "Always Free" también, porque desde este año pide tarjeta de crédito de verificación a casi todo el mundo, justo lo que se quería evitar) — R2 quedó como la única de las tres piezas que sí pide una tarjeta para activarse (no cobra dentro de los 10 GB gratis), y se dejó documentada esa salvedad en el README en vez de ocultarla.
+Ningún proveedor gratis resuelve todo el stack (app + base de datos + almacenamiento de archivos) de forma confiable en un solo lugar, así que la solución queda repartida en tres servicios: **Render** (corre Django, plan gratis — se duerme a los 15 minutos sin visitas), **Neon** (PostgreSQL, plan gratis permanente — a diferencia del propio Postgres gratis de Render, que se borra a los 30 días) y almacenamiento de archivos aparte para las fotos de avistamientos. Esta última pieza fue la decisión menos obvia: el disco del contenedor de Render **no es persistente** — cualquier foto guardada ahí se perdería en el siguiente reinicio o despliegue. Se investigaron alternativas para la base de datos y el archivo antes de decidir (Supabase se descartó para la base de datos: su Postgres gratis se pausa a los 7 días sin uso y hay que reactivarlo a mano, peor que el de Neon, que se reactiva solo; Oracle Cloud "Always Free" también, porque desde este año pide tarjeta de crédito de verificación a casi todo el mundo, justo lo que se quería evitar).
+
+Para el almacenamiento de fotos, la primera elección fue **Cloudflare R2** — pero resultó ser la única de las tres piezas que pide una tarjeta para activarse (no cobra dentro de los 10 GB gratis, pero la pide igual). Pedido explícito del usuario de evitarlo: se cambió a **Backblaze B2**, mismo tamaño gratis (10 GB), sin pedir tarjeta en ningún momento, y compatible con la misma API de S3 — el cambio de código fue solo de credenciales y nombres de variables (`R2_*` → `B2_*`), no de mecanismo.
 
 Cambios de código para que esto funcione, todos condicionales — el despliegue con Docker/VPS de la entrada anterior sigue funcionando exactamente igual, sin tocar nada:
 
-- `config/settings/produccion.py`: si hay credenciales de Cloudflare R2 en el entorno, las fotos se guardan ahí (`django-storages`, backend S3 — R2 es compatible con la API de S3); si no las hay, sigue siendo disco local como hasta ahora.
+- `config/settings/produccion.py`: si hay credenciales de Backblaze B2 en el entorno, las fotos se guardan ahí (`django-storages`, backend S3 — B2 es compatible con la API de S3); si no las hay, sigue siendo disco local como hasta ahora.
 - `config/settings/base.py`: `DATABASES` acepta un `DB_SSLMODE` opcional — Neon exige TLS para conectarse, el Postgres de Docker no.
 - `Dockerfile`: el `CMD` de gunicorn pasa de forma exec a forma shell para poder leer `${PORT:-8000}` en tiempo de arranque — Render le asigna el puerto real al contenedor por una variable de entorno que no siempre es 8000; sin este cambio, el despliegue en Render fallaría en silencio.
 - `entrypoint.sh`: crea un superusuario solo al arrancar si están puestas las variables `DJANGO_SUPERUSER_*` — Render, en el plan gratis, puede no dar una terminal para correr `createsuperuser` a mano como sí se puede con `docker compose exec` en el despliegue con Docker/VPS.
 
-Guía completa en `README.md`, sección "Despliegue gratuito (Render + Neon + Cloudflare R2)" — misma estructura que la de AWS, que se deja documentada y en pausa (no se borra: sirve tal cual el día que haya presupuesto o créditos de nuevo, sección marcada como tal). `manage.py check` se corrió con y sin las variables de R2 puestas, para confirmar que las dos ramas del `STORAGES` condicional cargan bien.
+Guía completa en `README.md`, sección "Despliegue gratuito (Render + Neon + Backblaze B2)" — misma estructura que la de AWS, que se deja documentada y en pausa (no se borra: sirve tal cual el día que haya presupuesto o créditos de nuevo, sección marcada como tal). `manage.py check` se corrió con y sin las variables de B2 puestas, para confirmar que las dos ramas del `STORAGES` condicional cargan bien.
 
 ---
 
@@ -333,7 +335,7 @@ lugar público y accesible. El 1 de septiembre se preparó uno completo sobre
 AWS Lightsail con créditos institucionales, pero esos créditos finalmente no
 quedaron disponibles (ver la entrada del 4 de septiembre) — esa ruta se deja
 documentada y en pausa, no se descarta. **El despliegue activo, listo para
-ejecutar, es el gratuito con Render + Neon + Cloudflare R2** (`README.md`,
+ejecutar, es el gratuito con Render + Neon + Backblaze B2** (`README.md`,
 misma sección con el paso a paso). Pendiente en los dos casos, por la misma
 razón: ningún paso de consola/dashboard de terceros se puede ejecutar desde
 acá — le corresponde al usuario, con las credenciales de sus propias

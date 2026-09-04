@@ -258,7 +258,7 @@ Revisar **Billing → Cost Explorer** en la consola de AWS para ver cuánto cré
 
 ---
 
-## Despliegue gratuito (Render + Neon + Cloudflare R2)
+## Despliegue gratuito (Render + Neon + Backblaze B2)
 
 Sin tarjeta ni gasto real — pero, a diferencia del despliegue de arriba, ningún proveedor gratis da "todo en un solo lugar" de forma confiable, así que son **tres cuentas separadas**, una por cada pieza:
 
@@ -266,18 +266,21 @@ Sin tarjeta ni gasto real — pero, a diferencia del despliegue de arriba, ning�
 | --- | --- | --- |
 | [Render](https://render.com) | corre Django | El servicio "duerme" a los 15 minutos sin visitas; la primera persona que entra después espera ~30-60 segundos mientras arranca de nuevo. |
 | [Neon](https://neon.tech) | PostgreSQL | Los datos **no** se borran ni caducan (a diferencia del Postgres gratis del propio Render, que sí se borra a los 30 días) — solo el cómputo se pausa solo tras 5 minutos sin consultas, y se reactiva solo en la siguiente. |
-| [Cloudflare R2](https://developers.cloudflare.com/r2/) | fotos de avistamientos | Activarlo pide una tarjeta para verificar la cuenta, aunque no cobra nada dentro de los 10 GB gratis al mes — es la única de las tres piezas que la pide. Si eso es un problema, avisar antes de seguir: hay alternativas (guardar las fotos en el propio Render, asumiendo que se pierden en cada reinicio, o mudar esta pieza sola a otro proveedor de almacenamiento). |
+| [Backblaze B2](https://www.backblaze.com/cloud-storage) | fotos de avistamientos | 10 GB gratis al mes, sin pedir tarjeta en ningún momento (a diferencia de Cloudflare R2, que sí la pide para activarse — por eso se eligió esta). Compatible con la misma API de S3 que usan Render/AWS, así que el resto del código no cambia. |
 
-Sin disco propio persistente (a diferencia del despliegue con Docker/VPS de arriba), las fotos subidas por la gente **tienen que** vivir en un lugar aparte — de ahí la tercera pieza. `config/settings/produccion.py` ya está preparado: si detecta credenciales de Cloudflare R2 en el entorno, las usa; si no, sigue guardando en disco local (el otro despliegue no necesita tocar nada de esto).
+Sin disco propio persistente (a diferencia del despliegue con Docker/VPS de arriba), las fotos subidas por la gente **tienen que** vivir en un lugar aparte — de ahí la tercera pieza. `config/settings/produccion.py` ya está preparado: si detecta credenciales de Backblaze B2 en el entorno, las usa; si no, sigue guardando en disco local (el otro despliegue no necesita tocar nada de esto).
 
-### 1. Cloudflare R2 (fotos)
+### 1. Backblaze B2 (fotos)
 
-1. Crear cuenta en [dash.cloudflare.com](https://dash.cloudflare.com/sign-up) (gratis, sin tarjeta para la cuenta en sí).
-2. En el menú lateral, **R2 Object Storage** → activar R2 (acá sí pide una tarjeta, ver la salvedad de la tabla de arriba).
-3. **Create bucket** → nombre, por ejemplo `ojo-avizor-fotos`.
-4. Dentro del bucket: **Settings** → **Public access** → habilitar el subdominio `r2.dev` → copiar la URL pública que da (`pub-xxxxxxxx.r2.dev`) — es el valor de `R2_PUBLIC_DOMAIN`.
-5. **Manage R2 API tokens** → **Create API token** → permisos **Object Read & Write**, con alcance solo a este bucket → copiar el **Access Key ID** y el **Secret Access Key** que muestra (una sola vez — si se pierden, hay que crear otro token).
-6. El **Account ID** de Cloudflare (visible en la barra lateral derecha del dashboard) arma la URL del endpoint: `R2_ENDPOINT_URL=https://<ACCOUNT_ID>.r2.cloudflarestorage.com`.
+1. Crear cuenta en [backblaze.com/sign-up/cloud-storage](https://www.backblaze.com/sign-up/cloud-storage) — no pide tarjeta.
+2. **B2 Cloud Storage** → **Create a Bucket** → nombre único (por ejemplo `ojo-avizor-fotos-tunombre`, tiene que ser único entre todos los usuarios de Backblaze, no solo los propios) → **Files in Bucket are**: elegir **Public** (si queda en Private, las fotos no se van a poder ver desde el sitio).
+3. En la lista de buckets, el propio bucket recién creado muestra su **Endpoint** — algo como `s3.us-west-004.backblazeb2.com`. De ahí salen dos valores:
+   ```bash
+   B2_ENDPOINT_URL=https://s3.us-west-004.backblazeb2.com
+   B2_REGION=us-west-004
+   ```
+4. **Account** → **App Keys** → **Add a New Application Key** → **Allow access to Bucket(s)**: elegir el bucket recién creado (no "All") → permisos de lectura y escritura → **Create New Key**. Copiar el **keyID** (`B2_ACCESS_KEY_ID`) y la **applicationKey** (`B2_SECRET_ACCESS_KEY`) que muestra — una sola vez, si se pierden hay que crear otra.
+5. La URL pública del bucket es `B2_PUBLIC_DOMAIN=<nombre-del-bucket>.s3.<region>.backblazeb2.com` (mismos datos del paso 3 y el nombre del paso 2, sin `https://` acá).
 
 ### 2. Neon (base de datos)
 
@@ -303,7 +306,7 @@ Sin disco propio persistente (a diferencia del despliegue con Docker/VPS de arri
 2. **New +** → **Web Service** → conectar el repositorio `ojo-avizor` de GitHub.
 3. Render detecta el `Dockerfile` solo y ofrece **Docker** como entorno — dejarlo así (no hace falta indicar build/start command a mano). En **Name**, poner algo memorable como `ojo-avizor`: ese nombre define de una vez la URL final (`ojo-avizor.onrender.com`), así no hay que volver después a corregir nada.
 4. Plan: **Free**.
-5. En **Environment** → **Environment Variables**, agregar todas las de `.env.example` con valores reales, más las de Cloudflare R2 y Neon de los pasos anteriores, más:
+5. En **Environment** → **Environment Variables**, agregar todas las de `.env.example` con valores reales, más las de Backblaze B2 y Neon de los pasos anteriores, más:
    ```bash
    DJANGO_SETTINGS_MODULE=config.settings.produccion
    DJANGO_SECRET_KEY=  # generar una nueva — ver la sección de AWS de arriba para el comando
