@@ -11,9 +11,14 @@ django-allauth>=65.0
 # directa de allauth en algunas versiones).
 PyJWT>=2.9
 requests>=2.32
-# Solo entra en juego si hay credenciales de Cloudflare R2 en el entorno
+# Solo entra en juego si hay credenciales de Backblaze B2 en el entorno
 # (ver config/settings/produccion.py) — despliegue gratuito sin disco
 # persistente (Render), donde las fotos no pueden vivir en el sistema de
 # archivos del contenedor. En el despliegue con Docker/VPS (disco propio)
 # se instala igual pero nunca se usa.
 django-storages[s3]>=1.14
+# Genera el QR de la página de descarga del APK (config/views.py) sin
+# depender de un servicio externo — importa por conexión intermitente en
+# campo, no tiene sentido que bajar la app dependa de un tercero en pie.
+# El backend SVG no necesita Pillow.
+qrcode>=8.0

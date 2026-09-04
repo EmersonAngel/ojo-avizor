@@ -208,3 +208,10 @@ SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
 SOCIALACCOUNT_AUTO_SIGNUP = True
 SOCIALACCOUNT_LOGIN_ON_GET = True
 SOCIALACCOUNT_QUERY_EMAIL = True
+
+# Página /app/ (config/views.py:descargar_app) — enlace directo al .apk que
+# genera `eas build` (ver app_movil/README o la bitácora): EAS lo aloja en
+# un S3 propio con URL pública y estable, no hace falta subirlo a ningún
+# lado nuestro. Cambia cada vez que se genera un build nuevo, así que va
+# por variable de entorno y no hardcodeado. Vacío hasta el primer build.
+URL_APK_ANDROID = env('URL_APK_ANDROID', '')

@@ -32,6 +32,7 @@ urlpatterns += i18n_patterns(
     # catalogo:publico_listado, que sigue siendo la búsqueda/listado en sí.
     path('', catalogo_views.portada, name='inicio'),
     path('condiciones-de-uso/', views.condiciones_uso, name='condiciones_uso'),
+    path('app/', views.descargar_app, name='descargar_app'),
     path('cuentas/', include('apps.cuentas.urls')),
     path('catalogo/', include('apps.catalogo.urls')),
     path('registros/', include('apps.registros.urls')),

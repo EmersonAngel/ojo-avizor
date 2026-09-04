@@ -1924,3 +1924,59 @@ msgstr ""
 "Add it to the inventory — it takes five minutes and your contribution "
 "gets documented for the whole municipality."
 
+
+#: ./templates/descargar_app.html:4
+msgid "Descarga la app"
+msgstr "Download the app"
+
+#: ./templates/descargar_app.html:9
+msgid "Descarga Ojo Avizor"
+msgstr "Download Ojo Avizor"
+
+#: ./templates/descargar_app.html:11
+msgid "Para registrar avistamientos desde el celular, con o sin conexión."
+msgstr "To report sightings from your phone, with or without a connection."
+
+#: ./templates/descargar_app.html:19
+msgid "Descargar para Android"
+msgstr "Download for Android"
+
+#: ./templates/descargar_app.html:22
+msgid "Archivo .apk — no pasa por Google Play."
+msgstr ".apk file — does not go through Google Play."
+
+#: ./templates/descargar_app.html:29
+msgid "O escanéalo con la cámara del celular."
+msgstr "Or scan it with your phone's camera."
+
+#: ./templates/descargar_app.html:35
+msgid "Todavía no hay una versión para descargar. Vuelve a intentarlo pronto."
+msgstr "There isn't a version to download yet. Please check back soon."
+
+#: ./templates/descargar_app.html:45
+msgid "Descarga el archivo"
+msgstr "Download the file"
+
+#: ./templates/descargar_app.html:46
+msgid "Con el botón de arriba o el código QR, desde el navegador del celular."
+msgstr "With the button above or the QR code, from your phone's browser."
+
+#: ./templates/descargar_app.html:52
+msgid "Permite instalarlo"
+msgstr "Allow it to install"
+
+#: ./templates/descargar_app.html:53
+msgid ""
+"Android va a pedir habilitar \"instalar apps de orígenes desconocidos\" "
+"para el navegador — es normal, solo se pide la primera vez."
+msgstr ""
+"Android will ask you to allow \"install apps from unknown sources\" for "
+"the browser — that's normal, it's only asked the first time."
+
+#: ./templates/descargar_app.html:60
+msgid "Con el mismo correo y contraseña que usas en el sitio web — es la misma cuenta."
+msgstr "With the same email and password you use on the website — it's the same account."
+
+#: ./templates/base.html
+msgid "Descargar app"
+msgstr "Download app"

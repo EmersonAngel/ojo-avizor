@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% load i18n iconos %}
+
+{% block titulo %}{% translate "Descarga la app" %} — Ojo Avizor{% endblock %}
+
+{% block contenido %}
+<div class="page-narrow">
+    <div class="text-center mb-8">
+        <h1 class="titulo-pagina">{% translate "Descarga Ojo Avizor" %}</h1>
+        <p class="text-sm text-stone-500 dark:text-stone-400 mt-1">
+            {% translate "Para registrar avistamientos desde el celular, con o sin conexión." %}
+        </p>
+    </div>
+
+    <div class="card p-6 sm:p-8 text-center">
+        {% if url_apk %}
+        <a href="{{ url_apk }}" class="btn-primary inline-flex items-center gap-2 !px-6 !py-3 !text-base">
+            {% icono "flecha-abajo" clase="w-5 h-5" %}
+            {% translate "Descargar para Android" %}
+        </a>
+        <p class="text-xs text-stone-500 dark:text-stone-400 mt-3">
+            {% translate "Archivo .apk — no pasa por Google Play." %}
+        </p>
+
+        <div class="w-40 h-40 mx-auto mt-6 p-2 bg-white rounded-xl">
+            {{ qr_svg|safe }}
+        </div>
+        <p class="text-xs text-stone-500 dark:text-stone-400 mt-2">
+            {% translate "O escanéalo con la cámara del celular." %}
+        </p>
+        {% else %}
+        <div class="py-4">
+            {% icono "wifi-off" clase="w-10 h-10 mx-auto text-stone-400 mb-3" %}
+            <p class="text-stone-600 dark:text-stone-400">
+                {% translate "Todavía no hay una versión para descargar. Vuelve a intentarlo pronto." %}
+            </p>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="space-y-4 mt-8">
+        <div class="card p-5 flex gap-4">
+            <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--azul-medio)] text-white flex items-center justify-center font-display font-bold">1</span>
+            <div>
+                <h2 class="font-semibold text-stone-900 dark:text-stone-100">{% translate "Descarga el archivo" %}</h2>
+                <p class="text-sm text-stone-600 dark:text-stone-400 mt-0.5">{% translate "Con el botón de arriba o el código QR, desde el navegador del celular." %}</p>
+            </div>
+        </div>
+        <div class="card p-5 flex gap-4">
+            <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--azul-medio)] text-white flex items-center justify-center font-display font-bold">2</span>
+            <div>
+                <h2 class="font-semibold text-stone-900 dark:text-stone-100">{% translate "Permite instalarlo" %}</h2>
+                <p class="text-sm text-stone-600 dark:text-stone-400 mt-0.5">{% translate "Android va a pedir habilitar \"instalar apps de orígenes desconocidos\" para el navegador — es normal, solo se pide la primera vez." %}</p>
+            </div>
+        </div>
+        <div class="card p-5 flex gap-4">
+            <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--azul-medio)] text-white flex items-center justify-center font-display font-bold">3</span>
+            <div>
+                <h2 class="font-semibold text-stone-900 dark:text-stone-100">{% translate "Inicia sesión" %}</h2>
+                <p class="text-sm text-stone-600 dark:text-stone-400 mt-0.5">{% translate "Con el mismo correo y contraseña que usas en el sitio web — es la misma cuenta." %}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
