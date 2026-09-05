@@ -15,6 +15,7 @@ export function abrirBD(): Promise<SQLite.SQLiteDatabase> {
           estado_local TEXT NOT NULL,
           especie_id INTEGER,
           nombre_especie TEXT,
+          cantidad_individuos INTEGER NOT NULL DEFAULT 1,
           sin_identificar INTEGER NOT NULL DEFAULT 0,
           lugar TEXT NOT NULL,
           fecha_avistamiento TEXT NOT NULL,
@@ -43,6 +44,7 @@ export function abrirBD(): Promise<SQLite.SQLiteDatabase> {
       // error de columna duplicada — se ignora a propósito.
       for (const alter of [
         `ALTER TABLE registros_locales ADD COLUMN nombre_comun_propuesto TEXT`,
+        `ALTER TABLE registros_locales ADD COLUMN cantidad_individuos INTEGER NOT NULL DEFAULT 1`,
         `ALTER TABLE especies_cache ADD COLUMN foto_referencia TEXT`,
         `ALTER TABLE especies_cache ADD COLUMN foto_local TEXT`,
       ]) {

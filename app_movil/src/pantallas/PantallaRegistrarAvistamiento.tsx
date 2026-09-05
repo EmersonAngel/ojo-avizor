@@ -33,6 +33,7 @@ import SelectorMapa from '../componentes/SelectorMapa';
 const DATOS_VACIOS: DatosRegistro = {
   especieId: null,
   nombreEspecie: null,
+  cantidadIndividuos: 1,
   sinIdentificar: false,
   lugar: '',
   fechaAvistamiento: '',
@@ -97,6 +98,10 @@ export default function PantallaRegistrarAvistamiento() {
   function validarMinimo(): string | null {
     if (!datos.lugar.trim()) return 'Escribe el lugar del avistamiento.';
     if (!/^\d{4}-\d{2}-\d{2}$/.test(datos.fechaAvistamiento)) return 'La fecha debe tener el formato AAAA-MM-DD.';
+    // Igual que el modelo del servidor (PositiveIntegerField): al menos 1.
+    if (!Number.isInteger(datos.cantidadIndividuos) || datos.cantidadIndividuos < 1) {
+      return 'Escribe cuántos viste (al menos 1).';
+    }
     return null;
   }
 
@@ -184,6 +189,21 @@ export default function PantallaRegistrarAvistamiento() {
             sinIdentificar: especie === null,
           }))
         }
+      />
+      <View style={estilos.filaEtiquetaChica}>
+        <Ionicons name="albums-outline" size={14} color="#555" />
+        <Text style={estilos.etiquetaChica}>¿Cuántos viste?</Text>
+      </View>
+      <TextInput
+        placeholderTextColor="#999"
+        style={[estilos.campo, estilos.cantidad]}
+        placeholder="1"
+        keyboardType="number-pad"
+        value={String(datos.cantidadIndividuos)}
+        onChangeText={(v) => {
+          const numero = parseInt(v.replace(/[^0-9]/g, ''), 10);
+          actualizar('cantidadIndividuos', Number.isNaN(numero) ? 1 : numero);
+        }}
       />
       <TextInput
         placeholderTextColor="#999"
@@ -307,6 +327,7 @@ const estilos = StyleSheet.create({
   },
   filaDoble: { flexDirection: 'row', gap: 10 },
   mitad: { flex: 1 },
+  cantidad: { width: 90 },
   acciones: { flexDirection: 'row', gap: 10, marginTop: 20 },
   botonSecundario: {
     flex: 1,

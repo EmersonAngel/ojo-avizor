@@ -15,6 +15,7 @@ export type EstadoLocal = 'BORRADOR' | 'PENDIENTE_ENVIO' | 'ERROR_ENVIO';
 export interface DatosRegistro {
   especieId: number | null;
   nombreEspecie: string | null;
+  cantidadIndividuos: number;
   sinIdentificar: boolean;
   lugar: string;
   fechaAvistamiento: string; // YYYY-MM-DD
@@ -40,6 +41,7 @@ interface FilaSQLite {
   estado_local: EstadoLocal;
   especie_id: number | null;
   nombre_especie: string | null;
+  cantidad_individuos: number;
   sin_identificar: number;
   lugar: string;
   fecha_avistamiento: string;
@@ -61,6 +63,7 @@ function filaARegistro(fila: FilaSQLite): RegistroLocal {
     estadoLocal: fila.estado_local,
     especieId: fila.especie_id,
     nombreEspecie: fila.nombre_especie,
+    cantidadIndividuos: fila.cantidad_individuos,
     sinIdentificar: fila.sin_identificar === 1,
     lugar: fila.lugar,
     fechaAvistamiento: fila.fecha_avistamiento,
@@ -87,7 +90,7 @@ async function guardarConEstado(
   if (idExistente) {
     await bd.runAsync(
       `UPDATE registros_locales SET
-        estado_local = ?, especie_id = ?, nombre_especie = ?, sin_identificar = ?,
+        estado_local = ?, especie_id = ?, nombre_especie = ?, cantidad_individuos = ?, sin_identificar = ?,
         lugar = ?, fecha_avistamiento = ?, latitud = ?, longitud = ?,
         comportamiento = ?, sustrato = ?, info_adicional = ?, nombre_comun_propuesto = ?, fotos_json = ?,
         error_detalle = NULL, fecha_actualizacion = ?
@@ -95,6 +98,7 @@ async function guardarConEstado(
       estadoLocal,
       datos.especieId,
       datos.nombreEspecie,
+      datos.cantidadIndividuos,
       datos.sinIdentificar ? 1 : 0,
       datos.lugar,
       datos.fechaAvistamiento,
@@ -112,13 +116,14 @@ async function guardarConEstado(
   }
   const resultado = await bd.runAsync(
     `INSERT INTO registros_locales
-      (estado_local, especie_id, nombre_especie, sin_identificar, lugar, fecha_avistamiento,
+      (estado_local, especie_id, nombre_especie, cantidad_individuos, sin_identificar, lugar, fecha_avistamiento,
        latitud, longitud, comportamiento, sustrato, info_adicional, nombre_comun_propuesto, fotos_json,
        fecha_creacion, fecha_actualizacion)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     estadoLocal,
     datos.especieId,
     datos.nombreEspecie,
+    datos.cantidadIndividuos,
     datos.sinIdentificar ? 1 : 0,
     datos.lugar,
     datos.fechaAvistamiento,

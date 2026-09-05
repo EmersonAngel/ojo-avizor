@@ -14,6 +14,7 @@ export async function enviarRegistro(registro: RegistroLocal): Promise<Respuesta
 
   const formData = new FormData();
   if (registro.especieId) formData.append('especie', String(registro.especieId));
+  formData.append('cantidad_individuos', String(registro.cantidadIndividuos));
   // Django trata un checkbox como marcado si la clave está presente, sin
   // importar el valor — por eso NO se agrega la clave cuando es falso.
   if (registro.sinIdentificar) formData.append('sin_identificar', 'on');
