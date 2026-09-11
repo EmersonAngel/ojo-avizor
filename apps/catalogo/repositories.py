@@ -48,7 +48,7 @@ def contar_especies():
     return Especie.objects.count()
 
 
-def listar_recientes(cantidad=4):
+def listar_recientes(cantidad=6):
     """Las últimas fichas creadas, para invitar a explorar el catálogo desde la portada."""
     return Especie.objects.prefetch_related('nombres_comunes').order_by('-fecha_creacion')[:cantidad]
 
