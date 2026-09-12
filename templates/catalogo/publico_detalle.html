@@ -13,11 +13,20 @@
 
     <div class="mt-4 rounded-2xl overflow-hidden animate-fade-up" style="box-shadow: var(--sombra-tarjeta);">
         {% if especie.foto_referencia %}
-        <div class="aspect-[16/7] sm:aspect-[21/8] overflow-hidden bg-[var(--superficie-alt)]">
-            <img src="{{ especie.foto_referencia.url }}" alt="{{ especie.nombre_cientifico }}" class="w-full h-full object-cover">
+        {% comment %}
+        object-contain, no object-cover (bug real encontrado el 11/09/2026,
+        con la primera foto subida de verdad: Boissonneaua flavescens): las
+        fotos de referencia no siempre son panorámicas — esta es cuadrada
+        (2471x2471) — y un recuadro angosto tipo banner con object-cover
+        recortaba justo la cabeza y la cola del ave. aspect-[4/3] deja
+        espacio de sobra para retratos cuadrados o verticales sin cortar
+        nada; el color de fondo rellena lo que quede a los lados.
+        {% endcomment %}
+        <div class="aspect-[4/3] sm:aspect-[16/9] overflow-hidden bg-[var(--superficie-alt)]">
+            <img src="{{ especie.foto_referencia.url }}" alt="{{ especie.nombre_cientifico }}" class="w-full h-full object-contain">
         </div>
         {% else %}
-        <div class="aspect-[16/7] sm:aspect-[21/8] flex items-center justify-center bg-[var(--superficie-alt)] text-[var(--azul-medio)]">{% icono "ave" clase="w-16 h-16" %}</div>
+        <div class="aspect-[4/3] sm:aspect-[16/9] flex items-center justify-center bg-[var(--superficie-alt)] text-[var(--azul-medio)]">{% icono "ave" clase="w-16 h-16" %}</div>
         {% endif %}
         <div class="dark:bg-stone-900 p-5 sm:p-6" style="background-color: var(--blanco);">
             <h1 class="font-display italic text-3xl sm:text-4xl font-bold text-stone-900 dark:text-stone-50 text-balance">{{ especie.nombre_cientifico }}</h1>

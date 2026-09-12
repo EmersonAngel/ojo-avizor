@@ -15,67 +15,92 @@
         </a>
     </div>
 
-    {% if especies %}
-    <div class="hidden sm:block card overflow-hidden">
-        <table class="w-full text-sm">
-            <thead>
-                <tr class="text-left bg-stone-50 dark:bg-stone-800/60 text-stone-500 dark:text-stone-400 text-xs uppercase tracking-wide">
-                    <th class="py-3 px-4 font-semibold">{% translate "Nombre científico" %}</th>
-                    <th class="py-3 px-4 font-semibold">{% translate "Familia" %}</th>
-                    <th class="py-3 px-4 font-semibold">{% translate "Nombres comunes" %}</th>
-                    <th class="py-3 px-4"></th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-stone-100 dark:divide-stone-800">
-                {% for especie in especies %}
-                <tr class="hover:bg-stone-50 dark:hover:bg-stone-800/40 transition-colors">
-                    <td class="py-3 px-4 font-display italic font-medium text-stone-900 dark:text-stone-100">{{ especie.nombre_cientifico }}</td>
-                    <td class="py-3 px-4 text-stone-600 dark:text-stone-400">{{ especie.familia|default:"—" }}</td>
-                    <td class="py-3 px-4 text-stone-600 dark:text-stone-400">
-                        {% for nombre in especie.nombres_comunes.all %}{{ nombre.nombre }}{% if not forloop.last %}, {% endif %}{% empty %}—{% endfor %}
-                    </td>
-                    <td class="py-3 px-4 text-right space-x-3 whitespace-nowrap">
-                        <a class="btn-link" href="{% url 'catalogo:especie_editar' especie.pk %}">{% translate "Editar" %}</a>
-                        {% if user.rol == 'ADMINISTRADOR' %}
-                        <form method="post" action="{% url 'catalogo:especie_retirar' especie.pk %}" class="inline"
-                              onsubmit="return confirm('{% translate "¿Retirar esta ficha del catálogo?" %}');">
-                            {% csrf_token %}
-                            <button type="submit" class="text-sm font-medium hover:underline" style="color: var(--error);">{% translate "Retirar" %}</button>
-                        </form>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+    <form id="form-filtros-gestion"
+          hx-get="{% url 'catalogo:especie_listar' %}"
+          hx-trigger="input changed delay:350ms, search, change, submit"
+          hx-target="#resultados-especies-gestion"
+          hx-swap="innerHTML"
+          hx-push-url="true"
+          hx-indicator="#buscando-gestion"
+          hx-sync="this:replace"
+          class="card p-4 mb-6 space-y-3 relative z-10">
+        <div class="relative">
+            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400">{% icono "busqueda" clase="w-5 h-5" %}</span>
+            <input type="search" name="q" value="{{ texto }}"
+                   placeholder="{% translate 'Buscar por nombre científico, común, familia u orden…' %}"
+                   class="!pl-10">
+            <span id="buscando-gestion" class="htmx-indicator absolute right-3.5 top-1/2 -translate-y-1/2 text-stone-400 animate-spin">{% icono "brujula" clase="w-4 h-4" %}</span>
+        </div>
 
-    <div class="sm:hidden space-y-3">
-        {% for especie in especies %}
-        <div class="card p-4">
-            <p class="font-display italic font-semibold text-stone-900 dark:text-stone-100">{{ especie.nombre_cientifico }}</p>
-            <p class="text-sm text-stone-500 dark:text-stone-400 mt-0.5">
-                {% for nombre in especie.nombres_comunes.all %}{{ nombre.nombre }}{% if not forloop.last %}, {% endif %}{% empty %}—{% endfor %}
-            </p>
-            <div class="flex gap-4 mt-3 pt-3 border-t border-stone-100 dark:border-stone-800">
-                <a class="btn-link" href="{% url 'catalogo:especie_editar' especie.pk %}">{% translate "Editar" %}</a>
-                {% if user.rol == 'ADMINISTRADOR' %}
-                <form method="post" action="{% url 'catalogo:especie_retirar' especie.pk %}"
-                      onsubmit="return confirm('{% translate "¿Retirar esta ficha del catálogo?" %}');">
-                    {% csrf_token %}
-                    <button type="submit" class="text-sm font-medium hover:underline" style="color: var(--error);">{% translate "Retirar" %}</button>
-                </form>
-                {% endif %}
+        <div class="grid grid-cols-2 gap-3">
+            <div>
+                <label class="field-label" for="filtro-gestion-familia">{% translate "Familia" %}</label>
+                <div x-data="{ abierto: false, etiqueta: '' }" x-init="etiqueta = $refs.sel.options[$refs.sel.selectedIndex].text" class="relative">
+                    <select x-ref="sel" id="filtro-gestion-familia" name="familia" class="sr-only" tabindex="-1" aria-hidden="true">
+                        <option value="">{% translate "Todas" %}</option>
+                        {% for opcion in familias %}
+                        <option value="{{ opcion }}" {% if opcion == familia %}selected{% endif %}>{{ opcion }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="button" class="selector-trigger !text-sm" @click="abierto = !abierto" @keydown.escape="abierto = false" :aria-expanded="abierto.toString()">
+                        <span x-text="etiqueta" class="truncate"></span>
+                        {% icono "flecha-abajo" clase="w-4 h-4 text-stone-400 flex-shrink-0 transition-transform" %}
+                    </button>
+                    <div x-show="abierto" x-cloak @click.outside="abierto = false" class="selector-panel">
+                        <button type="button" class="selector-opcion" :aria-selected="$refs.sel.value === ''"
+                                @click="$refs.sel.value = ''; $refs.sel.dispatchEvent(new Event('change', {bubbles: true})); etiqueta = '{% translate "Todas" %}'; abierto = false">
+                            {% translate "Todas" %}
+                        </button>
+                        {% for opcion in familias %}
+                        <button type="button" class="selector-opcion" :aria-selected="$refs.sel.value === '{{ opcion|escapejs }}'"
+                                @click="$refs.sel.value = '{{ opcion|escapejs }}'; $refs.sel.dispatchEvent(new Event('change', {bubbles: true})); etiqueta = '{{ opcion|escapejs }}'; abierto = false">
+                            {{ opcion }}
+                        </button>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div>
+                <label class="field-label" for="filtro-gestion-orden">{% translate "Orden" %}</label>
+                <div x-data="{ abierto: false, etiqueta: '' }" x-init="etiqueta = $refs.sel.options[$refs.sel.selectedIndex].text" class="relative">
+                    <select x-ref="sel" id="filtro-gestion-orden" name="orden" class="sr-only" tabindex="-1" aria-hidden="true">
+                        <option value="">{% translate "Todos" %}</option>
+                        {% for opcion in ordenes %}
+                        <option value="{{ opcion }}" {% if opcion == orden %}selected{% endif %}>{{ opcion }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="button" class="selector-trigger !text-sm" @click="abierto = !abierto" @keydown.escape="abierto = false" :aria-expanded="abierto.toString()">
+                        <span x-text="etiqueta" class="truncate"></span>
+                        {% icono "flecha-abajo" clase="w-4 h-4 text-stone-400 flex-shrink-0 transition-transform" %}
+                    </button>
+                    <div x-show="abierto" x-cloak @click.outside="abierto = false" class="selector-panel">
+                        <button type="button" class="selector-opcion" :aria-selected="$refs.sel.value === ''"
+                                @click="$refs.sel.value = ''; $refs.sel.dispatchEvent(new Event('change', {bubbles: true})); etiqueta = '{% translate "Todos" %}'; abierto = false">
+                            {% translate "Todos" %}
+                        </button>
+                        {% for opcion in ordenes %}
+                        <button type="button" class="selector-opcion" :aria-selected="$refs.sel.value === '{{ opcion|escapejs }}'"
+                                @click="$refs.sel.value = '{{ opcion|escapejs }}'; $refs.sel.dispatchEvent(new Event('change', {bubbles: true})); etiqueta = '{{ opcion|escapejs }}'; abierto = false">
+                            {{ opcion }}
+                        </button>
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
         </div>
-        {% endfor %}
+
+        {% if texto or familia or orden %}
+        <a href="{% url 'catalogo:especie_listar' %}" class="btn-link !text-xs">{% icono "cerrar" clase="w-3.5 h-3.5" %} {% translate "Quitar filtros" %}</a>
+        {% endif %}
+    </form>
+
+    <div id="resultados-especies-gestion">
+        {% include "catalogo/_resultados_especies_gestion.html" %}
     </div>
-    {% include "_paginacion.html" %}
-    {% else %}
-    {% translate "Todavía no hay fichas de especie — la primera abre el catálogo." as mensaje %}
-    {% translate "Crear la primera ficha" as cta %}
-    {% url 'catalogo:especie_crear' as url_crear %}
-    {% include "_estado_vacio.html" with icono="carpeta" mensaje=mensaje cta_texto=cta cta_url=url_crear %}
-    {% endif %}
 </div>
+
+<style>
+    .htmx-indicator { opacity: 0; transition: opacity 150ms ease; }
+    .htmx-request .htmx-indicator, .htmx-request.htmx-indicator { opacity: 1; }
+</style>
 {% endblock %}

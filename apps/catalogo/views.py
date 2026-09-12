@@ -124,9 +124,27 @@ def inventario(request):
 
 @requiere_rol(*_ROLES_GESTION)
 def especie_listar(request):
-    especies = repositories.listar_especies()
+    """Con 400 fichas y creciendo, encontrar una para editarla a mano recorriendo
+    páginas de 20 dejó de ser viable — mismo buscador y filtros del catálogo
+    público (RF-05, repositories.buscar_especies), aplicados acá (pedido
+    explícito del 11/09/2026)."""
+    filtros = _leer_filtros(request)
+    especies = repositories.buscar_especies(
+        filtros['texto'], familia=filtros['familia'], orden=filtros['orden'],
+    )
     pagina = Paginator(especies, 20).get_page(request.GET.get('pagina'))
-    return render(request, 'catalogo/especie_listar.html', {'especies': pagina, 'pagina': pagina})
+    if request.headers.get('HX-Request') == 'true':
+        return render(request, 'catalogo/_resultados_especies_gestion.html', {'especies': pagina, 'pagina': pagina})
+    contexto = {
+        'especies': pagina,
+        'pagina': pagina,
+        'texto': filtros['texto'],
+        'familia': filtros['familia'],
+        'orden': filtros['orden'],
+        'familias': repositories.listar_familias(),
+        'ordenes': repositories.listar_ordenes(),
+    }
+    return render(request, 'catalogo/especie_listar.html', contexto)
 
 
 @requiere_rol(*_ROLES_GESTION)
