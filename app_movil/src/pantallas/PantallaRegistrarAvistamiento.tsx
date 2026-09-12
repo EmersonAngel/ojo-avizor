@@ -87,6 +87,20 @@ export default function PantallaRegistrarAvistamiento() {
     });
   }, [idBorrador]);
 
+  // Especie amenazada (UICN, pedido explícito del 12/09/2026, mismo
+  // comportamiento que registro_crear.html en el sitio web): se deriva de
+  // la lista ya cargada en vez de guardarlo aparte en `datos`, así que
+  // cubre tanto elegir la especie a mano como retomar un borrador que ya
+  // la tenía puesta.
+  const especieSeleccionada = especies.find((e) => e.id === datos.especieId);
+  const especieAmenazada = especieSeleccionada?.amenazada ?? false;
+
+  useEffect(() => {
+    if (especieAmenazada && (datos.latitud || datos.longitud)) {
+      setDatos((anterior) => ({ ...anterior, latitud: '', longitud: '' }));
+    }
+  }, [especieAmenazada]);
+
   function actualizar<C extends keyof DatosRegistro>(campo: C, valor: DatosRegistro[C]) {
     setDatos((anterior) => ({ ...anterior, [campo]: valor }));
   }
@@ -230,29 +244,46 @@ export default function PantallaRegistrarAvistamiento() {
         <Ionicons name="pin-outline" size={14} color="#555" />
         <Text style={estilos.etiquetaChica}>Punto exacto (opcional, no se publica)</Text>
       </View>
-      <SelectorMapa
-        latitud={datos.latitud}
-        longitud={datos.longitud}
-        onCambiar={(lat, lng) => setDatos((anterior) => ({ ...anterior, latitud: lat, longitud: lng }))}
-      />
-      <View style={estilos.filaDoble}>
-        <TextInput
-          style={[estilos.campo, estilos.mitad]}
-          placeholderTextColor="#999"
-          placeholder="Latitud (opcional)"
-          keyboardType="numbers-and-punctuation"
-          value={datos.latitud}
-          onChangeText={(v) => actualizar('latitud', v)}
-        />
-        <TextInput
-          style={[estilos.campo, estilos.mitad]}
-          placeholderTextColor="#999"
-          placeholder="Longitud (opcional)"
-          keyboardType="numbers-and-punctuation"
-          value={datos.longitud}
-          onChangeText={(v) => actualizar('longitud', v)}
-        />
-      </View>
+      {especieAmenazada ? (
+        // Especie amenazada (UICN, pedido explícito del 12/09/2026): mismo
+        // criterio que registro_crear.html en el sitio — se reemplaza el
+        // mapa por una explicación en vez de solo rechazar el envío.
+        <View style={estilos.avisoAmenazada}>
+          <Ionicons name="alert-circle-outline" size={16} color="#B3261E" style={{ marginTop: 1 }} />
+          <Text style={estilos.avisoAmenazadaTexto}>
+            {especieSeleccionada?.nombreCientifico} está catalogada como especie amenazada (
+            {especieSeleccionada?.categoriaAmenaza}) — no se permite marcar el punto exacto del
+            avistamiento, para proteger su ubicación. El campo "Lugar" de arriba sigue funcionando
+            normalmente.
+          </Text>
+        </View>
+      ) : (
+        <>
+          <SelectorMapa
+            latitud={datos.latitud}
+            longitud={datos.longitud}
+            onCambiar={(lat, lng) => setDatos((anterior) => ({ ...anterior, latitud: lat, longitud: lng }))}
+          />
+          <View style={estilos.filaDoble}>
+            <TextInput
+              style={[estilos.campo, estilos.mitad]}
+              placeholderTextColor="#999"
+              placeholder="Latitud (opcional)"
+              keyboardType="numbers-and-punctuation"
+              value={datos.latitud}
+              onChangeText={(v) => actualizar('latitud', v)}
+            />
+            <TextInput
+              style={[estilos.campo, estilos.mitad]}
+              placeholderTextColor="#999"
+              placeholder="Longitud (opcional)"
+              keyboardType="numbers-and-punctuation"
+              value={datos.longitud}
+              onChangeText={(v) => actualizar('longitud', v)}
+            />
+          </View>
+        </>
+      )}
 
       <View style={estilos.filaSeccion}>
         <Ionicons name="document-text-outline" size={16} color="#666" />
@@ -328,6 +359,17 @@ const estilos = StyleSheet.create({
   filaDoble: { flexDirection: 'row', gap: 10 },
   mitad: { flex: 1 },
   cantidad: { width: 90 },
+  avisoAmenazada: {
+    flexDirection: 'row',
+    gap: 8,
+    borderWidth: 1,
+    borderColor: '#B3261E',
+    backgroundColor: '#FBEAEA',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 10,
+  },
+  avisoAmenazadaTexto: { flex: 1, fontSize: 13, color: '#7A1B15', lineHeight: 18 },
   acciones: { flexDirection: 'row', gap: 10, marginTop: 20 },
   botonSecundario: {
     flex: 1,

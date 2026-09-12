@@ -73,6 +73,28 @@
             {% endcomment %}
             {% with especie_actual=form.instance.especie %}
             {% comment %}
+            Alpine.store en vez de meter el estado en el x-data del buscador
+            de especie (pedido explícito del 12/09/2026, especies
+            amenazadas): el mapa vive en su propio componente x-data
+            separado (mapaUbicacion, más abajo), así que necesitan un lugar
+            común para hablarse sin acoplar uno dentro del otro.
+            {% endcomment %}
+            <script>
+                document.addEventListener('alpine:init', () => {
+                    Alpine.store('registro', {
+                        especieAmenazada: {% if especie_actual and especie_actual.esta_amenazada %}true{% else %}false{% endif %},
+                        categoriaAmenaza: '{{ especie_actual.get_categoria_amenaza_display|default:""|escapejs }}',
+                        nombreEspecie: '{{ especie_actual.nombre_cientifico|default:""|escapejs }}',
+                        marcar(amenazada, categoria, nombreCientifico) {
+                            this.especieAmenazada = amenazada;
+                            this.categoriaAmenaza = categoria;
+                            this.nombreEspecie = nombreCientifico;
+                            if (amenazada) window.dispatchEvent(new CustomEvent('quitar-punto-mapa'));
+                        },
+                    });
+                });
+            </script>
+            {% comment %}
             this.consulta / this.abierto, no bare (bug real encontrado el
             31/08/2026): $refs SÍ funciona sin "this." dentro de un método de
             x-data porque Alpine lo inyecta como "mágico" en cualquier
@@ -85,8 +107,14 @@
             <div x-data="{
                     abierto: false,
                     consulta: '{% if especie_actual %}{{ especie_actual.nombre_cientifico|escapejs }}{% for nombre in especie_actual.nombres_comunes.all %}{% if forloop.first %} — {% endif %}{{ nombre.nombre|escapejs }}{% if not forloop.last %}, {% endif %}{% endfor %}{% endif %}',
-                    seleccionar(pk, etiqueta) { this.$refs.especieId.value = pk; this.consulta = etiqueta; this.abierto = false; },
-                    limpiar() { this.$refs.especieId.value = ''; this.consulta = ''; this.abierto = false; this.$refs.buscador.focus(); },
+                    seleccionar(pk, etiqueta, amenazada, categoria, nombreCientifico) {
+                        this.$refs.especieId.value = pk; this.consulta = etiqueta; this.abierto = false;
+                        this.$store.registro.marcar(amenazada, categoria, nombreCientifico);
+                    },
+                    limpiar() {
+                        this.$refs.especieId.value = ''; this.consulta = ''; this.abierto = false; this.$refs.buscador.focus();
+                        this.$store.registro.marcar(false, '', '');
+                    },
                  }" class="relative">
                 <label class="field-label" for="buscador-especie">{{ form.especie.label }}</label>
                 {{ form.especie }}
@@ -240,24 +268,45 @@
 
             <div x-data="mapaUbicacion('{{ form.latitud.value|default_if_none:"" }}', '{{ form.longitud.value|default_if_none:"" }}')">
                 <label class="field-label">{% translate "Punto exacto (opcional, no se publica)" %}</label>
-                <p class="field-hint !mt-0 mb-2">{% translate "Toca el mapa para marcar el sitio, o arrastra el punto para ajustarlo." %}</p>
-                <p x-show="sinConexion" x-cloak class="field-hint !mt-0 mb-2 flex items-start gap-1.5">
-                    {% icono "wifi-off" clase="w-3.5 h-3.5 flex-shrink-0 mt-0.5" %}
-                    {% translate "Sin conexión no se ve el mapa (las imágenes vienen de internet), pero puedes escribir la latitud y longitud a mano si las conoces." %}
-                </p>
-                <div x-ref="mapa" class="w-full h-56 sm:h-64 rounded-xl border border-stone-200 dark:border-stone-800 z-0"></div>
-                <div class="flex flex-wrap items-center gap-2 mt-2">
-                    <button type="button" @click="usarMiUbicacion()" :disabled="buscandoUbicacion" class="btn-secondary !px-3 !py-1.5 text-xs">
-                        {% icono "ubicacion" clase="w-3.5 h-3.5" %}
-                        <span x-text="buscandoUbicacion ? '{% translate "Buscando…" %}' : '{% translate "Usar mi ubicación" %}'"></span>
-                    </button>
-                    <button type="button" @click="quitarPunto()" x-show="lat" x-cloak class="btn-ghost !px-3 !py-1.5 text-xs">
-                        {% translate "Quitar punto" %}
-                    </button>
+                {% comment %}
+                Especie amenazada (UICN, pedido explícito del 12/09/2026): en
+                vez de solo bloquear el envío del formulario (form.clean()
+                ya lo hace, ver apps/registros/forms.py), se reemplaza el
+                mapa entero por una explicación — la persona nunca llega a
+                intentar marcar un punto que de todas formas se va a
+                rechazar.
+                {% endcomment %}
+                <div x-show="$store.registro.especieAmenazada" x-cloak
+                     class="rounded-xl border p-3 flex items-start gap-2 text-sm"
+                     style="border-color: var(--error); background-color: color-mix(in srgb, var(--error) 8%, transparent);">
+                    {% icono "ubicacion" clase="w-4 h-4 flex-shrink-0 mt-0.5" %}
+                    <span>
+                        <span x-text="$store.registro.nombreEspecie"></span>
+                        {% translate "está catalogada como especie amenazada" %}
+                        (<span x-text="$store.registro.categoriaAmenaza"></span>) —
+                        {% translate "no se permite marcar el punto exacto del avistamiento, para proteger su ubicación. El campo \"Lugar\" de arriba sigue funcionando normalmente." %}
+                    </span>
                 </div>
-                <div class="grid grid-cols-2 gap-4 mt-3">
-                    {% include "_campo.html" with field=form.latitud %}
-                    {% include "_campo.html" with field=form.longitud %}
+                <div x-show="!$store.registro.especieAmenazada">
+                    <p class="field-hint !mt-0 mb-2">{% translate "Toca el mapa para marcar el sitio, o arrastra el punto para ajustarlo." %}</p>
+                    <p x-show="sinConexion" x-cloak class="field-hint !mt-0 mb-2 flex items-start gap-1.5">
+                        {% icono "wifi-off" clase="w-3.5 h-3.5 flex-shrink-0 mt-0.5" %}
+                        {% translate "Sin conexión no se ve el mapa (las imágenes vienen de internet), pero puedes escribir la latitud y longitud a mano si las conoces." %}
+                    </p>
+                    <div x-ref="mapa" class="w-full h-56 sm:h-64 rounded-xl border border-stone-200 dark:border-stone-800 z-0"></div>
+                    <div class="flex flex-wrap items-center gap-2 mt-2">
+                        <button type="button" @click="usarMiUbicacion()" :disabled="buscandoUbicacion" class="btn-secondary !px-3 !py-1.5 text-xs">
+                            {% icono "ubicacion" clase="w-3.5 h-3.5" %}
+                            <span x-text="buscandoUbicacion ? '{% translate "Buscando…" %}' : '{% translate "Usar mi ubicación" %}'"></span>
+                        </button>
+                        <button type="button" @click="quitarPunto()" x-show="lat" x-cloak class="btn-ghost !px-3 !py-1.5 text-xs">
+                            {% translate "Quitar punto" %}
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 mt-3">
+                        {% include "_campo.html" with field=form.latitud %}
+                        {% include "_campo.html" with field=form.longitud %}
+                    </div>
                 </div>
             </div>
         </div>

@@ -23,6 +23,28 @@ def validar_paises_distribucion(valor):
 class Especie(models.Model):
     """Ficha curada de una especie. Entrada única (RF-15, RF-16)."""
 
+    class CategoriaAmenaza(models.TextChoices):
+        """Categorías de la Lista Roja de la UICN — la misma escala que usan
+        los libros rojos nacionales, no una propia del proyecto."""
+        EX = 'EX', _('Extinta')
+        EW = 'EW', _('Extinta en estado silvestre')
+        CR = 'CR', _('En peligro crítico')
+        EN = 'EN', _('En peligro')
+        VU = 'VU', _('Vulnerable')
+        NT = 'NT', _('Casi amenazada')
+        LC = 'LC', _('Preocupación menor')
+        DD = 'DD', _('Datos insuficientes')
+
+    # Desde Vulnerable (VU) hacia arriba: pedido explícito del 12/09/2026,
+    # a raíz de curar la ficha de la Tángara multicolor (Vulnerable,
+    # endémica) — publicar la ubicación exacta de una especie amenazada
+    # facilita su captura o su acoso por fotógrafos/coleccionistas. NT y LC
+    # no bloquean: son categorías de bajo riesgo, casi toda ficha nueva cae
+    # ahí. Se aplica en apps/registros/forms.py:RegistroForm.clean(), no
+    # aquí — este modelo solo describe la especie, no decide qué puede
+    # llenar quien registra un avistamiento.
+    CATEGORIAS_AMENAZADAS = frozenset({'VU', 'EN', 'CR', 'EW', 'EX'})
+
     nombre_cientifico = models.CharField(max_length=150, unique=True)
     familia = models.CharField(max_length=100, blank=True)
     orden = models.CharField(max_length=100, blank=True)
@@ -33,6 +55,9 @@ class Especie(models.Model):
         validators=[validar_paises_distribucion],
     )
     tamano_cm = models.DecimalField(max_digits=5, decimal_places=1, null=True, blank=True)
+    categoria_amenaza = models.CharField(
+        max_length=2, choices=CategoriaAmenaza.choices, blank=True, default='',
+    )
     historia_natural = models.TextField(blank=True)
     dato_curioso = models.TextField(blank=True)
     foto_referencia = models.ImageField(upload_to='especies/', blank=True, null=True)
@@ -51,6 +76,10 @@ class Especie(models.Model):
 
     def __str__(self):
         return self.nombre_cientifico
+
+    @property
+    def esta_amenazada(self):
+        return self.categoria_amenaza in self.CATEGORIAS_AMENAZADAS
 
 
 class NombreComun(models.Model):

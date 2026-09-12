@@ -37,6 +37,12 @@ function mapaUbicacion(latInicial, lngInicial) {
 
             this._mapa.on('click', (evento) => this._colocarMarcador(evento.latlng.lat, evento.latlng.lng));
 
+            // Especie amenazada (UICN, pedido explícito del 12/09/2026): el
+            // componente que elige la especie vive aparte (el buscador de
+            // registro_crear.html), así que avisa por un evento del
+            // navegador en vez de que este componente dependa del otro.
+            window.addEventListener('quitar-punto-mapa', () => this.quitarPunto());
+
             // El mapa nace dentro de un contenedor que puede empezar oculto
             // por transiciones/layout; sin este recalculo, Leaflet a veces
             // renderiza solo la esquina superior izquierda de los tiles.

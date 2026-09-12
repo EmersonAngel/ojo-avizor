@@ -10,6 +10,8 @@ export interface EspecieCache {
   id: number;
   nombreCientifico: string;
   nombresComunes: string[];
+  amenazada: boolean; // UICN, desde Vulnerable — ver apps/catalogo/models.py:Especie.esta_amenazada
+  categoriaAmenaza: string; // nombre legible ("Vulnerable", "En peligro"…), para el mensaje
   fotoReferencia: string | null; // URL remota, tal como la da la API
 }
 
@@ -41,13 +43,15 @@ export async function guardarEspeciesEnCache(especies: EspecieCache[]): Promise<
     const fotoLocal = especie.fotoReferencia ? await descargarFoto(especie.fotoReferencia) : null;
     await bd.runAsync(
       `INSERT INTO especies_cache
-        (id, nombre_cientifico, nombres_comunes_json, foto_referencia, foto_local)
-       VALUES (?, ?, ?, ?, ?)`,
+        (id, nombre_cientifico, nombres_comunes_json, foto_referencia, foto_local, amenazada, categoria_amenaza)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
       especie.id,
       especie.nombreCientifico,
       JSON.stringify(especie.nombresComunes),
       especie.fotoReferencia,
       fotoLocal,
+      especie.amenazada ? 1 : 0,
+      especie.categoriaAmenaza,
     );
   }
 }
@@ -60,11 +64,18 @@ export async function listarEspeciesCache(): Promise<EspecieCacheGuardada[]> {
     nombres_comunes_json: string;
     foto_referencia: string | null;
     foto_local: string | null;
-  }>('SELECT id, nombre_cientifico, nombres_comunes_json, foto_referencia, foto_local FROM especies_cache ORDER BY nombre_cientifico');
+    amenazada: number;
+    categoria_amenaza: string;
+  }>(
+    `SELECT id, nombre_cientifico, nombres_comunes_json, foto_referencia, foto_local, amenazada, categoria_amenaza
+     FROM especies_cache ORDER BY nombre_cientifico`,
+  );
   return filas.map((fila) => ({
     id: fila.id,
     nombreCientifico: fila.nombre_cientifico,
     nombresComunes: JSON.parse(fila.nombres_comunes_json),
+    amenazada: fila.amenazada === 1,
+    categoriaAmenaza: fila.categoria_amenaza,
     fotoReferencia: fila.foto_referencia,
     fotoLocal: fila.foto_local,
   }));

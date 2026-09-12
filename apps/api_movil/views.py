@@ -48,6 +48,11 @@ def especies_listado(request):
             'id': especie.pk,
             'nombre_cientifico': especie.nombre_cientifico,
             'nombres_comunes': [nc.nombre for nc in especie.nombres_comunes.all()],
+            # Especie amenazada (UICN, pedido explícito del 12/09/2026): la
+            # app la necesita para bloquear el punto exacto del avistamiento
+            # en el propio formulario, igual que ya hace el sitio web.
+            'amenazada': especie.esta_amenazada,
+            'categoria_amenaza': especie.get_categoria_amenaza_display() if especie.categoria_amenaza else '',
             'foto_referencia': (
                 request.build_absolute_uri(especie.foto_referencia.url) if especie.foto_referencia else None
             ),

@@ -35,7 +35,9 @@ export function abrirBD(): Promise<SQLite.SQLiteDatabase> {
           nombre_cientifico TEXT NOT NULL,
           nombres_comunes_json TEXT NOT NULL DEFAULT '[]',
           foto_referencia TEXT,
-          foto_local TEXT
+          foto_local TEXT,
+          amenazada INTEGER NOT NULL DEFAULT 0,
+          categoria_amenaza TEXT NOT NULL DEFAULT ''
         );
       `);
       // Para quien ya tenía la app instalada antes de este campo: CREATE
@@ -47,6 +49,8 @@ export function abrirBD(): Promise<SQLite.SQLiteDatabase> {
         `ALTER TABLE registros_locales ADD COLUMN cantidad_individuos INTEGER NOT NULL DEFAULT 1`,
         `ALTER TABLE especies_cache ADD COLUMN foto_referencia TEXT`,
         `ALTER TABLE especies_cache ADD COLUMN foto_local TEXT`,
+        `ALTER TABLE especies_cache ADD COLUMN amenazada INTEGER NOT NULL DEFAULT 0`,
+        `ALTER TABLE especies_cache ADD COLUMN categoria_amenaza TEXT NOT NULL DEFAULT ''`,
       ]) {
         try {
           await bd.execAsync(alter);

@@ -8,7 +8,7 @@ patrón (input oculto + texto visible, en vez de un <select>).
 {% if especies %}
     {% for especie in especies %}
     <button type="button" class="selector-opcion"
-            @click="seleccionar('{{ especie.pk }}', '{{ especie.nombre_cientifico|escapejs }}{% for nombre in especie.nombres_comunes.all %}{% if forloop.first %} — {% endif %}{{ nombre.nombre|escapejs }}{% if not forloop.last %}, {% endif %}{% endfor %}')">
+            @click="seleccionar('{{ especie.pk }}', '{{ especie.nombre_cientifico|escapejs }}{% for nombre in especie.nombres_comunes.all %}{% if forloop.first %} — {% endif %}{{ nombre.nombre|escapejs }}{% if not forloop.last %}, {% endif %}{% endfor %}', {% if especie.esta_amenazada %}true{% else %}false{% endif %}, '{{ especie.get_categoria_amenaza_display|default:""|escapejs }}', '{{ especie.nombre_cientifico|escapejs }}')">
         <span class="italic">{{ especie.nombre_cientifico }}</span>
         {% if especie.nombres_comunes.all %}
         <span class="text-stone-400 dark:text-stone-500"> — {% for nombre in especie.nombres_comunes.all %}{{ nombre.nombre }}{% if not forloop.last %}, {% endif %}{% endfor %}</span>

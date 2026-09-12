@@ -55,6 +55,32 @@ class RegistroForm(forms.ModelForm):
             'codigo_reproductivo': _('Código reproductivo'),
         }
 
+    def clean(self):
+        """Especie amenazada (UICN, desde Vulnerable) + punto exacto es una
+        combinación que no se permite (pedido explícito del 12/09/2026, a
+        raíz de curar la ficha de la Tángara multicolor): publicar la
+        ubicación exacta de un ave amenazada facilita su captura o su acoso.
+        Se valida acá, no en el modelo Registro ni en services.py, porque es
+        el mismo formulario el que usa tanto el sitio web
+        (registros/views.py) como la app móvil (api_movil/views.py) — una
+        sola regla cubre los dos."""
+        datos = super().clean()
+        especie = datos.get('especie')
+        if especie and especie.esta_amenazada and (datos.get('latitud') or datos.get('longitud')):
+            raise forms.ValidationError(
+                _(
+                    '%(especie)s está catalogada como especie amenazada (%(categoria)s) — no se '
+                    'permite registrar el punto exacto de un avistamiento para proteger su '
+                    'ubicación. Puedes seguir describiendo el lugar en el campo "Lugar", sin '
+                    'coordenadas precisas.'
+                ),
+                params={
+                    'especie': especie.nombre_cientifico,
+                    'categoria': especie.get_categoria_amenaza_display(),
+                },
+            )
+        return datos
+
 
 class ComentarioIdentificacionForm(forms.Form):
     texto = forms.CharField(

@@ -20,7 +20,7 @@ class EspecieForm(forms.ModelForm):
         model = Especie
         fields = [
             'nombre_cientifico', 'familia', 'orden', 'distribucion', 'paises_distribucion',
-            'tamano_cm', 'historia_natural', 'dato_curioso', 'foto_referencia',
+            'tamano_cm', 'categoria_amenaza', 'historia_natural', 'dato_curioso', 'foto_referencia',
         ]
         labels = {
             'nombre_cientifico': _('Nombre científico'),
@@ -28,9 +28,17 @@ class EspecieForm(forms.ModelForm):
             'orden': _('Orden'),
             'distribucion': _('Notas sobre la distribución'),
             'tamano_cm': _('Tamaño (cm)'),
+            'categoria_amenaza': _('Categoría de amenaza (UICN)'),
             'historia_natural': _('Historia natural'),
             'dato_curioso': _('Dato curioso'),
             'foto_referencia': _('Foto de referencia'),
+        }
+        help_texts = {
+            'categoria_amenaza': _(
+                'Desde "Vulnerable" hacia arriba, el registro de un avistamiento de esta '
+                'especie no va a permitir marcar el punto exacto en el mapa — protege a las '
+                'especies amenazadas de que su ubicación quede expuesta.'
+            ),
         }
 
 
